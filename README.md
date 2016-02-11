@@ -1,2 +1,2 @@
-# igod
-WebGL FPS based on three.js
+# panoglobe
+route visualizer: http://globe.panoreisen.de
