@@ -4,6 +4,8 @@
  */
 define([], function () {
 
+	'use strict';
+	
 	function getHeightData(img, scale) {
 
 		if (scale == undefined) scale = 10;

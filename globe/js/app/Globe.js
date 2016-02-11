@@ -11,6 +11,8 @@ define([
        "renderer"
 ], function (THREE,isMobile,params,THREEX,renderer) {
 
+	'use strict';
+
 	function Globe ( radius, textures, heightData ) {
 		
 		this.radius = radius;

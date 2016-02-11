@@ -1,20 +1,21 @@
 /**
  * Create a camera
- *
- * Todo: do we need jquery for this?
+ * and handle window resize
  */
-define(["three","renderer"], function (THREE,renderer) {
+define(["three","renderer","container"], function (THREE,renderer,container) {
+    
+    'use strict';
 
     // CAMERA
     var screen_width    = window.innerWidth;
     var screen_height   = window.innerHeight;
     var aspect = screen_width / screen_height;
-    var view_angle  = 25; // war 40 bisher (23.03.2015) // war 30 bisher (18.07.2015)
-    var near = 0.1;
-    var far = 1200;
+    var view_angle  = 25; // 25
+    var near = 10;
+    var far = 1500;
     
     var camera  = new THREE.PerspectiveCamera( view_angle, aspect, near, far );
-    camera.position.set( 0, 80, 680 );
+    camera.position.set( 0, 80, 580 ); //580
     // camera.lookAt( new THREE.Vector3( 0, 20, 0) );   
     // scene.add( camera );
 
@@ -26,7 +27,7 @@ define(["three","renderer"], function (THREE,renderer) {
         // notify the renderer of the size change
         renderer.setSize( width, height );
         // update the camera
-        camera.aspect   = width / height;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
     
     }

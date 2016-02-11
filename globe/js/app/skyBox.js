@@ -4,6 +4,8 @@
 
 define(["three"], function (THREE) {
 
+	'use strict';
+	
 	var skybox = function ( texture ) {
 	
 		// SKYBOX

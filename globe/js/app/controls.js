@@ -1,11 +1,12 @@
 /**
  * Setup the control method
  */
-define(["three","camera","renderer","isMobile"], function (THREE,camera,renderer,isMobile) {
+define(["three","camera","container","isMobile"], function (THREE,camera,container,isMobile) {
+	
+	'use strict';
 
 	// CONTROLS
-	var controls = new THREE.OrbitControls( camera, renderer.domElement );
-	// this.controls = new THREE.OrbitObjectControls( camera, renderer.domElement );
+	var controls = new THREE.OrbitControls( camera, container );
 	// var controls = new THREE.OOrbitControls( camera, renderer.domElement );
 
 	// r73 OOC

@@ -4,6 +4,8 @@
 
 define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTILS, params) {
 
+	'use strict';
+	
 	function RouteLoader( callback ) {
 	
 		this.callback = callback;

@@ -4,20 +4,20 @@
  * http://maxberends.nl/
  */
 
-'use strict';
-
 define([
     'three',
     'threexDomEvents',
     'controls',
-    'renderer',
     'scene',
     'camera',
     'HUD',
     'MarkerFactory',
     'Globe',
     'Route',
-], function (THREE, THREEX, controls, renderer, scene, camera, HUD, MarkerFactory, Globe, Route) {
+    "container"
+], function (THREE, THREEX, controls, scene, camera, HUD, MarkerFactory, Globe, Route, container) {
+
+	'use strict';
 
 	function Universe( textures, heightData ) {
 
@@ -35,17 +35,12 @@ define([
 		scene.add( this.group );
 		
 		// this.camera = camera;
-		// this.renderer = renderer;
 		// this._controls = controls;
 		controls.group = this.group;
 		
-		var container = document.createElement( 'div' );
-		document.body.appendChild( container );
-		container.appendChild( renderer.domElement );
-		
 		this._gui = new HUD( container );
 		
-		this._domEvents = new THREEx.DomEvents( camera, renderer.domElement );
+		this._domEvents = new THREEx.DomEvents( camera, container );
 
 		this._markerFactory = new MarkerFactory( this._domEvents, container );
 

@@ -3,6 +3,8 @@
  */
 define([], function () {
 
+    'use strict';
+    
     var progressbutton = document.getElementById( "progress-button" );
     var progressbar = document.getElementsByClassName( "progressbar" )[ 0 ];
     var loadcontainer = document.getElementById("loadcontainer");

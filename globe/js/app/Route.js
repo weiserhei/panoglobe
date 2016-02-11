@@ -4,9 +4,16 @@
  * Load the JSON routedata
  * create the Route
  */
-
-'use strict';
-define(["three","jquery","controls","putils","RouteLine","gui_proto"], function (THREE,$,controls,PANOUTILS,RouteLine,Guistuff) {
+define([
+	"three",
+	"jquery",
+	"controls",
+	"putils",
+	"RouteLine",
+	"gui_proto"
+], function (THREE,$,controls,PANOUTILS,RouteLine,Guistuff) {
+	
+	'use strict';
 
 	function Route ( markerFactory )
 	{

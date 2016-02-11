@@ -3,6 +3,8 @@
  */
 define(["three"], function (THREE) {
 
+	'use strict';
+	
 	var utils = {};
 
 	/**

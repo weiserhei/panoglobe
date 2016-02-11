@@ -3,6 +3,8 @@
  */
 define([], function () {
 
+	'use strict';
+	
 	var get_params = function(search_string) {
 
 		var parse = function(params, pairs) {

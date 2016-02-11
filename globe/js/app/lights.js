@@ -4,6 +4,8 @@
 
 define(["three"], function (THREE) {
 
+	'use strict';
+	
 	var lights = function () {
 	
 		var lights = new THREE.Group();

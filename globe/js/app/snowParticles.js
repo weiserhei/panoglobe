@@ -4,6 +4,8 @@
 
 define(["three","ShaderParticleEngine"], function (THREE, SPE) {
 
+	'use strict';
+	
 	var particles = function() {
 
 		var textureLoader = new THREE.TextureLoader();

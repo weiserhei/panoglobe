@@ -3,6 +3,8 @@
  */
 define(["three","putils","dat"], function (THREE,putils) {
 
+	'use strict';
+
 	function Guistuff() {
 		
 		var defaults;
@@ -21,12 +23,12 @@ define(["three","putils","dat"], function (THREE,putils) {
 	Guistuff.prototype.ellesGui = function( data, controls, animationCallback, scope, textures, mesh, meshArray, mesh2 ){
 					
 			// defaults = clone( parameters );
-			earthSphere	= mesh;
-			earthGeoArray = meshArray;
-			cloudSphere	= mesh2;
+			// earthSphere	= mesh;
+			// earthGeoArray = meshArray;
+			// cloudSphere	= mesh2;
 			// eMDisplace	= mesh.material;
 			// route = groups;
-			maps = textures;
+			// maps = textures;
 			var that = this;
 			this.citys = data;
 

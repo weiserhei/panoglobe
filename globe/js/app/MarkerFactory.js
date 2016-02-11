@@ -6,13 +6,15 @@
 
 'use strict';
 
-define(["three","isMobile","../lib/three/makeSprite","camera","controls"], function (THREE,isMobile,makeSprite,camera,controls) {
+define([
+       "three",
+       "isMobile",
+       "../lib/three/makeSprite",
+       "camera",
+       "controls"
+], function (THREE,isMobile,makeSprite,camera,controls) {
 
-	// http://stackoverflow.com/questions/5999998/how-can-i-check-if-a-javascript-variable-is-function-type
-	function isFunction(functionToCheck) {
-		var getType = {};
-		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-	}
+	'use strict';
 
 	function MarkerFactory( domEvents, container )
 	{
@@ -35,16 +37,16 @@ define(["three","isMobile","../lib/three/makeSprite","camera","controls"], funct
 		// Generic Marker Stencil
 
 		// https://stackoverflow.com/questions/15597846/three-js-sharing-shadermaterial-between-meshes-but-with-different-uniform-sets
-		// var phongShader = THREE.ShaderLib.phong;
-		// var uniforms = THREE.UniformsUtils.clone(phongShader.uniforms);
+		var phongShader = THREE.ShaderLib.phong;
+		var uniforms = THREE.UniformsUtils.clone(phongShader.uniforms);
 
-		// var shaderMaterial = new THREE.ShaderMaterial({
-		// 	uniforms: uniforms,
-		// 	vertexShader: phongShader.vertexShader,
-		// 	fragmentShader: phongShader.fragmentShader,
-		// 	lights:true,
-		// 	fog: false
-		// });
+		var shaderMaterial = new THREE.ShaderMaterial({
+			uniforms: uniforms,
+			vertexShader: phongShader.vertexShader,
+			fragmentShader: phongShader.fragmentShader,
+			lights:true,
+			fog: false
+		});
 		// var markermesh = new THREE.Mesh( pyramidGeometry, shaderMaterial );
 
 		//CLONE MESH OR CREATE NEW MESH AND REUSE GEOMETRY?
@@ -56,14 +58,17 @@ define(["three","isMobile","../lib/three/makeSprite","camera","controls"], funct
 		// pyramidGeometry.applyMatrix( new THREE.Matrix4().makeRotationFromEuler( new THREE.Euler( - Math.PI / 2, Math.PI, 0 ) ) );
 		// pyramidGeometry.applyMatrix( new THREE.Matrix4().makeRotationFromEuler( new THREE.Euler( Math.PI / 2, Math.PI, 0 ) ) );
 		
+		var markerMaterial = new THREE.MeshLambertMaterial();
+		/*
 		if( isMobile.any() ) 
 		{
 			var markerMaterial = new THREE.MeshLambertMaterial();
 		} else {
 			var markerMaterial = new THREE.MeshPhongMaterial();
 		}
-
+		*/
 		this._markermesh = new THREE.Mesh( markergeo, markerMaterial );
+		// this._markermesh = new THREE.Mesh( markergeo, shaderMaterial );
 
 	}
 
@@ -93,15 +98,14 @@ define(["three","isMobile","../lib/three/makeSprite","camera","controls"], funct
 		// marker.material.uniforms.diffuse.value.setHSL ( hsl.h, hsl.s, hsl.l );
 
 		//LOWER BRIGHTNESS FOR EMISSIVE COLOR
-		hsl.l -= 0.2;
+		hsl.l -= 0.3;
 		// marker.material.uniforms.emissive.value.setHSL ( hsl.h, hsl.s, hsl.l );
 		marker.material.emissive.setHSL ( hsl.h, hsl.s, hsl.l );
 
-		var ohgodwhy = position;
 		// var ohgodwhy = position.clone();
 		// ohgodwhy.y += markermesh.geometry.parameters.height / 10; // pyramid geometry
 
-		marker.position.copy ( ohgodwhy ); // place marker
+		marker.position.copy ( position ); // place marker
 
 		// marker.lookAt( globe.mesh.position );
 
@@ -154,7 +158,7 @@ define(["three","isMobile","../lib/three/makeSprite","camera","controls"], funct
 
 			}
 
-			if ( isFunction ( controls.rotateToCoordinate ) ) {
+			if( controls.rotateToCoordinate instanceof Function ){
 				// todo
 				// modify current rotation, dont overwrite it!
 

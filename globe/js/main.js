@@ -19,14 +19,12 @@ require.config({
         // 'threeCore': "../lib/three/three",
         'three': "../lib/three",
         // --- start THREE sub-components
-        // 'OrbitObjectControls': "../lib/three/controls/OrbitObjectControls_r73",
         'OrbitObjectControls': "../lib/three/controls/OrbitControls",
         'Stats': "../lib/three/stats.min",
         'detector': "../lib/three/Detector",
         // --- end THREE sub-components
         'ShaderParticleEngine': "../lib/SPE.min",
         // THREEx
-        'threexWindowResize': "../lib/THREEx.WindowResize",
         'threexDomEvents': "../lib/threex.domevents",
         'threexAtmosphereMaterial': "../lib/threex.atmospherematerial",
 
@@ -39,6 +37,8 @@ require([
 	'detector',
 	'loadingScreen'
 ], function (App,Detector,loadingScreen) {
+
+    'use strict';
 
 	if ( ! Detector.webgl ) {
 	

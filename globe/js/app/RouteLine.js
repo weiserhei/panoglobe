@@ -6,6 +6,8 @@
 
 define(["three","putils"], function (THREE, putils) {
 
+	'use strict';
+
 	function RouteLine ()
 	{
 
@@ -110,7 +112,7 @@ define(["three","putils"], function (THREE, putils) {
 		// geometry.addGroup( 0, drawCount, 0 );
 
 		// line
-		line = new THREE.Line( geometry, material );
+		var line = new THREE.Line( geometry, material );
 
 		return line;
 

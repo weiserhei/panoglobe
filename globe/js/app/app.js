@@ -12,15 +12,16 @@ define([
     "loadingScreen",
 	"skyBox",
 	"scene",
-	'snowParticles',
 	'lights',
 	'controls',
 	'stats',
 	'camera',
 	'renderer',
 	'RouteLoader'
-], function (THREE, clock, preloadModule, Universe, getHeightData, loadingScreen, skyBox, scene, snowParticles, lights, controls, stats, camera, renderer, RouteLoader) {
+], function (THREE, clock, preloadModule, Universe, getHeightData, loadingScreen, skyBox, scene, lights, controls, stats, camera, renderer, RouteLoader) {
 
+	'use strict';
+	
     var universe, galaxy, delta, particleGroup;
 	
     var initialize = function () {
@@ -47,9 +48,9 @@ define([
 			// loadRoutes( universe, heightData );
 			RouteLoader( universe, heightData );
 			
-			particleGroup = snowParticles();
-			particleGroup.mesh.position.set( 0, 30, 0 );
-			scene.add( particleGroup.mesh );
+			// particleGroup = snowParticles();
+			// particleGroup.mesh.position.set( 0, 30, 0 );
+			// scene.add( particleGroup.mesh );
 
 			animate();
 		
@@ -65,7 +66,7 @@ define([
 		controls.update();
 		stats.update();
 		galaxy.update( delta );
-		particleGroup.tick( delta );
+		// particleGroup.tick( delta );
 		
 		renderer.render( scene, camera );
 		

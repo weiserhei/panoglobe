@@ -3,6 +3,8 @@
  */
 define([], function () {
 
+	'use strict';
+	
 	function HUD( container ) {
 
 		this._gui = document.createElement( 'div' );

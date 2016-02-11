@@ -3,6 +3,8 @@
  */
 define(["three","urlParameters","loadingScreen"], function (THREE,params,loadingScreen) {
 
+    'use strict';
+    
     var textures = [];
 
     var loadingManager = new THREE.LoadingManager ();

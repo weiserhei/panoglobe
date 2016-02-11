@@ -1,13 +1,18 @@
 /**
  * Load the engine
  */
-define(["three"], function (THREE) {
+
+var renderer;
+
+define(["three", "container"], function (THREE, container) {
+    
+    'use strict';
 
     var screen_width = window.innerWidth;
     var screen_height = window.innerHeight;
 
     // RENDERER
-    var renderer = new THREE.WebGLRenderer( { antialias:true } );
+    renderer = new THREE.WebGLRenderer( { antialias:true } );
     renderer.setSize( screen_width, screen_height );
 
 	//renderer.setClearColor(0xaaaaaa);
@@ -26,6 +31,7 @@ define(["three"], function (THREE) {
 
     // $(window).resize(updateSize);
     // updateSize();
+    container.appendChild( renderer.domElement );
 
     return renderer;
 });
