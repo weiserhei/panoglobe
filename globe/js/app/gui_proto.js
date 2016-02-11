@@ -382,7 +382,9 @@ define(["three","putils","dat"], function (THREE,putils) {
 
 				folder.add( { add : function(){ 
 
-					that._controls.rotateToCoordinate( that.citys[ i ].lat, that.citys[ i ].lng );
+					if( that._controls.rotateToCoordinate instanceof Function ){
+						that._controls.rotateToCoordinate( that.citys[ i ].lat, that.citys[ i ].lng );
+					}
 
 				} }, 'add').name( that.citys[i].adresse + " (" + putils.numberWithCommas( Math.floor( that.citys[ i ].hopDistance ) ) + " km)" );
 			}

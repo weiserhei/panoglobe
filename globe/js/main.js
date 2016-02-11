@@ -19,7 +19,8 @@ require.config({
         // 'threeCore': "../lib/three/three",
         'three': "../lib/three",
         // --- start THREE sub-components
-        'OrbitObjectControls': "../lib/three/controls/OrbitObjectControls_r73",
+        // 'OrbitObjectControls': "../lib/three/controls/OrbitObjectControls_r73",
+        'OrbitObjectControls': "../lib/three/controls/OrbitControls",
         'Stats': "../lib/three/stats.min",
         'detector': "../lib/three/Detector",
         // --- end THREE sub-components

@@ -37,7 +37,7 @@ define([
 		// this.camera = camera;
 		// this.renderer = renderer;
 		// this._controls = controls;
-		controls.constraint.group = this.group;
+		controls.group = this.group;
 		
 		var container = document.createElement( 'div' );
 		document.body.appendChild( container );

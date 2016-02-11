@@ -14,17 +14,10 @@
 		// CUSTOM
 		this.group = new THREE.Object3D();
 
-		this.targetRotationY = 0;
-		// var targetRotationY = 0;
-		this.targetRotationYOnMouseDown = 0;
-		this.mouseXOnMouseDown = 0;
-		var mouseX = 0;
-
-		this.targetRotationX = 0;
-		// var targetRotationX = 0;
-		this.targetRotationXOnMouseDown = 0;
-		this.mouseYOnMouseDown = 0;
-		var mouseY = 0;
+		this.mouse = new THREE.Vector2();
+		this.mouseOnMouseDown = new THREE.Vector2();
+		this.targetRotation = new THREE.Vector2();
+		this.targetRotationOnMouseDown = new THREE.Vector2();
 
 		this.acceleration = 0;
 
@@ -48,8 +41,8 @@
 		this.rotateToCoordinate = function ( latitude, longitude ) 
 		{
 
-			this.targetRotationX = latitude * ( Math.PI / 180 ) - 0.22; //oben-unten (negativ = zeige südpol, positiv = zeige nordpol)
-			this.targetRotationY = ( 270 - longitude ) * ( Math.PI / 180 ); //links rechts
+			this.targetRotation.x = latitude * ( Math.PI / 180 ) - 0.22; //oben-unten (negativ = zeige südpol, positiv = zeige nordpol)
+			this.targetRotation.y = ( 270 - longitude ) * ( Math.PI / 180 ); //links rechts
 
 		};
 
@@ -68,12 +61,12 @@
 
 			// bremsfaktor ( 0 schleift für immer )
 			var bremsfaktor = ( 0.08 - ( this.acceleration * 10 ) );
-			this.group.rotation.y += ( this.targetRotationY - this.group.rotation.y ) * bremsfaktor;
-			this.group.rotation.x += ( this.targetRotationX - this.group.rotation.x ) * bremsfaktor;
+			this.group.rotation.y += ( this.targetRotation.y - this.group.rotation.y ) * bremsfaktor;
+			this.group.rotation.x += ( this.targetRotation.x - this.group.rotation.x ) * bremsfaktor;
 
 			//LIMIT VISITING THE POLES -> BOUNCE BACK
-			if( this.targetRotationX > 0.8) { this.targetRotationX = 0.8; }
-			else if( this.targetRotationX < - 0.8) { this.targetRotationX = - 0.8; }
+			if( this.targetRotation.x > 0.8) { this.targetRotation.x = 0.8; }
+			else if( this.targetRotation.x < - 0.8) { this.targetRotation.x = - 0.8; }
 
 		};
 
@@ -542,11 +535,11 @@
 
 					var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
-					constraint.mouseXOnMouseDown = event.clientX - element.clientWidth / 2;
-					constraint.targetRotationYOnMouseDown = constraint.targetRotationY;			
+					constraint.mouseOnMouseDown.x = event.clientX - element.clientWidth / 2;
+					constraint.targetRotationOnMouseDown.y = constraint.targetRotation.y;			
 
-					constraint.mouseYOnMouseDown = event.clientY - element.clientHeight / 2;
-					constraint.targetRotationXOnMouseDown = constraint.targetRotationX;
+					constraint.mouseOnMouseDown.y = event.clientY - element.clientHeight / 2;
+					constraint.targetRotationOnMouseDown.x = constraint.targetRotation.x;
 
 				}
 
@@ -598,14 +591,14 @@
 
 			if ( state === STATE.OBJECT_CONTROL ) {
 
-				constraint.mouseX = event.clientX - element.clientWidth / 2;
-				constraint.mouseY = event.clientY - element.clientHeight / 2;
+				constraint.mouse.x = event.clientX - element.clientWidth / 2;
+				constraint.mouse.y = event.clientY - element.clientHeight / 2;
 				// rotate on Y-Axis at 70% speed
-				constraint.targetRotationY = constraint.targetRotationYOnMouseDown + ( constraint.mouseX - constraint.mouseXOnMouseDown ) * constraint.acceleration / 1.3;
+				constraint.targetRotation.y = constraint.targetRotationOnMouseDown.y + ( constraint.mouse.x - constraint.mouseOnMouseDown.x ) * constraint.acceleration / 1.3;
 				// rotate on X-Axis half the speed
-				constraint.targetRotationX = constraint.targetRotationXOnMouseDown + ( constraint.mouseY - constraint.mouseYOnMouseDown ) * constraint.acceleration / 2;
+				constraint.targetRotation.x = constraint.targetRotationOnMouseDown.x + ( constraint.mouse.y - constraint.mouseOnMouseDown.y ) * constraint.acceleration / 1.3;
 
-				document.body.style.cursor	= 'move';
+				document.body.style.cursor	= 'grabbing';
 
 			}
 

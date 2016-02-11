@@ -128,7 +128,9 @@ define(["three","jquery","controls","putils","RouteLine","gui_proto"], function 
 	Route.prototype.reset = function() {
 
 		this.stopAnimate();
-		controls.rotateToCoordinate( this._routeData[ 0 ].lat, this._routeData[ 0 ].lng );
+		if( controls.rotateToCoordinate instanceof Function ){
+			controls.rotateToCoordinate( this._routeData[ 0 ].lat, this._routeData[ 0 ].lng );
+		}
 
 		if ( this._markerFactory.active !== null ) {
 			// close open infoBoxes
@@ -250,8 +252,10 @@ define(["three","jquery","controls","putils","RouteLine","gui_proto"], function 
 
 			// callback( coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup );
 
-			// present the starting point on load to the user
-			controls.rotateToCoordinate ( routeData[ 0 ].lat, routeData[ 0 ].lng );
+			if( controls.rotateToCoordinate instanceof Function ){
+				// present the starting point on load to the user
+				controls.rotateToCoordinate ( routeData[ 0 ].lat, routeData[ 0 ].lng );
+			}
 
 			new Guistuff().ellesGui( routeData, controls, this.toggleAnimate, this );
 			
@@ -364,7 +368,12 @@ define(["three","jquery","controls","putils","RouteLine","gui_proto"], function 
 			// "camera" follows route
 			var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
 			var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
-			controls.rotateToCoordinate ( lat, lng );
+
+			if( controls.rotateToCoordinate instanceof Function ){
+				// present the starting point on load to the user
+				controls.rotateToCoordinate ( lat, lng );
+			}
+			// controls.rotateToCoordinate ( lat, lng );
 			// debug
 			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
 

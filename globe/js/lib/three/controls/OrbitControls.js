@@ -15,6 +15,66 @@
 
 THREE.OrbitControls = function ( object, domElement ) {
 
+	// CUSTOM
+	this.group = new THREE.Object3D();
+
+	this.mouse = new THREE.Vector2();
+	this.mouseOnMouseDown = new THREE.Vector2();
+	this.targetRotation = new THREE.Vector2();
+	this.targetRotationOnMouseDown = new THREE.Vector2();
+
+	this.acceleration = 0;
+
+	// smooth Zoom
+	var zoomEnd = 0;
+	this.zoomStart = 0;
+
+	this.zoomDampingFactor = 0.2; //0.3
+	this.smoothZoomSpeed = 5.0;
+	this.smoothZoom = false;
+
+	this.smoothZoomUpdate = function () {
+
+		var factor = 1.0 + ( zoomEnd - this.zoomStart ) * this.smoothZoomSpeed;
+		scale *= factor;
+
+		this.zoomStart += ( zoomEnd - this.zoomStart ) * this.zoomDampingFactor;
+
+	 };
+
+	this.rotateToCoordinate = function ( latitude, longitude ) 
+	{
+
+		this.targetRotation.x = latitude * ( Math.PI / 180 ) - 0.22; //oben-unten (negativ = zeige südpol, positiv = zeige nordpol)
+		this.targetRotation.y = ( 270 - longitude ) * ( Math.PI / 180 ); //links rechts
+
+	};
+
+	this.smoothRotateUpdate = function ( distance ) {
+
+		//distance = distanz luftlinie zur erde
+		//offset = xyz distanz
+		//Anpassung Geschwindigkeit an Sichtdistanz (Näher dran -> Langsamer)
+		// acceleration = (distance/100) * 0.0007; // oldschool panoreisen
+		// this.group.rotation.y += ( this.targetRotationY - this.group.rotation.y ) * 0.15;
+		// this.group.rotation.x += ( this.targetRotationX - this.group.rotation.x ) * 0.12;
+
+		var scaling = distance / 100000;
+		this.acceleration = scaling - scaling / 1.5; // is between 0.0006 and 0.002 now
+		// console.log( acceleration );
+
+		// bremsfaktor ( 0 schleift für immer )
+		var bremsfaktor = ( 0.08 - ( this.acceleration * 10 ) );
+		this.group.rotation.y += ( this.targetRotation.y - this.group.rotation.y ) * bremsfaktor;
+		this.group.rotation.x += ( this.targetRotation.x - this.group.rotation.x ) * bremsfaktor;
+
+		//LIMIT VISITING THE POLES -> BOUNCE BACK
+		if( this.targetRotation.x > 0.8) { this.targetRotation.x = 0.8; }
+		else if( this.targetRotation.x < - 0.8) { this.targetRotation.x = - 0.8; }
+
+	};
+	//
+
 	this.object = object;
 
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -209,6 +269,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 				return true;
 
 			}
+
+			// custom rotate this.group
+			this.smoothRotateUpdate ( radius );
+
+			this.smoothZoomUpdate ();
 
 			return false;
 
@@ -521,27 +586,45 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		var delta = 0;
 
-		if ( event.wheelDelta !== undefined ) {
+		if ( scope.smoothZoom !== false ) {
 
-			// WebKit / Opera / Explorer 9
+			if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
 
-			delta = event.wheelDelta;
+				delta = event.wheelDelta / 40;
 
-		} else if ( event.detail !== undefined ) {
+			} else if ( event.detail ) { // Firefox
 
-			// Firefox
+				delta = - event.detail / 3;
 
-			delta = - event.detail;
+			}
+			scope.zoomStart += delta * 0.001;
+			
+		} else {
 
-		}
 
-		if ( delta > 0 ) {
+			if ( event.wheelDelta !== undefined ) {
 
-			dollyOut( getZoomScale() );
+				// WebKit / Opera / Explorer 9
 
-		} else if ( delta < 0 ) {
+				delta = event.wheelDelta;
 
-			dollyIn( getZoomScale() );
+			} else if ( event.detail !== undefined ) {
+
+				// Firefox
+
+				delta = - event.detail;
+
+			}
+
+			if ( delta > 0 ) {
+
+				dollyOut( getZoomScale() );
+
+			} else if ( delta < 0 ) {
+
+				dollyIn( getZoomScale() );
+
+			}
 
 		}
 
@@ -690,7 +773,25 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		event.preventDefault();
 
+		// custom
 		if ( event.button === scope.mouseButtons.ORBIT ) {
+			if ( scope.enableRotate === false ) {
+				// console.log("orbit controls!");
+				state = STATE.OBJECT_CONTROL;
+
+				var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+
+				scope.mouseOnMouseDown.x = event.clientX - element.clientWidth / 2;
+				scope.targetRotationOnMouseDown.y = scope.targetRotation.y;			
+
+				scope.mouseOnMouseDown.y = event.clientY - element.clientHeight / 2;
+				scope.targetRotationOnMouseDown.x = scope.targetRotation.x;
+
+			}
+
+		}
+
+		else if ( event.button === scope.mouseButtons.ORBIT ) {
 
 			if ( scope.enableRotate === false ) return;
 
@@ -734,6 +835,22 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		event.preventDefault();
 
+		// custom
+		if ( state === STATE.OBJECT_CONTROL ) {
+
+			var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+
+			scope.mouse.x = event.clientX - element.clientWidth / 2;
+			scope.mouse.y = event.clientY - element.clientHeight / 2;
+			// rotate on Y-Axis at 70% speed
+			scope.targetRotation.y = scope.targetRotationOnMouseDown.y + ( scope.mouse.x - scope.mouseOnMouseDown.x ) * scope.acceleration / 1.3;
+			// rotate on X-Axis half the speed
+			scope.targetRotation.x = scope.targetRotationOnMouseDown.x + ( scope.mouse.y - scope.mouseOnMouseDown.y ) * scope.acceleration / 1.3;
+
+			document.body.style.cursor	= 'grabbing';
+
+		}
+
 		if ( state === STATE.ROTATE ) {
 
 			if ( scope.enableRotate === false ) return;
@@ -761,6 +878,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 		if ( scope.enabled === false ) return;
 
 		handleMouseUp( event );
+
+		document.body.style.cursor	= 'default';
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );

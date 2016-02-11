@@ -8,6 +8,12 @@
 
 define(["three","isMobile","../lib/three/makeSprite","camera","controls"], function (THREE,isMobile,makeSprite,camera,controls) {
 
+	// http://stackoverflow.com/questions/5999998/how-can-i-check-if-a-javascript-variable-is-function-type
+	function isFunction(functionToCheck) {
+		var getType = {};
+		return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+	}
+
 	function MarkerFactory( domEvents, container )
 	{
 
@@ -148,15 +154,12 @@ define(["three","isMobile","../lib/three/makeSprite","camera","controls"], funct
 
 			}
 
-			if ( controls instanceof THREE.OOrbitControls )
-			{
-
+			if ( isFunction ( controls.rotateToCoordinate ) ) {
 				// todo
 				// modify current rotation, dont overwrite it!
 
 				// center clicked point in the middle of the screen
 				controls.rotateToCoordinate ( lat, lng );
-
 			}
 
 			if ( that.active !== null ) 
