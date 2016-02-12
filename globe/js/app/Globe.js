@@ -8,7 +8,7 @@ define([
        "isMobile",
        "urlParameters",
        "threexAtmosphereMaterial",
-       "renderer"
+       "renderer",
 ], function (THREE,isMobile,params,THREEX,renderer) {
 
 	'use strict';
@@ -56,7 +56,7 @@ define([
 				specular: 0xBBBBBB,
 				shininess: 8,
 				map: textures.alternative,
-				specularMap: textures.specularmap, 
+				specularMap: textures.invertedSpecularmap, 
 				normalMap: textures.normalmap,
 				normalScale: new THREE.Vector2( - 0.2, - 0.2 ),
 				displacementMap: textures.displacemap,
@@ -64,13 +64,39 @@ define([
 				// displacementBias: - 0.428408,
 			});
 
+			// var standardMaterial = new THREE.MeshStandardMaterial( {
+			// 	color:0xFFFFFF,
+			// 	metalness: 0.5,
+			// 	roughness: 0.5,
+			// 	map: textures.alternative,
+			// 	// roughnessMap: textures.specularmap, 
+			// 	// metalnessMap: textures.metalnessMap, 
+			// 	normalMap: textures.normalmap,
+			// 	normalScale: new THREE.Vector2( - 0.2, - 0.2 ),
+			// 	displacementMap: textures.displacemap,
+			// 	displacementScale: 3.2,
+			// } );
+
 			var earthMaterial = phongMaterial;
+			// var earthMaterial = standardMaterial;
 
 			// var blendImage = THREE.ImageUtils.loadTexture("textures/wco.png");
 			// var earthMaterial = _normalDisplacementMaterial( textures[parameters.map] );
 			// var earthMaterial = _normalDisplacementMaterial( blendImage );
 			
 		}
+
+		// var dg = debugGui;
+		// var name = "Scene";
+		// if ( dg.__folders[ name ] ) {
+		// 	var folder = dg.__folders[ name ];
+		// } else {
+		// 	var folder = dg.addFolder( name );
+		// }
+		// var folder = dg;
+        // folder.addThreeColor( earthMaterial, "color" );
+        // folder.add( standardMaterial, "metalness" ).min( 0 ).max( 1 );
+        // folder.add( standardMaterial, "roughness" ).min( 0 ).max( 1 );
 
 		sphereGeo1.applyMatrix( new THREE.Matrix4().makeScale( - 1, 1, - 1 ) ); 
 		this.geometry = sphereGeo1;

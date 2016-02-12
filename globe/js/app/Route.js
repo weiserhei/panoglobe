@@ -236,11 +236,9 @@ define([
 			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
 			// this.spriteGroup.add ( sprite );
 
-			// promises.push( request);
-
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
-			// var intensity = 0;
+			// var intensity = 1;
 			// var light = this._markerFactory.createLight( currentCoordinate, color, intensity );
 			// this.lightGroup.add( light );
 

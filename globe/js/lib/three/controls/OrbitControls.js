@@ -848,6 +848,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 			scope.targetRotation.x = scope.targetRotationOnMouseDown.x + ( scope.mouse.y - scope.mouseOnMouseDown.y ) * scope.acceleration / 1.3;
 
 			document.body.style.cursor	= 'grabbing';
+			// chrome
+			document.body.style.cursor	= '-webkit-grabbing';
 
 		}
 

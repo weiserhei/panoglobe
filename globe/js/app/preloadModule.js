@@ -4,7 +4,7 @@
 define(["three","urlParameters","loadingScreen"], function (THREE,params,loadingScreen) {
 
     'use strict';
-    
+
     var textures = [];
 
     var loadingManager = new THREE.LoadingManager ();
@@ -26,7 +26,9 @@ define(["three","urlParameters","loadingScreen"], function (THREE,params,loading
     var manifest = [
         // 4K
         // {id:"diffusemap",    src:"earth/textures/planets/4k/Color-Map-4k.jpg"}, 
-        { id:"specularmap", src:"textures/planets/4k/Spec-Mask-inverted_4k.png" },
+        // { id:"metalnessMap", src:"textures/planets/4k/Spec-Mask-inverted_4k.png" },
+        // { id:"specularmap", src:"textures/planets/4k/Spec-Mask_4k.png" },
+        { id:"invertedSpecularmap", src:"textures/planets/4k/Spec-Mask-inverted_4k.png" },
         { id:"normalmap",   src:"textures/planets/4k/earth_normalmap_flat_4k.jpg" }, 
         { id:"displacemap", src:"textures/planets/4k/Bump_4k.jpg" }, 
 
@@ -38,7 +40,7 @@ define(["three","urlParameters","loadingScreen"], function (THREE,params,loading
 
         { id:"cloudmap", src:"textures/planets/4k/fair_clouds_4k.jpg" },
         { id:"starmap", src:"textures/galaxy_starfield.png" },
-        // {id:"starmap",   src:"earth/textures/330018-blackangel.jpg"},
+        // { id:"bluegalaxy", src:"textures/330018-blackangel.jpg"},
         // {id:"starmap",    src:"earth/textures/burning-planet-and-blue-galaxy.jpg"}
 
         //DEBUG LOADFASTER
