@@ -20,7 +20,7 @@ require.config({
         'three': "../lib/three",
         // --- start THREE sub-components
         'OrbitObjectControls': "../lib/three/controls/OrbitControls",
-        'Stats': "../lib/three/stats.min",
+        'Stats': "../lib/stats.min",
         'detector': "../lib/three/Detector",
         // --- end THREE sub-components
         'ShaderParticleEngine': "../lib/SPE.min",
