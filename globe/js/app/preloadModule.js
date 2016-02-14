@@ -71,6 +71,12 @@ define(["three","urlParameters","loadingScreen"], function (THREE,params,loading
         //     heightData = getHeightData( image, 20 );
         // }
 
+        // for ( var i = 0; i < manifest.length; i ++ ) {
+
+        //     var item = manifest[ i ];
+        //     textures[ item.id ] = textureLoader.load( item.src );
+            
+        // }
 
         while ( manifest.length > 0 ) 
         {
