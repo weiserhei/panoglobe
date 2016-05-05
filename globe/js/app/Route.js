@@ -227,14 +227,15 @@ define([
 
 			var name = currentCoordinate.countryname || currentCoordinate.adresse;
 
-			var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + currentCoordinate.lat + "," + currentCoordinate.lng + "&sensor=false";
-			var request = ajax( i, url, marker.position.clone() );
-			promises.push( request );
+			// var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + currentCoordinate.lat + "," + currentCoordinate.lng + "&sensor=false";
+			// var request = ajax( i, url, marker.position.clone() );
+			// promises.push( request );
+			
 			// CREATE LABELS FOR MARKER
 			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + currentCoordinate.adresse, marker.position.clone() );
 
-			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
-			// this.spriteGroup.add ( sprite );
+			sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
+			this.spriteGroup.add ( sprite );
 
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!

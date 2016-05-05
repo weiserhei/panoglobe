@@ -568,34 +568,26 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		var delta = 0;
 
+
+		if ( event.wheelDelta !== undefined ) {
+
+			// WebKit / Opera / Explorer 9
+
+			delta = event.wheelDelta / 20;
+
+		} else if ( event.detail !== undefined ) {
+
+			// Firefox
+
+			delta = - event.detail / 3;
+
+		}
+
 		if ( scope.smoothZoom !== false ) {
 
-			if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
-
-				delta = event.wheelDelta / 40;
-
-			} else if ( event.detail ) { // Firefox
-
-				delta = - event.detail / 3;
-
-			}
 			scope.zoomStart += delta * 0.001;
 			
 		} else {
-
-			if ( event.wheelDelta !== undefined ) {
-
-				// WebKit / Opera / Explorer 9
-
-				delta = event.wheelDelta;
-
-			} else if ( event.detail !== undefined ) {
-
-				// Firefox
-
-				delta = - event.detail;
-
-			}
 
 			if ( delta > 0 ) {
 
@@ -877,7 +869,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	function onMouseWheel( event ) {
 
-		if ( scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE ) return;
+		if ( scope.enabled === false || scope.enableZoom === false || ( state !== STATE.NONE && state !== STATE.ROTATE ) ) return;
 
 		event.preventDefault();
 		event.stopPropagation();
