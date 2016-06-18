@@ -152,6 +152,8 @@ define([
 
 		this._routeData = routeData;
 
+		console.log("routeData", routeData );
+
 		var currentCoordinate;
 		var color = new THREE.Color();
 		var infoBox;
@@ -239,9 +241,9 @@ define([
 
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
-			// var intensity = 1;
-			// var light = this._markerFactory.createLight( currentCoordinate, color, intensity );
-			// this.lightGroup.add( light );
+			var intensity = 1;
+			var light = this._markerFactory.createLight( currentCoordinate, color, intensity );
+			this.lightGroup.add( light );
 
 		}
 
@@ -263,11 +265,12 @@ define([
 				controls.rotateToCoordinate ( routeData[ 0 ].lat, routeData[ 0 ].lng );
 			}
 
-			new Guistuff().ellesGui( routeData, controls, this.toggleAnimate, this );
+			// new Guistuff().ellesGui( routeData, controls, this.toggleAnimate, this );
 			
 			// var group = [ coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup ];
 			// var group = new THREE.Group();
-			group.add( coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup );
+			// group.add( coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup );
+			group.add( coloredLine, this.meshGroup, this.lightGroup );
 
 			return group;
 

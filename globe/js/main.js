@@ -42,12 +42,28 @@ require([
     "scene",
     'lights',
     'controls',
-    'stats',
+    // 'stats',
     'camera',
     'renderer',
     'RouteLoader',
     "getHeightData"
-], function ( Detector, THREE, clock, preloadModule, Universe, loadingScreen, skyBox, scene, lights, controls, stats, camera, renderer, RouteLoader, getHeightData ) {
+], function ( 
+             Detector, 
+             THREE, 
+             clock, 
+             preloadModule, 
+             Universe, 
+             loadingScreen, 
+             skyBox, 
+             scene, 
+             lights, 
+             controls, 
+             // stats, 
+             camera, 
+             renderer, 
+             RouteLoader, 
+             getHeightData 
+             ) {
 
     'use strict';
 
@@ -75,8 +91,8 @@ require([
 
             universe = new Universe( preloaded.textures, heightData );
             
-            galaxy = skyBox ( preloaded.textures.starmap );
-            scene.add( galaxy.mesh );
+            // galaxy = skyBox ( preloaded.textures.starmap );
+            // scene.add( galaxy.mesh );
             
             var light = lights();
             scene.add( light );
@@ -99,8 +115,8 @@ require([
         
         universe.update();
         controls.update();
-        stats.update();
-        galaxy.update( delta );
+        // stats.update();
+        // galaxy.update( delta );
         // particleGroup.tick( delta );
         
         renderer.render( scene, camera );
