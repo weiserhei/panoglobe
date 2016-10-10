@@ -43,7 +43,7 @@ function makeTextSprite( message, parameters )
 	context.fillStyle	= "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," + backgroundColor.b + "," + backgroundColor.a + ")";
 	// context.fillRect(10, 10, textWidth+10*2, parseInt(fontsize + "px " + fontface, 10) +10);
 	// context.fillRect(10, 10, textWidth+10*2, lines.length * (parseInt(fontsize + "px " + fontface, 10) +10) );
-	roundRect( context, 10, 8, textWidth+10*2, lines.length * (parseInt(fontsize + "px " + fontface, 10) +13), 10 );
+	roundRect( context, 10, 8, textWidth+10*2, lines.length * (parseInt(fontsize + "px " + fontface, 10) +13), 3 );
 	
 	var y = 5;
 	

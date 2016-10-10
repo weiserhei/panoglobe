@@ -38,7 +38,7 @@ define([
 		// this._controls = controls;
 		controls.group = this.group;
 		
-		// this._gui = new HUD( container );
+		this._gui = new HUD( container );
 		
 		this._domEvents = new THREEx.DomEvents( camera, container );
 
@@ -76,7 +76,7 @@ define([
 		
 		route.isVisible = true;
 
-		// this._gui.createLabel( route );
+		this._gui.createLabel( route );
 
 		this.routes.push( route );
 

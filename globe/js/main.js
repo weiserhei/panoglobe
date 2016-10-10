@@ -22,6 +22,7 @@ require.config({
     shim: {
         // --- Use shim to mix together all THREE.js subcomponents
         'threeCore': {exports: "THREE"},
+        // 'dat': {exports: "dat"},
         'OrbitObjectControls': {deps: ['threeCore'], exports: "THREE"},
         // --- end THREE sub-components
         'ShaderParticleEngine': {deps: ['threeCore'], exports: "SPE"},
@@ -90,8 +91,8 @@ require([
 
             universe = new Universe( preloaded.textures, heightData );
             
-            // galaxy = skyBox ( preloaded.textures.starmap );
-            // scene.add( galaxy.mesh );
+            galaxy = skyBox ( preloaded.textures.starmap );
+            scene.add( galaxy.mesh );
             
             var light = lights();
             scene.add( light );
@@ -115,7 +116,7 @@ require([
         universe.update();
         controls.update();
         // stats.update();
-        // galaxy.update( delta );
+        galaxy.update( delta );
         // particleGroup.tick( delta );
         
         renderer.render( scene, camera );

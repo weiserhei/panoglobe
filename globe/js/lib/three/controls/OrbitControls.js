@@ -565,13 +565,37 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		//console.log( 'handleMouseWheel' );
 
-		if ( event.deltaY < 0 ) {
+		var delta = 0;
 
-			dollyOut( getZoomScale() );
+		if ( event.wheelDelta !== undefined ) {
 
-		} else if ( event.deltaY > 0 ) {
+			// WebKit / Opera / Explorer 9
 
-			dollyIn( getZoomScale() );
+			event.deltaY = event.wheelDelta / 20;
+
+		} else if ( event.detail !== undefined ) {
+
+			// Firefox
+
+			event.deltaY = - event.detail / 3;
+
+		}
+
+		if ( scope.smoothZoom !== false ) {
+
+			scope.zoomStart -= event.deltaY * 0.001;
+			
+		} else {
+
+			if ( event.deltaY < 0 ) {
+
+				dollyOut( getZoomScale() );
+
+			} else if ( event.deltaY > 0 ) {
+
+				dollyIn( getZoomScale() );
+
+			}
 
 		}
 

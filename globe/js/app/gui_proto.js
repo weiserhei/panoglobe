@@ -1,7 +1,7 @@
 /**
  * guistuff
  */
-define(["three","putils","dat"], function (THREE,putils) {
+define(["three","putils","dat"], function (THREE,putils,dat) {
 
 	'use strict';
 
