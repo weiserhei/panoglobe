@@ -6,8 +6,8 @@ require.config({
     paths: {
         'jquery': "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min",
         'dat': "../lib/dat.gui.min",
-        'threeCore': "../lib/three/three.min",
-        // 'threeCore': "../lib/three/three",
+        // 'threeCore': "../lib/three/three.min",
+        'threeCore': "../lib/three/three",
         'three': "../lib/three",
         // --- start THREE sub-components
         'OrbitObjectControls': "../lib/three/controls/OrbitControls",
@@ -17,8 +17,7 @@ require.config({
         'ShaderParticleEngine': "../lib/SPE.min",
         // THREEx
         'threexDomEvents': "../lib/threex.domevents",
-        'threexAtmosphereMaterial': "../lib/threex.atmospherematerial",
-
+        'threexAtmosphereMaterial': "../lib/threex.atmospherematerial"
     },
     shim: {
         // --- Use shim to mix together all THREE.js subcomponents
@@ -27,7 +26,7 @@ require.config({
         // --- end THREE sub-components
         'ShaderParticleEngine': {deps: ['threeCore'], exports: "SPE"},
         'detector': { exports: 'Detector' },
-        'Stats': {exports: "Stats"},
+        'Stats': {exports: "Stats"}
     }
 });
 
