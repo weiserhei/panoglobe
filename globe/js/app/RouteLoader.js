@@ -66,17 +66,24 @@ define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTIL
 			var name = "Asien 2010-2013";
 			// universe.loadRoute( name, datalistAsia, phase );
 			routeLoader.load( datalistAsia, name, phase, heightData );
-		}
-
-		// Finally, to get the param you want
-		if( params.route === "usa" ) {
-			var datalist2 = "http://relaunch.panoreisen.de/index.php?article_id=105&rex_geo_func=datalist";
+			
+			var datalist2 = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 			var phase = 4;
 			var name = "USA";
 			// universe.loadRoute( name, datalist2, phase );
 			routeLoader.load( datalist2, name, phase, heightData );
 		}
-		
+
+		/*
+		// Finally, to get the param you want
+		if( params.route === "usa" ) {
+			var datalist2 = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+			var phase = 4;
+			var name = "USA";
+			// universe.loadRoute( name, datalist2, phase );
+			routeLoader.load( datalist2, name, phase, heightData );
+		}
+		*/
 		// var route = ModuleRoute.createRoute( asien2010 ); //{ meshes: true, labels: true, lights: true, lines: true } 
 	}
 	
