@@ -409,6 +409,12 @@ define([
 				// http://stackoverflow.com/questions/15098479/how-to-get-the-global-world-position-of-a-child-object
 				// var meshVector = new THREE.Vector3().setFromMatrixPosition( meshGroup.children[ i ].matrixWorld ); 
 
+				// Annotations HTML
+				// https://codepen.io/dxinteractive/pen/reNpOR
+
+				// Like Sketchfab
+				// https://manu.ninja/webgl-three-js-annotations
+
 				meshVector = this.meshGroup.children[ i ].getWorldPosition();
 				eye = camera.position.clone().sub( meshVector );
 				dot = eye.clone().normalize().dot( meshVector.normalize() );
