@@ -61,17 +61,18 @@ define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTIL
 		var routeLoader = new RouteLoader( universe );
 
 		if( !params.route || params.route === "asien" ) {
-			var datalistAsia = "http://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
-			var phase = 0.96;
-			var name = "Asien 2010-2013";
-			// universe.loadRoute( name, datalistAsia, phase );
-			routeLoader.load( datalistAsia, name, phase, heightData );
 			
 			var datalist2 = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 			var phase = 4;
 			var name = "USA";
 			// universe.loadRoute( name, datalist2, phase );
 			routeLoader.load( datalist2, name, phase, heightData );
+			
+			var datalistAsia = "http://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+			var phase = 0.96;
+			var name = "Asien 2010-2013";
+			// universe.loadRoute( name, datalistAsia, phase );
+			routeLoader.load( datalistAsia, name, phase, heightData );
 		}
 
 		/*
