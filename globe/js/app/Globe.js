@@ -42,7 +42,7 @@ define([
 
 		} else {
 
-			var maxAnisotropy = renderer.getMaxAnisotropy();
+			var maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 			textures.alternative.anisotropy = maxAnisotropy; //REMOVE FOR PERFORMANCE
 
 			// create 2 Level of details in geometry, start zoom is at detail 2
@@ -150,7 +150,7 @@ define([
     		var borderImage = "textures/woc2.png";
 
 			var texture2 = textureLoader.load( borderImage );
-			var maxAnisotropy = renderer.getMaxAnisotropy();
+			var maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 			texture2.anisotropy = maxAnisotropy; //REMOVE FOR PERFORMANCE
 
 			// var texture2 = THREE.ImageUtils.loadTexture("textures/wco_white.png");
