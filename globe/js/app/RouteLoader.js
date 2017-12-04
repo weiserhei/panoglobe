@@ -12,13 +12,10 @@ define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTIL
 	
 	}
 	
-	RouteLoader.prototype.load = function ( url, name, phase, heightData ) {
+	RouteLoader.prototype.load = function ( url, phase, heightData ) {
 	
 		var radius = 100;
-		
-		var name = name || "";
 		var phase = phase || 0;
-
 		var that = this;
 
 		// load datalist
@@ -31,7 +28,9 @@ define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTIL
 			})
 			.done(function( data ) {
 				
-				var routeData = PANOUTILS.calc3DPositions( data, heightData, radius );
+				var name = data.meta.name || "";
+				var gpsdata = data.gps;
+				var routeData = PANOUTILS.calc3DPositions( gpsdata, heightData, radius );
 				
 				console.log( "Route has been loaded" );
 				return that.callback.addRoute( name, routeData, phase );
@@ -62,17 +61,17 @@ define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTIL
 
 		if( !params.route || params.route === "asien" ) {
 			
+			// amerika
 			var datalist2 = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 			var phase = 4;
-			var name = "USA";
 			// universe.loadRoute( name, datalist2, phase );
-			routeLoader.load( datalist2, name, phase, heightData );
+			routeLoader.load( datalist2, phase, heightData );
 			
+			// asien
 			var datalistAsia = "http://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
 			var phase = 0.96;
-			var name = "Asien 2010-2013";
 			// universe.loadRoute( name, datalistAsia, phase );
-			routeLoader.load( datalistAsia, name, phase, heightData );
+			routeLoader.load( datalistAsia, phase, heightData );
 		}
 
 		/*
