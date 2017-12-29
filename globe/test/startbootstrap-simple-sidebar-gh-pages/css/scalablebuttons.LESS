@@ -1,0 +1,164 @@
+@color: #fff;
+@color-dark: lighten(@color, 10%);
+
+menu {
+ /* @size sets the relative size of the buttons, define before calling the buttons mixin */
+  @size: 8em;  
+  .buttons;
+  //margin: 0.5em auto;
+  text-align: center;
+  position: relative;
+  padding:0;
+}
+
+menu.medium {
+ @size: 5em;
+  .buttons;
+}
+
+menu.small {
+  @size: 3em;
+  .buttons;
+}
+
+
+/*
+The buttons mixin that defines the buttons styles, the @size must be defined to set the relative size
+*/
+.buttons() {
+
+button {
+  position: relative;
+  display: inline-block;
+  padding: .6em;
+  background: linear-gradient(#007dc1, #0061a7), #c9c5c9;
+  border-radius: 10em;
+  border: 1px solid #124d77;
+  width: @size;
+  height: @size;
+  margin-right: 20px;
+  box-shadow: 0 (@size * .03) (@size * .04) rgba(70, 196, 255, 0.4);
+  cursor:pointer;
+}
+
+button:hover {
+    background: linear-gradient(#0061a7, #007dc1), #c9c5c9 ;
+
+}
+
+button:before, button:after {
+  position: absolute;
+  content: " ";
+  
+}
+  
+button:active {
+  top: (@size * .05);
+  box-shadow: 0 (@size * .02) (@size * .03) rgba(0,0,0,.4);
+}
+
+/* Play */
+.play:before {
+  z-index: 2;
+  top: @size * .22;
+  left: @size * .36;
+  width: 0;
+  height: 0;
+  border: @size * .3 solid transparent;
+    border-left-color: @color;
+  border-left-width: (@size * .45);
+}
+.play:hover:before {
+	border-left-color: @color-dark;
+}
+
+/* Stop */
+.stop:before {
+  top: (@size * .28);
+  left: (@size * .28);
+  width: (@size * .47);
+  height: (@size * .47);
+  background: @color;
+}
+  
+  
+.stop:hover:before {
+    background: @color-dark;
+}
+  
+/* Fast-Forward */
+
+.ff:before, .ff:after {
+  width: 0;
+  height: 0;
+  top: (@size * .26);
+  border: (@size * .25) solid transparent;
+ border-left-color: @color;
+  border-left-width: (@size * .27);
+}
+
+.ff:before {
+  left: @size * .3em;
+}
+
+.ff:after {
+  left: @size * .566em;
+  content: " "
+}
+  
+.ff:hover:before, .ff:hover:after {
+    border-left-color: @color-dark;
+ }
+
+/* Rewind */
+.rw:before, .rw:after {
+  width: 0;
+  height: 0;
+  top: (@size * .26);
+  border: (@size * .25) solid transparent;
+   border-right-color: @color;
+  border-right-width: (@size * .27);
+}
+
+.rw:before {
+  left:  (@size * .22);
+}
+
+.rw:after {
+  left:  (@size * -.05);
+  content: " "
+}
+  
+.rw:hover:after, .rw:hover:before {
+    border-right-color: @color-dark;
+ }
+
+/* Pause */
+.pause:before, .pause:after {
+  height: (@size * .47);
+  width: (@size * .19);
+  left: (@size * .29);
+  top: (@size * .28);
+  display: block;
+  background-color: @color;
+}
+
+.pause:after {
+ left: (@size * .54);
+}
+  
+.pause:hover:before, .pause:hover:after {
+   	background-color: @color-dark;
+  }
+
+
+}
+
+/*
+Other Styles
+*/
+
+
+body {
+ 	background: #000; 
+}

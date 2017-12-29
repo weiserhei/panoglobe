@@ -1,0 +1,343 @@
+menu {
+  /* @size sets the relative size of the buttons, define before calling the buttons mixin */
+  /* Play */
+  /* Stop */
+  /* Fast-Forward */
+  /* Rewind */
+  /* Pause */
+  text-align: center;
+  position: relative;
+  padding: 0;
+}
+menu button {
+  position: relative;
+  display: inline-block;
+  padding: .6em;
+  background: linear-gradient(#007dc1, #0061a7), #c9c5c9;
+  border-radius: 10em;
+  border: 1px solid #124d77;
+  width: 8em;
+  height: 8em;
+  box-shadow: 0 0.24em 0.32em rgba(70, 196, 255, 0.4);
+  cursor: pointer;
+}
+menu button:hover {
+  background: linear-gradient(#0061a7, #007dc1), #c9c5c9;
+}
+menu button:before,
+menu button:after {
+  position: absolute;
+  content: " ";
+}
+menu button:active {
+  top: 0.4em;
+  box-shadow: 0 0.16em 0.24em rgba(0, 0, 0, 0.4);
+}
+menu .play:before {
+  z-index: 2;
+  top: 1.76em;
+  left: 2.88em;
+  width: 0;
+  height: 0;
+  border: 2.4em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 3.6em;
+}
+menu .play:hover:before {
+  border-left-color: #ffffff;
+}
+menu .stop:before {
+  top: 2.24em;
+  left: 2.24em;
+  width: 3.76em;
+  height: 3.76em;
+  background: #ffffff;
+}
+menu .stop:hover:before {
+  background: #ffffff;
+}
+menu .ff:before,
+menu .ff:after {
+  width: 0;
+  height: 0;
+  top: 2.08em;
+  border: 2em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 2.16em;
+}
+menu .ff:before {
+  left: 2.4em;
+}
+menu .ff:after {
+  left: 4.528em;
+  content: " ";
+}
+menu .ff:hover:before,
+menu .ff:hover:after {
+  border-left-color: #ffffff;
+}
+menu .rw:before,
+menu .rw:after {
+  width: 0;
+  height: 0;
+  top: 2.08em;
+  border: 2em solid transparent;
+  border-right-color: #ffffff;
+  border-right-width: 2.16em;
+}
+menu .rw:before {
+  left: 1.76em;
+}
+menu .rw:after {
+  left: -0.4em;
+  content: " ";
+}
+menu .rw:hover:after,
+menu .rw:hover:before {
+  border-right-color: #ffffff;
+}
+menu .pause:before,
+menu .pause:after {
+  height: 3.76em;
+  width: 1.52em;
+  left: 2.32em;
+  top: 2.24em;
+  display: block;
+  background-color: #ffffff;
+}
+menu .pause:after {
+  left: 4.32em;
+}
+menu .pause:hover:before,
+menu .pause:hover:after {
+  background-color: #ffffff;
+}
+menu.medium {
+  /* Play */
+  /* Stop */
+  /* Fast-Forward */
+  /* Rewind */
+  /* Pause */
+}
+menu.medium button {
+  position: relative;
+  display: inline-block;
+  padding: .6em;
+  background: linear-gradient(#007dc1, #0061a7), #c9c5c9;
+  border-radius: 10em;
+  border: 1px solid #124d77;
+  width: 5em;
+  height: 5em;
+  box-shadow: 0 0.15em 0.2em rgba(70, 196, 255, 0.4);
+  cursor: pointer;
+}
+menu.medium button:hover {
+  background: linear-gradient(#0061a7, #007dc1), #c9c5c9;
+}
+menu.medium button:before,
+menu.medium button:after {
+  position: absolute;
+  content: " ";
+}
+menu.medium button:active {
+  top: 0.25em;
+  box-shadow: 0 0.1em 0.15em rgba(0, 0, 0, 0.4);
+}
+menu.medium .play:before {
+  z-index: 2;
+  top: 1.1em;
+  left: 1.8em;
+  width: 0;
+  height: 0;
+  border: 1.5em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 2.25em;
+}
+menu.medium .play:hover:before {
+  border-left-color: #ffffff;
+}
+menu.medium .stop:before {
+  top: 1.4em;
+  left: 1.4em;
+  width: 2.35em;
+  height: 2.35em;
+  background: #ffffff;
+}
+menu.medium .stop:hover:before {
+  background: #ffffff;
+}
+menu.medium .ff:before,
+menu.medium .ff:after {
+  width: 0;
+  height: 0;
+  top: 1.3em;
+  border: 1.25em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 1.35em;
+}
+menu.medium .ff:before {
+  left: 1.5em;
+}
+menu.medium .ff:after {
+  left: 2.83em;
+  content: " ";
+}
+menu.medium .ff:hover:before,
+menu.medium .ff:hover:after {
+  border-left-color: #ffffff;
+}
+menu.medium .rw:before,
+menu.medium .rw:after {
+  width: 0;
+  height: 0;
+  top: 1.3em;
+  border: 1.25em solid transparent;
+  border-right-color: #ffffff;
+  border-right-width: 1.35em;
+}
+menu.medium .rw:before {
+  left: 1.1em;
+}
+menu.medium .rw:after {
+  left: -0.25em;
+  content: " ";
+}
+menu.medium .rw:hover:after,
+menu.medium .rw:hover:before {
+  border-right-color: #ffffff;
+}
+menu.medium .pause:before,
+menu.medium .pause:after {
+  height: 2.35em;
+  width: 0.95em;
+  left: 1.45em;
+  top: 1.4em;
+  display: block;
+  background-color: #ffffff;
+}
+menu.medium .pause:after {
+  left: 2.7em;
+}
+menu.medium .pause:hover:before,
+menu.medium .pause:hover:after {
+  background-color: #ffffff;
+}
+menu.small {
+  /* Play */
+  /* Stop */
+  /* Fast-Forward */
+  /* Rewind */
+  /* Pause */
+}
+menu.small button {
+  position: relative;
+  display: inline-block;
+  padding: .6em;
+  background: linear-gradient(#007dc1, #0061a7), #c9c5c9;
+  border-radius: 10em;
+  border: 1px solid #124d77;
+  width: 3em;
+  height: 3em;
+  box-shadow: 0 0.09em 0.12em rgba(70, 196, 255, 0.4);
+  cursor: pointer;
+}
+menu.small button:hover {
+  background: linear-gradient(#0061a7, #007dc1), #c9c5c9;
+}
+menu.small button:before,
+menu.small button:after {
+  position: absolute;
+  content: " ";
+}
+menu.small button:active {
+  top: 0.15em;
+  box-shadow: 0 0.06em 0.09em rgba(0, 0, 0, 0.4);
+}
+menu.small .play:before {
+  z-index: 2;
+  top: 0.66em;
+  left: 1.08em;
+  width: 0;
+  height: 0;
+  border: 0.9em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 1.35em;
+}
+menu.small .play:hover:before {
+  border-left-color: #ffffff;
+}
+menu.small .stop:before {
+  top: 0.84em;
+  left: 0.84em;
+  width: 1.41em;
+  height: 1.41em;
+  background: #ffffff;
+}
+menu.small .stop:hover:before {
+  background: #ffffff;
+}
+menu.small .ff:before,
+menu.small .ff:after {
+  width: 0;
+  height: 0;
+  top: 0.78em;
+  border: 0.75em solid transparent;
+  border-left-color: #ffffff;
+  border-left-width: 0.81em;
+}
+menu.small .ff:before {
+  left: 0.9em;
+}
+menu.small .ff:after {
+  left: 1.698em;
+  content: " ";
+}
+menu.small .ff:hover:before,
+menu.small .ff:hover:after {
+  border-left-color: #ffffff;
+}
+menu.small .rw:before,
+menu.small .rw:after {
+  width: 0;
+  height: 0;
+  top: 0.78em;
+  border: 0.75em solid transparent;
+  border-right-color: #ffffff;
+  border-right-width: 0.81em;
+}
+menu.small .rw:before {
+  left: 0.66em;
+}
+menu.small .rw:after {
+  left: -0.15em;
+  content: " ";
+}
+menu.small .rw:hover:after,
+menu.small .rw:hover:before {
+  border-right-color: #ffffff;
+}
+menu.small .pause:before,
+menu.small .pause:after {
+  height: 1.41em;
+  width: 0.57em;
+  left: 0.87em;
+  top: 0.84em;
+  display: block;
+  background-color: #ffffff;
+}
+menu.small .pause:after {
+  left: 1.62em;
+}
+menu.small .pause:hover:before,
+menu.small .pause:hover:after {
+  background-color: #ffffff;
+}
+/*
+The buttons mixin that defines the buttons styles, the @size must be defined to set the relative size
+*/
+/*
+Other Styles
+*/
+body {
+  /*background: #000;*/
+}
