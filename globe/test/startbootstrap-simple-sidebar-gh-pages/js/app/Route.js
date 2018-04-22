@@ -415,7 +415,8 @@ define([
 				// Like Sketchfab
 				// https://manu.ninja/webgl-three-js-annotations
 
-				meshVector = this.meshGroup.children[ i ].getWorldPosition();
+				// meshVector = this.meshGroup.children[ i ].getWorldPosition();
+				this.meshGroup.children[ i ].getWorldPosition( meshVector );
 				eye = camera.position.clone().sub( meshVector );
 				dot = eye.clone().normalize().dot( meshVector.normalize() );
 						

@@ -104,7 +104,7 @@ require([
             // particleGroup.mesh.position.set( 0, 30, 0 );
             // scene.add( particleGroup.mesh );
 
-            // animate();
+            animate();
         
         };
     }

@@ -30,7 +30,7 @@ define(["three","putils"], function (THREE, putils) {
 		var curve = putils.createSphereArc( this.from.displacedPos, to.displacedPos );
 		var lineGeometry = new THREE.Geometry();
 		lineGeometry.vertices = curve.getPoints( this.segments - 1 ); //	how many vertices do we want on this guy? this is for *each* side
-		lineGeometry.computeLineDistances();
+		// lineGeometry.computeLineDistances();
 
 		this.lineMergeGeometry.merge( lineGeometry );
 

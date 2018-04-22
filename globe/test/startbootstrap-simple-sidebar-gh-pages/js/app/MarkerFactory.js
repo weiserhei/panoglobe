@@ -90,7 +90,7 @@ define([
 		var marker = this._markermesh.clone();
 		marker.material = this._markermesh.material.clone();
 
-		var hsl = color.getHSL();
+		var hsl = color.getHSL({});
 
 		//LOWER SATURATION FOR BLOBS
 		hsl.s -= 0.2;

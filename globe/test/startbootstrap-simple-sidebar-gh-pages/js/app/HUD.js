@@ -255,26 +255,26 @@ define(["jquery", "putils"], function ($, putils) {
 	
 	var panelGroup = document.createElement("div");
 	panelGroup.className="panel-group";
-	// innerList.appendChild(panelGroup);
+	innerList.appendChild(panelGroup);
 	// li.appendChild(panelGroup);
 
-var poiContainer = document.createElement("div");
-poiContainer.className="panel panel-default";
-panelGroup.appendChild(poiContainer);
+	var poiContainer = document.createElement("div");
+	poiContainer.className="panel panel-default";
+	panelGroup.appendChild(poiContainer);
 
-var panelHead = document.createElement("div");
-panelHead.className="panel-heading";
-panelHead.innerHTML = '<p class="panel-title"><a data-toggle="collapse" href="#'+safeName+'">Points of Interest</a></p>';
-poiContainer.appendChild(panelHead);
+	var panelHead = document.createElement("div");
+	panelHead.className="panel-heading";
+	panelHead.innerHTML = '<p class="panel-title"><a data-toggle="collapse" href="#'+safeName+'">Points of Interest</a></p>';
+	poiContainer.appendChild(panelHead);
 
-var collapse = document.createElement("div");
-collapse.className="panel-collapse collapse";
-collapse.id = safeName;
-poiContainer.appendChild(collapse);
+	var collapse = document.createElement("div");
+	collapse.className="panel-collapse collapse";
+	collapse.id = safeName;
+	poiContainer.appendChild(collapse);
 
-// var listGroup = document.createElement("ul");
-// listGroup.className="list-group";
-// collapse.appendChild(listGroup);
+	var listGroup = document.createElement("ul");
+	listGroup.className="list-group";
+	collapse.appendChild(listGroup);
 
 		
 		// var poiList = document.createElement("ul");
