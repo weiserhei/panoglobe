@@ -55,6 +55,7 @@ define([
 		
 		this.group.add( globe.mesh );
 
+
 	}
 
 	// addRoute is called after loading the route-JSON
