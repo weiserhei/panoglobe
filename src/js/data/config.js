@@ -106,7 +106,7 @@ export default {
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
-    rotateSpeed: 0.2,
+    rotateSpeed: 0.1,
     zoomSpeed: 0.8,
     minDistance: 200,
     maxDistance: 600,

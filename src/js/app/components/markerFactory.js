@@ -11,7 +11,7 @@ function _numberWithCommas ( x ) {
 import * as THREE from "three";
 import $ from "jquery";
 
-import makeTextSprite from "../helpers/makeTextSprite";
+import TextSprite from "./textSprite";
 
 // define([
 //        "three",
@@ -156,15 +156,16 @@ export default class MarkerFactory {
         }, false);
     }
     createSprite(message, Vec3) {
-        var label = makeTextSprite(message, {
+
+        let sprite = new TextSprite(message, {
             fontsize: 32,
             borderThickness: 0,
             borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
             backgroundColor: { r: 0, g: 0, b: 0, a: 0.4 },
             fontWeight: "normal"
-        });
-        label.position.copy(Vec3);
-        return label;
+        }, Vec3);
+
+        return sprite;
     }
     update() {
         // if ( this.active !== null && this.active.infoBox !== undefined ) 

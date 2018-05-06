@@ -35,6 +35,7 @@ export default class Route {
 		this.lightGroup = new THREE.Object3D();
 		this.spriteGroup = new THREE.Object3D();
 		this.line = null;
+		this.sprites = [];
 
 		this.isVisible = false;
 
@@ -75,11 +76,19 @@ export default class Route {
 		// }
     }
 
-    update( delta ) {
+    update( delta, camera ) {
         // if( this.line.material.resolution !== undefined ) {
         if( this.line.material.resolution !== undefined ) {
             this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
-        }
+		}
+		
+		// hide occluded, scale on zoom
+		this._updateLabel( camera );
+
+		// if ( this._animation === true ) {
+		// 	this.animate( controls );		
+		// }
+
     }
 
     _createRoute( routeData, group, phase, steps ) {
@@ -124,9 +133,9 @@ export default class Route {
 			// CREATE LABELS FOR MARKER
 			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + currentCoordinate.adresse, marker.position.clone() );
 
-			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
-			// this.spriteGroup.add ( sprite );
-
+			sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
+			this.spriteGroup.add ( sprite.sprite );
+			this.sprites.push( sprite );
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
 			// var intensity = 1;
@@ -238,43 +247,28 @@ export default class Route {
 
 	}
 
-// define([
-// 	"three",
-// 	"jquery",
-// 	"controls",
-// 	"putils",
-// 	"RouteLine",
-// 	"gui_proto"
-// ], function (THREE,$,controls,PANOUTILS,RouteLine,Guistuff) {
-	
-// 	'use strict';
-
-	// function Route ( markerFactory )
-	// {
-
-    /*
-
-	Route.prototype.show = function() {
-
+	show() {
+		
 		this.meshGroup.visible = true; 
 		this.lightGroup.visible = true; 
 		this.spriteGroup.visible = true; 
 		this.line.visible = true; 
-
+		
 		this.isVisible = true;
-
+		
 	};
-
-	Route.prototype.hide = function() {
-
+	
+	hide() {
+		
 		this.meshGroup.visible = false; 
 		this.lightGroup.visible = false; 
 		this.spriteGroup.visible = false; 
 		this.line.visible = false; 
-
+		
 		this.isVisible = false;
-
+		
 	};
+	/*
 
 	Route.prototype.toggleAnimate = function( scope ) {
 
@@ -354,18 +348,6 @@ export default class Route {
 
 	};
 
-	Route.prototype.update = function( camera ) {
-
-		// hide occluded, scale on zoom
-		this._updateLabel( camera );
-
-		if ( this._animation === true ) {
-
-			this.animate( controls );		
-		}
-
-	};
-
 	var delay = 0;
 	var target = 2;
 
@@ -440,11 +422,12 @@ export default class Route {
 		// } else { delay ++; }
 
 	};
+	*/
 
-	// Route.prototype.updateLabel = function( camera ) {
+}
 
-	Route.prototype._updateLabel = (function () {
-
+Route.prototype._updateLabel = (function() { 
+	
 		var meshVector = new THREE.Vector3();
 		var eye = new THREE.Vector3();
 		var dot = new THREE.Vector3();
@@ -473,38 +456,20 @@ export default class Route {
 						
 				ocluded = true ? (dot < 0.0) : false; //IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
 				
-				if ( this.spriteGroup.children[ i ] !== undefined ) {
+				if ( this.sprites[i] !== undefined ) {
+
+					this.sprites[i].update( ocluded, eye, this.showLabels );
 
 					//IF BLOBS VISIBLE: SET BLOB+SPRITE VISIBLE AND SCALE ACCORDING TO ZOOM LEVEL
-					if ( !ocluded ) {
-						
-						this.spriteGroup.children[ i ].visible = this.showLabels;
-						// spriteGroup.children[ i ].scale.set( 1, 0.5, 1 ).multiplyScalar( 1 + eye.length() / 13 ); // SCALE SIZE OF FONT WHILE ZOOMING IN AND OUT //0.1800 * exe
-
-						width = this.spriteGroup.children[ i ].material.map.image.width;
-						height = this.spriteGroup.children[ i ].material.map.image.height;
-						this.spriteGroup.children[ i ].scale.set( width / 300, height / 300, 1 ).multiplyScalar( 1 + eye.length() / 13 );
-						// console.log( spriteGroup.children[ i ].material.opacity );
-						this.spriteGroup.children[ i ].material.opacity = 0.9 / ( eye.length() / 100 );
-						
+					if ( !ocluded ) {			
 						this.meshGroup.children[ i ].scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
 						//this.banner.clickable = this.mesh.pinned;
-
 					}
-					else { 
-					//HIDE EACH BLOB+LABEL IF CAMERA CANT SEE IT (I.E. WHEN IT IS BEHIND THE GLOBE)
-						this.spriteGroup.children[ i ].visible = false;
 
-					}
 				}
 
 			}
 
-		};
-
-	})();
-
-
-    return Route;
-    */
-}
+		}
+	}
+)();

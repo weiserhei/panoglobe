@@ -165,7 +165,7 @@ export default class Main {
     this.light.update( this.clock );
 
     if( this.route !== undefined ) {
-      this.route.update( delta );
+      this.route.update( delta, this.camera.threeCamera );
     }
 
     // RAF
