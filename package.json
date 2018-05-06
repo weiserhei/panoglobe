@@ -1,0 +1,41 @@
+{
+  "name": "threejs-es6-webpack-boilerplate",
+  "version": "1.0.0",
+  "description": "Boilerplate for Three.js projects set up with Babel for ES6 and compiled with webpack",
+  "author": "Paul Graffam",
+  "main": "app.js",
+  "scripts": {
+    "dev": "run-p dev:sass webpack-server",
+    "build": "run-s prebuild build:dir build:js build:sass",
+    "prebuild": "run-s clean lint",
+    "clean": "rimraf build",
+    "lint": "eslint src/js/",
+    "webpack-server": "set NODE_ENV=0&& webpack-dev-server --progress --color --open --hot",
+    "webpack-watch": "set NODE_ENV=0&& webpack --progress --color --watch --hot",
+    "dev:sass": "node-sass -w -r src/css/ -o src/public/assets/css/",
+    "dev:js": "set NODE_ENV=0&& webpack",
+    "build:dir": "copyfiles -u 1 src/public/**/* build/",
+    "build:sass": "node-sass --output-style compressed src/css/ -o build/public/assets/css/",
+    "build:js": "set NODE_ENV=1&& webpack --progress --color"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.4",
+    "jquery": "^3.3.1",
+    "three": "latest",
+    "three-full": "^6.0.0",
+    "tween.js": "^16.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "copyfiles": "^1.2.0",
+    "eslint": "^4.19.1",
+    "node-sass": "^4.8.3",
+    "npm-run-all": "^4.1.2",
+    "rimraf": "^2.6.2",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15",
+    "webpack-dev-server": "^3.1.3"
+  }
+}
