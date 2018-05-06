@@ -8,6 +8,8 @@
 import * as THREE from "three";
 import $ from "jquery";
 
+import Config from '../../data/config';
+
 import * as Panoutils from "../../utils/panoutils";
 import * as Colors from "../../utils/colors";
 
@@ -46,7 +48,7 @@ export default class Route {
         this.group	= new THREE.Group();
         scene.add( this.group );
 
-        this._createRoute( this._routeData, this.group );
+        this._createRoute( this._routeData, this.group, this.phase, this.steps );
 
 
 		// // load datalist
@@ -74,61 +76,68 @@ export default class Route {
     }
 
     update( delta ) {
-        if( this.line !== undefined ) {
+        // if( this.line.material.resolution !== undefined ) {
+        if( this.line.material !== undefined ) {
             this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
         }
     }
 
-    _createRoute( routeData, group ) {
-		// console.log("routeData", routeData );
+    _createRoute( routeData, group, phase, steps ) {
+
 		var currentCoordinate;
 		var color = new THREE.Color();
 		var infoBox;
 		var marker;
 		var sprite;
 
-		var phase = this.phase;
-		var steps = this.steps;
+		var phase = phase;
+		var steps = steps;
 		var frequency = 1 /  ( steps * routeData.length );
 		
 		var poiCounter = 0;
 
 		this._routeLine = new RouteLine();
 
-		var promises=[];
-
-		var that = this;
-
-		function ajax( j, url, position ) {
-			// Get countryname from POI
-			// via Google-Maps API Lat/Long
-
-			var request = $.getJSON(url, function (data) {
-				if (data.results && data.results[0]) {			  	
-					for (var i = 0; i < data.results[0].address_components.length; i++) {
-
-						if (data.results[0].address_components[i].types.indexOf ('country') > -1) {
-
-							var name = data.results[0].address_components[i].long_name;
-							// routeData[ j ].countryname = name;
-
-							sprite = that._markerFactory.createSprite( ++poiCounter + " " + name, position );
-							that.spriteGroup.add ( sprite );
-
-							break;
-						}
-					}
-				}
-			});
-
-			return request;
-
-		}
-
-		for ( var i = 0; i < routeData.length; i ++ )
-		{			
-
+		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
+			if(index > 0) {
+				this._routeLine.connect( routeData[index-1].displacedPos, currentCoordinate.displacedPos);
+			}
+			// DONT DRAW MARKER WHEN THEY HAVE NO NAME
+			if ( ! currentCoordinate.adresse ) { return; }
+			
+			this._cityMarkers.push ( currentCoordinate );
+			
+			// CREATE MARKER
+			color.set( Colors.makeColorGradient( index, frequency, undefined, undefined, phase ) );
+			marker = this._markerFactory.createMarker( currentCoordinate.displacedPos.clone(), color );
+			this.meshGroup.add( marker );
+
+			// CREATE HUDLABELS FOR MARKER
+			infoBox = this._markerFactory.createInfoBox( currentCoordinate, marker );
+
+			//MAKE MARKER CLICKABLE
+			// _addLink( marker, hudLabel, currentCoordinate );
+			// this._markerFactory.linkify( marker, infoBox, currentCoordinate );
+
+			var name = currentCoordinate.countryname || currentCoordinate.adresse;
+			// CREATE LABELS FOR MARKER
+			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + currentCoordinate.adresse, marker.position.clone() );
+
+			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
+			// this.spriteGroup.add ( sprite );
+
+			// CREATE LIGHTS FOR BLOBS
+			// when using lights wait for the route to be loaded!
+			// var intensity = 1;
+			// var light = this._markerFactory.createLight( currentCoordinate, color, intensity );
+			// this.lightGroup.add( light );
+
+		})
+
+		/*
+		for ( var i = 0; i < routeData.length; i ++ ) {			
+
 			color.set( Colors.makeColorGradient( i, frequency, undefined, undefined, phase ) );
 			currentCoordinate = routeData[ i ];
 
@@ -165,18 +174,15 @@ export default class Route {
 			// sprite = this._markerFactory.createSprite( ++poiCounter + " " + name, marker.position.clone() );
 			// this.spriteGroup.add ( sprite );
 
-			// CREATE LIGHTS FOR BLOBS
-			// when using lights wait for the route to be loaded!
-			// var intensity = 1;
-			// var light = this._markerFactory.createLight( currentCoordinate, color, intensity );
-			// this.lightGroup.add( light );
+
 
 		}
+		*/
 
-		$.when.apply(null, promises).done(function(){
+		// $.when.apply(null, promises).done(function(){
             // All done
             
-            this.line = this._routeLine.thickLine( this._routeData, steps, phase, 8 );
+            this.line = this._routeLine.thickLine( steps, phase, Config.routes.linewidth );
 
 			// var coloredLine = routeLine.getColoredLine( steps, phase );
 			// var coloredLine = this._routeLine.getColoredBufferLine( steps, phase );
@@ -202,7 +208,7 @@ export default class Route {
 
 			return group;
 
-		}.bind( this ));
+		// }.bind( this ));
 
 		// this._gui = document.createElement( 'div' );
 		// this._gui.id = "debug"; 

@@ -10,8 +10,14 @@ utils.numberWithCommas = function ( x ) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-    // Math functions from stemkoski
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+const getRandomArbitrary = ( min, max ) => {
+	return Math.random() * (max - min) + min;
+};
 
+// Math functions from stemkoski
 function greatCircleFunction(P, Q, angleMultiplier){
 
     var angle = P.angleTo(Q);
@@ -148,6 +154,7 @@ const calc3DPositions = (data, heightData, radius) => {
 }
 
 module.exports = {
+	getRandomArbitrary,
     getHeightData,
 	calc3DPositions,
 	createSphereArc

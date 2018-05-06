@@ -17,6 +17,9 @@ export default {
     path: './assets/models/Teapot.json',
     scale: 20
   },
+  routes: {
+    linewidth: 5
+  },
   texture: {
     path: './assets/textures/',
     imageFiles: [
@@ -51,7 +54,7 @@ export default {
       map: "earthColor",
       // normalMap: ,
       // specularMap: ,
-      normalScale: -0.2,
+      normalScale: -1.2,
       // displacementMap: "invertedSpecularmap",
       displacementMap: "earthColor",
       // displacementScale: 3.2,
@@ -102,16 +105,16 @@ export default {
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
-    rotateSpeed: 0.5,
+    rotateSpeed: 0.2,
     zoomSpeed: 0.8,
     minDistance: 200,
     maxDistance: 600,
     minPolarAngle: Math.PI / 5,
-    maxPolarAngle: Math.PI / 2,
+    maxPolarAngle: Math.PI / 1.5,
     minAzimuthAngle: -Infinity,
     maxAzimuthAngle: Infinity,
     enableDamping: true,
-    dampingFactor: 0.5,
+    dampingFactor: 0.3,
     enableZoom: true,
     target: {
       x: 0,

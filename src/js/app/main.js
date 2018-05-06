@@ -95,7 +95,8 @@ export default class Main {
       const url = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
       // const route = new Route( url,  );
       this.routeLoader.load(url, routeData => {
-        this.route = new Route( this.scene, markerFactory, routeData, this.heightData, Config.globus.radius, 0.96 );
+        const phase = Panoutils.getRandomArbitrary( 0, 6.2 );
+        this.route = new Route( this.scene, markerFactory, routeData, this.heightData, Config.globus.radius, phase );
       }) 
     }).catch(() => {console.warn("Error loading height data image")});
 
