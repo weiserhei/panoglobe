@@ -77,7 +77,7 @@ export default class Route {
 
     update( delta ) {
         // if( this.line.material.resolution !== undefined ) {
-        if( this.line.material !== undefined ) {
+        if( this.line.material.resolution !== undefined ) {
             this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
         }
     }
@@ -96,12 +96,12 @@ export default class Route {
 		
 		var poiCounter = 0;
 
-		this._routeLine = new RouteLine();
+		this._routeLine = new RouteLine( Config.routes.lineSegments );
 
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			if(index > 0) {
-				this._routeLine.connect( routeData[index-1].displacedPos, currentCoordinate.displacedPos);
+				this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos);
 			}
 			// DONT DRAW MARKER WHEN THEY HAVE NO NAME
 			if ( ! currentCoordinate.adresse ) { return; }
@@ -181,16 +181,17 @@ export default class Route {
 
 		// $.when.apply(null, promises).done(function(){
             // All done
-            
-            this.line = this._routeLine.thickLine( steps, phase, Config.routes.linewidth );
-
+			
+			if(Config.routes.linewidth > 1) {
+				this.line = this._routeLine.getThickLine( steps, phase, Config.routes.linewidth );
+			} else {
+				this.line = this._routeLine.getColoredBufferLine( steps, phase );
+			}
 			// var coloredLine = routeLine.getColoredLine( steps, phase );
-			// var coloredLine = this._routeLine.getColoredBufferLine( steps, phase );
-			// this.line = coloredLine;
 
 			// length of the line
 			// this.vertices = coloredLine.geometry.getAttribute('position').array.length;
-			this.vertices = this._routeLine.vertices;
+			// this.vertices = this._routeLine.vertices;
 
 			// callback( coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup );
 

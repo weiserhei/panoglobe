@@ -5,59 +5,50 @@
  */
 
 import * as THREE from "three";
-
-import * as colorUtils from "../../utils/colors";
-import * as Panoutils from "../../utils/panoutils";
-
 import {LineGeometry, LineMaterial, Line2, hilbert3D} from 'three-full';
 
-export default class RouteLine {
-    constructor() {
+import { makeColorGradient } from "../../utils/colors";
+import { createSphereArc } from "../../utils/panoutils";
 
-		this.lineMergeGeometry = new THREE.Geometry();
-		this.lineMaterial = new THREE.LineBasicMaterial();
-		this.segments = 10;
-		this.vertices = 0;
+
+export default class RouteLine {
+    constructor( lineSegments ) {
+
+		this.segments = lineSegments; // how many line segments
+
+		this._lineMergeGeometry = new THREE.Geometry();
+		this.line;
 
 		this.positions;
 		this.colors;
 
 	}
-    
-    thickLine( steps, phase, linewidth ) {
 
-		var segments = this.lineMergeGeometry.vertices.length;
-		// this.vertices = segments / ( this.segments * 3 );
-        this.vertices = segments;
+	_build( steps, phase ) {
+		// calculate Positions and Colors
+		// based on steps and color phase
 
-        // attributes
-		var positions = new Float32Array( segments * 3 ); // 3 vertices per point
-		var colors = new Float32Array( segments * 3 );
+        let numberVertices = this._lineMergeGeometry.vertices.length;
+		let color = new THREE.Color();
+		let frequency = 1 /  ( steps * numberVertices );
 
-		var frequency = 1 /  ( steps * segments );
-		var color = new THREE.Color();
+		this.positions = new Float32Array( numberVertices * 3 ); // 3 vertices per point
+		this.colors = new Float32Array( numberVertices * 3 );
 
-		this.lineMergeGeometry.vertices.forEach((vertice, i) => {
-		// for ( var i = 0, l = segments; i < l; i ++ ) {
+		this._lineMergeGeometry.vertices.forEach((vertice, i) => {
 
-		    positions[ i * 3 ] = vertice.x;
-		    positions[ i * 3 + 1 ] = vertice.y;
-		    positions[ i * 3 + 2 ] = vertice.z;
+		    this.positions[ i * 3 ] = vertice.x;
+		    this.positions[ i * 3 + 1 ] = vertice.y;
+		    this.positions[ i * 3 + 2 ] = vertice.z;
 
-		    // color.clone();
-			// color.set ( colorUtils.makeColorGradient( i, frequency, undefined, undefined, phase ) );
-			let col = colorUtils.makeColorGradient( i, frequency, undefined, undefined, phase );
-			var color = new THREE.Color( col );
-			console.log( "colors", col);
+			color.set ( makeColorGradient( i, frequency, undefined, undefined, phase ) );
 
-			colors[ i * 3 ] = color.r;
-			colors[ i * 3 + 1 ] = color.g;
-			colors[ i * 3 + 2 ] = color.b;
+			this.colors[ i * 3 ] = color.r;
+			this.colors[ i * 3 + 1 ] = color.g;
+			this.colors[ i * 3 + 2 ] = color.b;
 
 		});
-		// }
 
-		// console.log("colors", colors);
         // var points2 = hilbert3D( new THREE.Vector3( 0, 0, 120 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
         // var points = routeData.map(pos => { return new THREE.Vector3(pos.displacedPos.x, pos.displacedPos.y, pos.displacedPos.z) });
 
@@ -70,16 +61,17 @@ export default class RouteLine {
         //     color.setHSL( i / l, 1.0, 0.5 );
         //     colors.push( color.r, color.g, color.b );
         // }
-        // THREE.Line2 ( LineGeometry, LineMaterial )
-        // var geometry = new THREE.BufferGeometry();
-        // geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-        // geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
-        
+	}
+    
+    getThickLine( steps, phase, linewidth ) {
+
+		this._build( steps, phase );
+
         var geometry = new LineGeometry();
-        geometry.setPositions( positions );
-		geometry.setColors( colors );
+        geometry.setPositions( this.positions );
+		geometry.setColors( this.colors );
 		
-        this.matLine = new LineMaterial( {
+        let lineMaterial = new LineMaterial( {
             color: 0xffffff,
             linewidth: linewidth, // in pixels
             vertexColors: THREE.VertexColors,
@@ -87,7 +79,7 @@ export default class RouteLine {
             dashed: false
 		} );
 		
-        this.line = new Line2( geometry, this.matLine );
+        this.line = new Line2( geometry, lineMaterial );
         this.line.computeLineDistances();
 
         return this.line;
@@ -96,89 +88,52 @@ export default class RouteLine {
 	
 	getColoredBufferLine( steps, phase ) {
 
-		var segments = this.lineMergeGeometry.vertices.length;
-		// this.vertices = segments / ( this.segments * 3 );
-		this.vertices = segments;
+		this._build( steps, phase );
 
 		// geometry
 		var geometry = new THREE.BufferGeometry();
+		geometry.addAttribute( 'position', new THREE.BufferAttribute( this.positions, 3 ) );
+		geometry.addAttribute( 'color', new THREE.BufferAttribute( this.colors, 3 ) );
 
 		// material
-		var material = this.lineMaterial;
-		material.vertexColors = THREE.VertexColors;
-
-		// attributes
-		var positions = new Float32Array( segments * 3 ); // 3 vertices per point
-		var colors = new Float32Array( segments * 3 );
-
-		var frequency = 1 /  ( steps * segments );
-		var color = new THREE.Color();
-
-		var x, y, z;
-
-		// for ( var i = 0, l = segments; i < l; i ++ ) {
-		this.lineMergeGeometry.vertices.forEach((vertice, i) => {
-
-		    positions[ i * 3 ] = vertice.x;
-		    positions[ i * 3 + 1 ] = vertice.y;
-		    positions[ i * 3 + 2 ] = vertice.z;
-
-		    // color.clone();
-		    color.set ( colorUtils.makeColorGradient( i, frequency, undefined, undefined, phase ) );
-
-			colors[ i * 3 ] = color.r;
-			colors[ i * 3 + 1 ] = color.g;
-			colors[ i * 3 + 2 ] = color.b;
-
-		});
-		// geometry.attributes.color.needsUpdate = true; // not needed
-
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-		geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
-
-		// drawcalls
-		// drawCount = segments; // draw the first all points
-        // geometry.addGroup( 0, drawCount, 0 );
+		let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
 
 		// line
-		var line = new THREE.Line( geometry, material );
+		this.line = new THREE.Line( geometry, lineMaterial );
 
-		return line;
+		return this.line;
 
 	}
 
-	connect( from, to ) {
+	connectGeometry( from, to ) {
 
-		var curve = Panoutils.createSphereArc( from, to );
+		var curve = createSphereArc( from, to );
 		var lineGeometry = new THREE.Geometry();
-		lineGeometry.vertices = curve.getPoints( this.segments - 1 ); //	how many vertices do we want on this guy? this is for *each* side
+		lineGeometry.vertices = curve.getPoints( this.segments ); // how many vertices do we want on this guy? this is for *each* side
 		// lineGeometry.computeLineDistances();
-		this.lineMergeGeometry.merge( lineGeometry );
+		this._lineMergeGeometry.merge( lineGeometry );
 
 	}
 
-	getColoredLine( steps, phase ) {
+	// DEPRECATED
+	// create line with basic geometry
+	// getColoredLine( steps, phase ) {
 		
-		var vertexColors = [];
-		var frequency = 1 /  ( steps * this.lineMergeGeometry.vertices.length );
-		var color = new THREE.Color();
+	// 	let numberVertices = this._lineMergeGeometry.vertices.length;
+	// 	this.colors = [];
+	// 	var frequency = 1 /  ( steps * numberVertices );
+	// 	var color = new THREE.Color();
 		
-		for ( var i = 0; i < this.lineMergeGeometry.vertices.length; i ++ ) {
+	// 	this._lineMergeGeometry.vertices.forEach((vertice, i) => {
+	// 		this.colors[ i ] = color.clone();
+	// 		color.set ( makeColorGradient( i, frequency, undefined, undefined, phase ) );
+	// 	})
 
-			vertexColors[ i ] = color.clone();
-			color.set ( colorUtils.makeColorGradient( i, frequency, undefined, undefined, phase ) );
+	// 	let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
+	// 	this.line = new THREE.Line( this._lineMergeGeometry, lineMaterial );
 
-			// vertexColors[ i ].setHSL( i / routeData.length, 1.0, 0.5 );
+	// 	return this.line;
 
-		}
-
-		this.lineMergeGeometry.colors = vertexColors;
-
-		var coloredLine = new THREE.Line( this.lineMergeGeometry, this.lineMaterial );
-		coloredLine.material.vertexColors = THREE.VertexColors;
-
-		return coloredLine;
-
-	}
+	// }
 
 }

@@ -18,7 +18,8 @@ export default {
     scale: 20
   },
   routes: {
-    linewidth: 5
+    linewidth: 2,
+    lineSegments: 9
   },
   texture: {
     path: './assets/textures/',
