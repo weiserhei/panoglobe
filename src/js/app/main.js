@@ -13,6 +13,7 @@ import Globus from './components/globus';
 // Helpers
 import Geometry from './helpers/geometry';
 import Stats from './helpers/stats';
+import DomEvents from './helpers/domevents';
 
 // Model
 import Texture from './model/texture';
@@ -86,7 +87,9 @@ export default class Main {
     // });
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
 
-    const markerFactory = new MarkerFactory(undefined, this.container);
+    const domEvents = new DomEvents( this.camera.threeCamera, this.container );
+
+    this.markerFactory = new MarkerFactory(domEvents, this.container, this.controls.threeControls );
 
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
@@ -96,7 +99,7 @@ export default class Main {
       // const route = new Route( url,  );
       this.routeLoader.load(url, routeData => {
         const phase = Panoutils.getRandomArbitrary( 0, 6.2 );
-        this.route = new Route( this.scene, markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+        this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
       }) 
     }).catch(() => {console.warn("Error loading height data image")});
 

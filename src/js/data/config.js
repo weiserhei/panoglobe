@@ -55,12 +55,11 @@ export default {
       map: "earthColor",
       // normalMap: ,
       // specularMap: ,
-      normalScale: -1.2,
+      normalScale: -0.4,
       // displacementMap: "invertedSpecularmap",
       displacementMap: "earthColor",
-      // displacementScale: 3.2,
-      displacementScale: 20,
-      // displacementScale: -10,
+      displacementScale: 5,
+      // displacementScale: 20,
       // displacementBias: 0.428408,
       displacementBias: 0,
     },
@@ -78,6 +77,7 @@ export default {
     },
     clouds: {
       opacity: 0.1,
+      enabled: true,
       // texture: ,
     }
   },
@@ -92,7 +92,7 @@ export default {
   },
   fog: {
     color: 0xffffff,
-    near: 0.0005
+    near: 0.0004
   },
   camera: {
     fov: 25,
@@ -106,7 +106,7 @@ export default {
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
-    rotateSpeed: 0.1,
+    rotateSpeed: 0.15,
     zoomSpeed: 0.8,
     minDistance: 200,
     maxDistance: 600,

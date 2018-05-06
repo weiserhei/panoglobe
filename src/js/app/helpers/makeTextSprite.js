@@ -50,7 +50,8 @@ export default function( message, parameters ) {
 
 	if ( parameters === undefined ) parameters = {};
 	var fontface = parameters.hasOwnProperty("fontface") ? 
-		parameters.fontface : "Trebuchet MS";
+		// parameters.fontface : "Trebuchet MS";
+		parameters.fontface : "sans-serif";
 	var fontsize = parameters.hasOwnProperty("fontsize") ? 
 		parameters.fontsize : 18;
 	var borderThickness = parameters.hasOwnProperty("borderThickness") ? 

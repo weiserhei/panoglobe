@@ -26,7 +26,10 @@ export default class Globus {
     if( Config.globus.outerGlow.enabled === true ) {
         this.mesh.add( this.outerGlow );
     }
-    // this.mesh.add( this.clouds );
+    if( Config.globus.clouds.enabled === true ) {
+        this._clouds = this.clouds;
+        this.mesh.add( this._clouds );
+    }
     scene.add(this.mesh);
 
     this.light = light;
@@ -48,6 +51,12 @@ export default class Globus {
         displacementScale: Config.globus.material.displacementScale,
         displacementBias: Config.globus.material.displacementBias,
     });
+
+    if( Config.globus.clouds.enabled === true ) {
+        console.log(this._clouds);
+        this._clouds.material.map = textures.clouds;
+        this._clouds.material.needsUpdate = true;
+    }
 
     // this.material = new THREE.MeshPhysicalMaterial( {
     //     color: Config.globus.material.color,
@@ -123,7 +132,7 @@ export default class Globus {
     var geometry = this.geometry;
 
     var cloudMaterial	= new THREE.MeshBasicMaterial( { 
-        map	: this.textures.clouds,
+        // map	: this.textures.clouds,
         transparent	: true, 
         opacity	: Config.globus.clouds.opacity,
         blending	: THREE.AdditiveBlending

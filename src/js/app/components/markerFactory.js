@@ -11,8 +11,6 @@ function _numberWithCommas ( x ) {
 import * as THREE from "three";
 import $ from "jquery";
 
-import TextSprite from "./textSprite";
-
 // define([
 //        "three",
 //        "isMobile",
@@ -23,17 +21,15 @@ import TextSprite from "./textSprite";
 
 // 'use strict';
 export default class MarkerFactory {
-    constructor(domEvents, container) {
+    constructor(domEvents, container, controls) {
         // todo
         // store selected point in url (index.html#01)
         // click next/prev in infoBoxes
         this._domElement = container;
         // this.infoBoxes = [];
-        // this._domEvents = domEvents;
-        this._domEvents = function(){};
-        // this._controls = controls;
-        // this._camera = camera;
-        this._screenVector = new THREE.Vector3();
+        this._domEvents = domEvents;
+        this._controls = controls;
+
         this.active = null;
         // Generic Marker Stencil
         // https://stackoverflow.com/questions/15597846/three-js-sharing-shadermaterial-between-meshes-but-with-different-uniform-sets
@@ -96,12 +92,11 @@ export default class MarkerFactory {
         marker.add(outlineMesh2);
         return marker;
     }
-    linkify(mesh, domElement, city) {
+    linkify(mesh, domElement, lat, lon) {
         var that = this;
         var eventTarget = mesh;
         var infoBox = domElement || undefined;
-        var lat = city.lat;
-        var lng = city.lng;
+
         function handleClick(event) {
             function cleanUp() {
                 if (that.active.infoBox !== undefined) {
@@ -118,7 +113,8 @@ export default class MarkerFactory {
                 that.active = null;
                 return;
             }
-            if (controls.rotateToCoordinate instanceof Function) {
+            // if (this._controls.rotateToCoordinate instanceof Function) {
+            if (this._controls !== undefined) {
                 // todo
                 // modify current rotation, dont overwrite it!
                 // center clicked point in the middle of the screen
@@ -155,51 +151,7 @@ export default class MarkerFactory {
             document.body.style.cursor = 'default';
         }, false);
     }
-    createSprite(message, Vec3) {
 
-        let sprite = new TextSprite(message, {
-            fontsize: 32,
-            borderThickness: 0,
-            borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
-            backgroundColor: { r: 0, g: 0, b: 0, a: 0.4 },
-            fontWeight: "normal"
-        }, Vec3);
-
-        return sprite;
-    }
-    update() {
-        // if ( this.active !== null && this.active.infoBox !== undefined ) 
-        // {
-        // 	// var position = THREEx.ObjCoord.cssPosition( markerMesh, camera, renderer )
-        // 	var position = THREEx.ObjCoord.cssPosition( this.active, camera, renderer )
-        // 	var boundingRect = this.active.infoBox.getBoundingClientRect()
-        // 	// this.infoBoxes[ i ].label.style.left	= (position.x) +'px'; // rechts
-        // 	this.active.infoBox.style.left = ( position.x - boundingRect.width ) +'px'; // links
-        // 	// this.infoBoxes[ i ].label.style.left	= (position.x - boundingRect.width/2) +'px'; // mitte
-        // 	// this.active.infoBox.style.top = ( position.y - boundingRect.height/2 - 70 )+'px'; // oben
-        // 	// this.infoBoxes[ i ].label.style.top = (position.y - 70)+'px'; // mitte
-        // 	this.active.infoBox.style.top = ( position.y )+'px'; // unten
-        // }
-        if (this.active !== null && this.active.infoBox !== undefined) {
-            this._screenVector.set(0, 0, 0);
-            this.active.localToWorld(this._screenVector);
-            // overlay anchor is visible
-            this._screenVector.project(camera);
-            // this._screenVector.project( this._camera );
-            var posx = Math.round((this._screenVector.x + 1) * this._domElement.offsetWidth / 2);
-            var posy = Math.round((1 - this._screenVector.y) * this._domElement.offsetHeight / 2);
-            // this.active.infoBox.style.display = '';
-            var boundingRect = this.active.infoBox.getBoundingClientRect();
-            // this.active.infoBox.style.left = ( posx - boundingRect.width ) + 'px'; //infobox style
-            // this.active.infoBox.style.top =  ( posy ) + 'px';
-            // top a little bit right
-            // this.active.infoBox.style.left = ( posx -50 ) + 'px';
-            // this.active.infoBox.style.top =  ( posy - boundingRect.height/2 - 70 ) + 'px';	    
-            // position left top a little bit down
-            this.active.infoBox.style.left = (posx - boundingRect.width - 28) + 'px';
-            this.active.infoBox.style.top = (posy - 23) + 'px';
-        }
-    }
     createInfoBox(city, markerMesh) {
         // todo
         // x button for close in the label
@@ -212,7 +164,7 @@ export default class MarkerFactory {
         text += "</div>";
         text += "<div class='labelContent'>";
         text += "<p>Lat: " + lat + " | Long: " + lng + "</p>";
-        text += "<p><a href='" + city.externerlink + "' target='_blank'><img src='textures/newwindow.png' style='vertical-align:bottom; width:24px; height:24px;'> Point of Interest</a></p>";
+        text += "<p><a href='" + city.externerlink + "' target='_blank'><img src='assets/textures/newwindow.png' style='vertical-align:bottom; width:24px; height:24px;'> Point of Interest</a></p>";
         text += "</div>";
         text += "<div class='arrow'></div>";
         box.innerHTML = text;
@@ -254,6 +206,7 @@ export default class MarkerFactory {
                 self.active = null;
             }
         }
+
         return box;
         /*
             return {
@@ -277,10 +230,11 @@ export default class MarkerFactory {
             };
         */
     }
-    createLight(city, color, intensity) {
+    createLight(positionVec3, color, intensity) {
         var light = new THREE.PointLight(color, intensity, 8);
-        var lightPos = city.displacedPos.clone().multiplyScalar(1.03); //place light a little bit above the markers
+        var lightPos = positionVec3.multiplyScalar(1.03); //place light a little bit above the markers
         light.position.copy(lightPos);
+
         // var helper = new THREE.PointLightHelper( light, light.distance );
         // helper.update();
         // scene.add( helper );
