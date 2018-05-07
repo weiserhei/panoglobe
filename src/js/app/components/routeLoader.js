@@ -2,11 +2,7 @@
  * Route Loader
  */
 
-// define(["three","jquery","putils","urlParameters"], function (THREE, $, PANOUTILS, params) {
-    // 'use strict';
 import $ from "jquery";
-
-import Calc3DPositions from "../../utils/panoutils";
 
 export default class RouteLoader {
     constructor() {

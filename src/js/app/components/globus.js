@@ -93,7 +93,7 @@ export default class Globus {
     
     } );
 
-    textures.waternormals.wrapS = textures.waternormals.wrapT = THREE.RepeatWrapping;
+    // textures.waternormals.wrapS = textures.waternormals.wrapT = THREE.RepeatWrapping;
 
     // this.water = new Water(
     //     this.geometry,
@@ -139,7 +139,7 @@ export default class Globus {
 
     var cloudSphere = new THREE.Mesh( geometry.clone(), cloudMaterial );
     cloudSphere.scale.multiplyScalar ( 1.035 );
-    // cloudSphere.scale.x = cloudSphere.scale.y = cloudSphere.scale.z = 1.035;
+
     return cloudSphere;
   }
 

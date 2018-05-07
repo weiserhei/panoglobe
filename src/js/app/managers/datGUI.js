@@ -1,5 +1,7 @@
 import Config from '../../data/config';
 
+import * as dat from "dat.gui";
+
 // Manages all dat.GUI interactions
 export default class DatGUI {
   constructor(main, mesh) {

@@ -26,8 +26,8 @@ export default class HUD {
 		<span class="float-right animatedArrow bounce"><i class="fas fa-angle-left"></i></span> \
 		</a> \
 		</li>';
-        
-		container.prepend( sidebarwrapper );
+		
+		container.insertBefore( sidebarwrapper, container.firstChild );
 
 		// <!-- Menu Toggle Script -->
 		$("#menu-toggle").click(function(e) {
@@ -146,7 +146,7 @@ export default class HUD {
 		playIcon.id = "play";
 		playIcon.className = "fas fa-play-circle";
 
-		playButton.prepend(playIcon);
+		playButton.insertBefore(playIcon, playButton.firstChild);
 
 		var pauseButton = document.createElement("button");
 		pauseButton.className="btn btn-secondary";
@@ -159,7 +159,7 @@ export default class HUD {
 		pauseIcon.id = "pause";
 		pauseIcon.className = "fas fa-pause-circle";
 
-		pauseButton.prepend(pauseIcon);
+		pauseButton.insertBefore(pauseIcon, pauseButton.firstChild);
 
 		var stopButton = document.createElement("button");
 		stopButton.className="btn btn-secondary";
@@ -172,7 +172,7 @@ export default class HUD {
 		stopIcon.id = "stop";
 		stopIcon.className = "fas fa-stop-circle";
 
-		stopButton.prepend(stopIcon);
+		stopButton.insertBefore(stopIcon, stopButton.firstChild);
 
 
 		function togglePlay() { 
@@ -194,7 +194,7 @@ export default class HUD {
 		// box.appendChild( formcheck );
 
 		var li2 = document.createElement("li");
-		innerList.prepend(li2);
+		innerList.insertBefore(li2, innerList.firstElement);
 
 		var checkBox = document.createElement( "input" );
 		checkBox.setAttribute( "type", "checkbox" );
