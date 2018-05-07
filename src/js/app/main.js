@@ -102,8 +102,8 @@ export default class Main {
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
       this.heightData = Panoutils.getHeightData( heightImage, scale );
-      // const url = "http://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
-      const url = "http://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+      // const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+      const url = "//relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
       // const route = new Route( url,  );
       this.routeLoader.load(url, routeData => {
         const phase = Panoutils.getRandomArbitrary( 0, 6.2 );
