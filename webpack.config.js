@@ -10,20 +10,14 @@ var entry           = './src/js/app.js',
 
 // Environment
 var PROD = JSON.parse(process.env.NODE_ENV || 0);
+console.log("prod", PROD);
 
 // Dev environment
 var env = 'dev',
     time = Date.now(),
     devtool = 'eval',
     mode = 'development',
-    stats = 'minimal',
-    plugins = [
-      //new webpack.NoErrorsPlugin(),
-      new webpack.DefinePlugin({
-        __ENV__: JSON.stringify(env),
-        ___BUILD_TIME___: time
-      })
-    ];
+    stats = 'minimal';
 
 // Production environment
 if(PROD) {
@@ -33,6 +27,14 @@ if(PROD) {
   stats = 'none';
   outputPath = __dirname + '/build/public/assets/js';
 }
+
+var plugins = [
+  //new webpack.NoErrorsPlugin(),
+  new webpack.DefinePlugin({
+    __ENV__: JSON.stringify(env),
+    ___BUILD_TIME___: time,
+  })
+];
 
 console.log('Webpack build - ENV: ' + env + ' V: ' + time);
 console.log('    - outputPath ', outputPath);
