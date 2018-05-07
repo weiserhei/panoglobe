@@ -29,7 +29,7 @@ import HUD from "./components/hud";
 import fontawesome from '@fortawesome/fontawesome';
 import solid from '@fortawesome/fontawesome-free-solid';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Managers
 import Interaction from './managers/interaction';

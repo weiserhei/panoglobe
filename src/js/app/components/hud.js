@@ -10,7 +10,7 @@ export default class HUD {
 		let sidebarwrapper = document.createElement( 'div' );
 		sidebarwrapper.id = "sidebar-wrapper"; 
 		sidebarwrapper.className = "";
-		sidebarwrapper.innerHTML = '<a href="#" id="menu-toggle2" class="arrow bounceleft"> \
+		sidebarwrapper.innerHTML = '<a href="#" id="menu-toggle2" class="animatedArrow bounceleft"> \
 		<span class="panohidden2"><i class="fas fa-angle-right"></i></span>&nbsp; \
 		</a>';
 		
@@ -23,7 +23,7 @@ export default class HUD {
 		<a href="#menu-toggle" id="menu-toggle"> \
 		<!-- <span class="panohidden"><i class="fas fa-angle-right"></i></span> --> \
 		PANO GLOBE \
-		<span class="float-right arrow bounce"><i class="fas fa-angle-left"></i></span> \
+		<span class="float-right animatedArrow bounce"><i class="fas fa-angle-left"></i></span> \
 		</a> \
 		</li>';
         

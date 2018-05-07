@@ -28,6 +28,7 @@
     height:100%;
     padding-left:0.3em;
     line-height: 40px;
+    text-decoration:none;
   }
   
   #wrapper #menu-toggle2:hover {
@@ -100,8 +101,8 @@
   }
   
   .sidebar-nav li {
-    text-indent: 20px;
-    line-height: 40px;
+    // text-indent: 20px;
+    // line-height: 40px;
   }
   
   .sidebar-nav li a {
@@ -116,24 +117,11 @@
     background: rgba(255, 255, 255, 0.2);
   }
   
-  /* */
-  
   .sidebar-nav ul {
     list-style: none;
   }
   .sidebar-nav ul li {
-    /* font-size: 0.8em; */
     text-indent:0px;
-  }
-  
-  /* .sidebar-nav ul li > ul li {
-    line-height:2em;
-    font-size:0.8em;
-    color:#999;
-  } */
-  
-  .sidebar-nav li .form-check-input {
-    // margin:0.95em 0.0em;
   }
   
   .sidebar-nav li .form-check-label {
@@ -164,6 +152,8 @@
     /* height: 65px; */
     font-size: 14px;
     /* line-height: 60px; */
+    text-indent: 20px;
+    line-height: 40px;
   }
   
   .sidebar-nav>.sidebar-brand a {
