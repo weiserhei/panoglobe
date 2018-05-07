@@ -3,10 +3,8 @@
  */
 import * as THREE from "three";
 import calcCrow from "./calcCrow";
- 
-var utils = {};
 
-utils.numberWithCommas = function ( x ) {
+const numberWithCommas = (x) => {	
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
@@ -154,6 +152,7 @@ const calc3DPositions = (data, heightData, radius) => {
 }
 
 module.exports = {
+	numberWithCommas,
 	getRandomArbitrary,
     getHeightData,
 	calc3DPositions,

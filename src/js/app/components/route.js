@@ -230,9 +230,8 @@ export default class Route {
 		this.isVisible = false;
 		
 	};
-	/*
 
-	Route.prototype.toggleAnimate = function( scope ) {
+	toggleAnimate( scope ) {
 
 		var that = scope || this;
 
@@ -248,7 +247,7 @@ export default class Route {
 
 	};
 
-	Route.prototype.startAnimate = function() {
+	startAnimate() {
 
 		this._animation = true;
 		this.showLabels = false;
@@ -270,13 +269,13 @@ export default class Route {
 
 	};
 
-	Route.prototype.pauseAnimate = function() {
+	pauseAnimate() {
 
 		this._animation = false;
 
 	};
 
-	Route.prototype.stopAnimate = function() {
+	stopAnimate() {
 
 		this._animation = false;
 		this._currentInfoBox = 0;
@@ -295,7 +294,7 @@ export default class Route {
 	};
 
 
-	Route.prototype.reset = function() {
+	reset() {
 
 		this.stopAnimate();
 		if( controls.rotateToCoordinate instanceof Function ){
@@ -309,15 +308,8 @@ export default class Route {
 		}
 
 	};
-
-	var delay = 0;
-	var target = 2;
-
-	Route.prototype.animate = function( controls ) {
-
-		// if( delay === target ) {
-
-			delay = 0;
+	
+	animate( controls ) {
 
 			var drawCallCityIndex = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox ] ) * this._routeLine.segments;
 			var drawCallCityIndexBefore = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
@@ -381,10 +373,7 @@ export default class Route {
 			// debug
 			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
 
-		// } else { delay ++; }
-
 	};
-	*/
 
 }
 

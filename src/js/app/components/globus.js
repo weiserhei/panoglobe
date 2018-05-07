@@ -53,7 +53,6 @@ export default class Globus {
     });
 
     if( Config.globus.clouds.enabled === true ) {
-        console.log(this._clouds);
         this._clouds.material.map = textures.clouds;
         this._clouds.material.needsUpdate = true;
     }

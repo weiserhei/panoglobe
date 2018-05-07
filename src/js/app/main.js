@@ -24,6 +24,12 @@ import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
 import MarkerFactory from "./components/markerFactory";
+import HUD from "./components/hud";
+
+import fontawesome from '@fortawesome/fontawesome';
+import solid from '@fortawesome/fontawesome-free-solid';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Managers
 import Interaction from './managers/interaction';
@@ -77,6 +83,8 @@ export default class Main {
     this.globus = new Globus( this.scene, this.light.directionalLight );
     this.skybox = new Skybox ( this.scene );
 
+    this._gui = new HUD( document.getElementById('wrapper') );
+
     this.routeLoader = new RouteLoader();
 
     var imageLoader = new THREE.ImageLoader ();
@@ -100,6 +108,8 @@ export default class Main {
       this.routeLoader.load(url, routeData => {
         const phase = Panoutils.getRandomArbitrary( 0, 6.2 );
         this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+
+        this._gui.createLabel( this.route );
       }) 
     }).catch(() => {console.warn("Error loading height data image")});
 

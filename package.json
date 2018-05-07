@@ -19,6 +19,9 @@
     "build:js": "set NODE_ENV=1&& webpack --progress --color"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.7",
+    "@fortawesome/fontawesome-free-solid": "^5.0.12",
+    "bootstrap": "^4.1.1",
     "es6-promise": "^4.2.4",
     "jquery": "^3.3.1",
     "three": "latest",
@@ -30,10 +33,12 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "copyfiles": "^1.2.0",
+    "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "node-sass": "^4.8.3",
     "npm-run-all": "^4.1.2",
     "rimraf": "^2.6.2",
+    "style-loader": "^0.21.0",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.15",
     "webpack-dev-server": "^3.1.3"

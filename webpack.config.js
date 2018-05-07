@@ -64,6 +64,10 @@ module.exports = {
     // rules for modules (configure loaders, parser options, etc.)   
     rules: [
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
         // these are matching conditions, each accepting a regular expression or string
         // test and include have the same behavior, both must be matched
         // exclude must not be matched (takes preference over test and include)
