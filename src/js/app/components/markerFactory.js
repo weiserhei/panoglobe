@@ -4,22 +4,10 @@
  * depends on threex.DOMevents
  */
 
-function _numberWithCommas ( x ) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
 import * as THREE from "three";
 import $ from "jquery";
+import { numberWithCommas } from "../../utils/panoutils";
 
-// define([
-//        "three",
-//        "isMobile",
-//        "../lib/three/makeSprite",
-//        "camera",
-//        "controls"
-// ], function (THREE,isMobile,makeSprite,camera,controls) {
-
-// 'use strict';
 export default class MarkerFactory {
     constructor(domEvents, container, controls) {
         // todo
@@ -160,7 +148,7 @@ export default class MarkerFactory {
         var box = document.createElement('div');
         var text = "<div class='labelHead'>";
         text += "<b>" + city.adresse + "</b>";
-        text += " (" + _numberWithCommas(Math.floor(city.hopDistance)) + " km)";
+        text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
         text += "</div>";
         text += "<div class='labelContent'>";
         text += "<p>Lat: " + lat + " | Long: " + lng + "</p>";
@@ -168,7 +156,7 @@ export default class MarkerFactory {
         text += "</div>";
         text += "<div class='arrow'></div>";
         box.innerHTML = text;
-        // + " (" + _numberWithCommas( Math.floor( routeData[ i ].hopDistance ) ) + " km)"
+        // + " (" + numberWithCommas( Math.floor( routeData[ i ].hopDistance ) ) + " km)"
         // centerText.innerHTML = "<b>" + city.adresse + "</b><br>";
         // centerText.innerHTML += "<span style='font-size:0.8em;'>Lat: " + lat + " | Long: " + lng + "</span><br>";
         // centerText.innerHTML += "<a href='" + city.externerlink + "' target='_blank' style='font-size:0.8em; display:block;'>" + city.externerlink + "</a>";
