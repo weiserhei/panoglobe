@@ -559,7 +559,7 @@ body {
 .bounce:hover {
   animation-play-state: running; }
 
-.arrow {
+.animatedArrow {
   padding-right: 1em; }
 
 /* https://codepen.io/dodozhang21/pen/siKtp */
