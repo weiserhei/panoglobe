@@ -10,8 +10,8 @@ import $ from "jquery";
 
 import Config from '../../data/config';
 
-import * as Panoutils from "../../utils/panoutils";
-import * as Colors from "../../utils/colors";
+import { calc3DPositions } from "../../utils/panoutils";
+import { makeColorGradient } from "../../utils/colors";
 
 import RouteLine from "./routeLine";
 import TextSprite from "./textSprite";
@@ -20,7 +20,7 @@ export default class Route {
     constructor( scene, markerFactory, routeData, heightData, radius, phase ) {
 
         this.name = routeData.meta.name || "";
-        this._routeData = Panoutils.calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
+        this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
 		this._markerIndexes = [];
 		this._cityMarkers = [];
@@ -117,7 +117,7 @@ export default class Route {
 			this._cityMarkers.push ( currentCoordinate );
 			
 			// CREATE MARKER
-			color.set( Colors.makeColorGradient( index, frequency, undefined, undefined, phase ) );
+			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
 			marker = this._markerFactory.createMarker( currentCoordinate.displacedPos.clone(), color );
 			this.meshGroup.add( marker );
 

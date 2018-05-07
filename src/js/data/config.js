@@ -2,7 +2,7 @@ import TWEEN from 'tween.js';
 
 // This object contains the state of the app
 export default {
-  isDev: true,
+  isDev: false,
   isShowingStats: false,
   isLoaded: false,
   isTweening: false,
@@ -32,8 +32,6 @@ export default {
       {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
       {name: 'normalmap', image: '4k/earth_normalmap_flat_4k.jpg'},
       {name: 'displacemap', image: '4k/Bump_4k.jpg'},
-      {name: 'waternormals', image: 'waternormals.jpg'},
-      {name: 'waterdudv', image: 'waterdudv.jpg'},
     ]
   },
   galaxy: {
@@ -56,7 +54,7 @@ export default {
       // normalMap: ,
       // specularMap: ,
       normalScale: -0.4,
-      // displacementMap: "invertedSpecularmap",
+      // displacementMap: "displacemap",
       displacementMap: "earthColor",
       displacementScale: 5,
       // displacementScale: 20,

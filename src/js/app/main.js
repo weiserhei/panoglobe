@@ -19,7 +19,7 @@ import DomEvents from './helpers/domevents';
 import Texture from './model/texture';
 import Model from './model/model';
 
-import * as Panoutils from "../utils/panoutils";
+import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
@@ -83,7 +83,8 @@ export default class Main {
     this.globus = new Globus( this.scene, this.light.directionalLight );
     this.skybox = new Skybox ( this.scene );
 
-    this._gui = new HUD( document.getElementById('wrapper') );
+    const div = document.getElementById('wrapper');
+    this._gui = new HUD( div );
 
     this.routeLoader = new RouteLoader();
 
@@ -101,12 +102,12 @@ export default class Main {
 
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
-      this.heightData = Panoutils.getHeightData( heightImage, scale );
+      this.heightData = getHeightData( heightImage, scale );
       // const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
       const url = "//relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
       // const route = new Route( url,  );
       this.routeLoader.load(url, routeData => {
-        const phase = Panoutils.getRandomArbitrary( 0, 6.2 );
+        const phase = getRandomArbitrary( 0, Math.PI * 2 );
         this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
 
         this._gui.createLabel( this.route );
