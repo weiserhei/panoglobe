@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-
+// import * as THREE from 'three';
 // import OrbitControls from '../../utils/orbitControls';
 import { OrbitControls } from "three-full";
 import Config from '../../data/config';

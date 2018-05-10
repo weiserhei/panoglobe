@@ -7992,7 +7992,11 @@ li > .selected {
 
 .page-wrapper.toggled #toggle-sidebar {
   position: absolute;
-  left: 220px; }
+  left: 220px;
+  /* CUSTOMIZE */
+  padding: initial;
+  border: 0px solid;
+  background: transparent; }
 
 .page-wrapper.toggled #toggle-sidebar div {
   background: #bdbdbd;
@@ -8022,7 +8026,13 @@ li > .selected {
   cursor: pointer;
   display: inline-block;
   width: auto;
-  margin: 0 auto; }
+  margin: 0 auto;
+  /* CUSTOMIZE */
+  padding: 1em;
+  border: 1px solid;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.8);
+  /* background:#000; */ }
 
 #toggle-sidebar div {
   display: block;

@@ -10,7 +10,6 @@ var entry           = './src/js/app.js',
 
 // Environment
 var PROD = JSON.parse(process.env.NODE_ENV || 0);
-console.log("prod", PROD);
 
 // Dev environment
 var env = 'dev',

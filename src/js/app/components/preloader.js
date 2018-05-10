@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import Config from '../../data/config';
-
 import LoadingScreen from './loadingScreen';
 
 // Main webGL renderer class
@@ -13,7 +11,7 @@ export default class preloader {
     this.manager = new THREE.LoadingManager ();
 
     this.manager.onProgress = function ( item, loaded, total ) {
-        loadingScreen.setProgress( loaded, total );
+      loadingScreen.setProgress( loaded, total );
     };
     this.manager.onError = function ( url ) {
       console.warn( "Loading Error", url );

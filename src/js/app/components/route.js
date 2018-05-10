@@ -6,7 +6,6 @@
  */
 
 import * as THREE from "three";
-import $ from "jquery";
 
 import Config from '../../data/config';
 
@@ -218,7 +217,7 @@ export default class Route {
 		
 		this.isVisible = true;
 		
-	};
+	}
 	
 	hide() {
 		
@@ -229,7 +228,7 @@ export default class Route {
 		
 		this.isVisible = false;
 		
-	};
+	}
 
 	toggleAnimate( scope ) {
 
@@ -245,7 +244,7 @@ export default class Route {
 
 		}
 
-	};
+	}
 
 	startAnimate() {
 
@@ -267,13 +266,13 @@ export default class Route {
 			
 		}
 
-	};
+	}
 
 	pauseAnimate() {
 
 		this._animation = false;
 
-	};
+	}
 
 	stopAnimate() {
 
@@ -291,7 +290,7 @@ export default class Route {
 			
 		}
 
-	};
+	}
 
 
 	reset() {
@@ -307,7 +306,7 @@ export default class Route {
 			
 		}
 
-	};
+	}
 	
 	animate( controls ) {
 
@@ -373,7 +372,7 @@ export default class Route {
 			// debug
 			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
 
-	};
+	}
 
 }
 

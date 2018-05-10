@@ -99,7 +99,7 @@ export default class Main {
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
       // const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
-      const url = "//relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+      const url = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
       // const route = new Route( url,  );
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
@@ -180,7 +180,7 @@ export default class Main {
 
     // RAF
     // requestAnimationFrame(this.render.bind(this)); // Bind the main class instead of window object
-    // requestAnimationFrame(() => this.render()); // Bind the main class instead of window object
+    requestAnimationFrame(() => this.render()); // Bind the main class instead of window object
 
   }
 
