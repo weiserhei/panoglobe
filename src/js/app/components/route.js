@@ -89,7 +89,11 @@ export default class Route {
 		// 	this.animate( controls );		
 		// }
 
-    }
+	}
+	
+	get pois() {
+		return this._cityMarkers;
+	}
 
     _createRoute( routeData, group, phase, steps ) {
 

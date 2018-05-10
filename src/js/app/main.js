@@ -25,6 +25,7 @@ import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
 import MarkerFactory from "./components/markerFactory";
 import HUD from "./components/hud";
+import sidebar from "./components/sidebar";
 
 // Managers
 import Interaction from './managers/interaction';
@@ -33,6 +34,7 @@ import DatGUI from './managers/datGUI';
 // data
 import Config from './../data/config';
 import Route from './components/route';
+import Sidebar from './components/sidebar';
 // -- End of imports
 
 // This class instantiates and ties all of the components together, starts the loading process and renders the main loop
@@ -79,6 +81,7 @@ export default class Main {
     this.skybox = new Skybox ( this.scene );
 
     const div = document.getElementById('wrapper');
+    this.sidebar = new Sidebar();
     // this._gui = new HUD( div );
 
     this.routeLoader = new RouteLoader();
@@ -105,7 +108,7 @@ export default class Main {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
         this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
 
-        // this._gui.createLabel( this.route );
+        this.sidebar.addRoute( this.route );
         this.render();
       }) 
     }).catch(() => {console.warn("Error loading height data image")});

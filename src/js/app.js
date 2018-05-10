@@ -10,8 +10,6 @@ import Main from './app/main';
 //   searchPseudoElements: false
 // }
 
-import { prosidebar } from "../vendor/pro-sidebar/js/custom";
-
 // Check environment and set the Config helper
 if(__ENV__ === 'dev') {
   console.log('----- RUNNING IN DEV ENVIRONMENT! -----');
