@@ -1,3 +1,6 @@
+import Config from './data/config';
+import Detector from './utils/detector';
+import Main from './app/main';
 
 // import fontawesome from '@fortawesome/fontawesome';
 // import solid from '@fortawesome/fontawesome-free-solid';
@@ -6,10 +9,6 @@
 //   autoReplaceSvg: false,
 //   searchPseudoElements: false
 // }
-
-import Config from './data/config';
-import Detector from './utils/detector';
-import Main from './app/main';
 
 import { prosidebar } from "../vendor/pro-sidebar/js/custom";
 

@@ -42,6 +42,20 @@
 /* body{
     font-size: .9rem;
 } */
+/* CUSTOMIZE hacky class for color selection inside sidebar */
+li > .theme {
+    width:40px !important;
+    padding-left:1em !important;
+    margin-left: 1em !important;
+    /* border: 1px solid #333; */
+    border:0px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+li > .selected {
+    border: 1px solid #ccc;
+}
+
 .page-wrapper .sidebar-wrapper,
 .sidebar-wrapper .sidebar-brand>a,
 .sidebar-wrapper .sidebar-dropdown>a:after,

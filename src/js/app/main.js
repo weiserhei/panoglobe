@@ -180,7 +180,7 @@ export default class Main {
 
     // RAF
     // requestAnimationFrame(this.render.bind(this)); // Bind the main class instead of window object
-    requestAnimationFrame(() => this.render()); // Bind the main class instead of window object
+    // requestAnimationFrame(() => this.render()); // Bind the main class instead of window object
 
   }
 

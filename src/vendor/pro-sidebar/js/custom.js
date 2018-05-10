@@ -3,6 +3,13 @@ import * as cS from "malihu-custom-scrollbar-plugin";
 
 jQuery(function($) {
 
+    $(".sidebar-settings-menu").hide();
+    
+    $(".sidebar-settings-link").click(() => {
+        $(".sidebar-settings-menu").fadeToggle();
+        $(".badge-sonar").hide();
+    })
+
     $(".sidebar-dropdown > a").click(function () {
         // $(".sidebar-submenu").slideUp(200);
         if ($(this).parent().hasClass("active")) {
@@ -29,6 +36,8 @@ jQuery(function($) {
     });
     var themes = "chiller-theme ice-theme cool-theme light-theme green-theme spicy-theme purple-theme";
     $('[data-theme]').click(function () {
+        $('[data-theme]').removeClass("selected");
+        $(this).addClass("selected");
         $('.page-wrapper').removeClass(themes);
         $('.page-wrapper').addClass($(this).attr('data-theme'));
     });
