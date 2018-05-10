@@ -1,3 +1,5 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 // Utils
 @import './utils/normalize';
 
@@ -10,3 +12,6 @@
 @import './components/loading';
 @import './components/simple-sidebar';
 @import './components/arrow-animations';
+
+@import "../vendor/pro-sidebar/css/custom";
+@import "../vendor/pro-sidebar/css/custom-themes"

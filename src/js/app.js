@@ -3,7 +3,6 @@ import Detector from './utils/detector';
 import Main from './app/main';
 
 // import "bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Check environment and set the Config helper
 if(__ENV__ === 'dev') {

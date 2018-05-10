@@ -1,8 +1,10 @@
 {
-  "name": "threejs-es6-webpack-boilerplate",
+  "name": "panoglobe",
   "version": "1.0.0",
-  "description": "Boilerplate for Three.js projects set up with Babel for ES6 and compiled with webpack",
-  "author": "Paul Graffam",
+  "description": "Panoglobe route visualizer",
+  "author": "Thiele",
+  "private": true,
+  "license": "",
   "main": "app.js",
   "scripts": {
     "dev": "run-p dev:sass webpack-server",
@@ -24,6 +26,8 @@
     "bootstrap": "^4.1.1",
     "es6-promise": "^4.2.4",
     "jquery": "^3.3.1",
+    "malihu-custom-scrollbar-plugin": "^3.1.5",
+    "popper.js": "^1.14.3",
     "three": "^0.92.0",
     "three-full": "^6.0.0",
     "tween.js": "^16.6.0"
