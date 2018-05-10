@@ -1,6 +1,7 @@
-jQuery(function ($) {
+import { jquerymousewheel } from "jquery-mousewheel";
+import * as cS from "malihu-custom-scrollbar-plugin";
 
-
+jQuery(function($) {
 
     $(".sidebar-dropdown > a").click(function () {
         // $(".sidebar-submenu").slideUp(200);

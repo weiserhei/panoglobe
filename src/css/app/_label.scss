@@ -152,13 +152,6 @@
 
 }
 
-.hudLabel a {
-
-	/*font-size:0.6em;*/
-	/*display:block;*/
-
-}
-
 .next {
 
 	position:absolute; 
@@ -173,16 +166,18 @@
 
 
 /*http://www.color-hex.com/color-palette/176*/
-a:visited {
+.hudLabel a:visited {
 	/*color:#0892d0;*/ /* nice dark blue für black background */
 	color:#2c539e;
 }
-a:hover {
+.hudLabel a:hover {
 	color:#2c539e;
 	text-decoration:none;
 }
-a {
+.hudLabel a {
 	color:#2c539e;
+	/*font-size:0.6em;*/
+	/*display:block;*/
 }
 
 .closeButton {

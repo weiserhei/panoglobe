@@ -38,14 +38,16 @@
         opacity: 0;
     }
 }
-body{
+/* CUSTOMIZE dont change fontsize */
+/* body{
     font-size: .9rem;
-}
+} */
 .page-wrapper .sidebar-wrapper,
 .sidebar-wrapper .sidebar-brand>a,
 .sidebar-wrapper .sidebar-dropdown>a:after,
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before,
 .sidebar-wrapper ul li a i,
+.sidebar-wrapper ul li a span,
 .page-wrapper .page-content,
 .sidebar-wrapper .sidebar-search input.search-menu,
 .sidebar-wrapper .sidebar-search .input-group-text,
@@ -282,6 +284,16 @@ body{
     padding: 8px 30px 8px 20px;
 }
 
+/* CUSTOMIZE ass class*/
+.sidebar-wrapper .sidebar-menu ul li a svg {
+    margin-right: 10px;
+    font-size: 12px;
+    width: 30px;
+    /* height: 30px; */
+    line-height: 30px;
+    text-align: center;
+    border-radius: 4px;
+}
 .sidebar-wrapper .sidebar-menu ul li a i {
     margin-right: 10px;
     font-size: 12px;
@@ -292,6 +304,7 @@ body{
     border-radius: 4px;
 }
 
+.sidebar-wrapper .sidebar-menu ul li a:hover>svg::before,
 .sidebar-wrapper .sidebar-menu ul li a:hover>i::before {
     display: inline-block;
     animation: swing ease-in-out .5s 1 alternate;

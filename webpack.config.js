@@ -30,6 +30,10 @@ if(PROD) {
 
 var plugins = [
   //new webpack.NoErrorsPlugin(),
+  new webpack.ProvidePlugin({
+    $: "jquery",
+    jQuery: "jquery"
+  }),
   new webpack.DefinePlugin({
     __ENV__: JSON.stringify(env),
     ___BUILD_TIME___: time,

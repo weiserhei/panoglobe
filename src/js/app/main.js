@@ -11,13 +11,13 @@ import Controls from './components/controls';
 import Globus from './components/globus';
 
 // Helpers
-import Geometry from './helpers/geometry';
+// import Geometry from './helpers/geometry';
 import Stats from './helpers/stats';
 import DomEvents from './helpers/domevents';
 
 // Model
 import Texture from './model/texture';
-import Model from './model/model';
+// import Model from './model/model';
 
 import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
@@ -25,11 +25,6 @@ import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
 import MarkerFactory from "./components/markerFactory";
 import HUD from "./components/hud";
-
-import fontawesome from '@fortawesome/fontawesome';
-import solid from '@fortawesome/fontawesome-free-solid';
-
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Managers
 import Interaction from './managers/interaction';
@@ -84,7 +79,7 @@ export default class Main {
     this.skybox = new Skybox ( this.scene );
 
     const div = document.getElementById('wrapper');
-    this._gui = new HUD( div );
+    // this._gui = new HUD( div );
 
     this.routeLoader = new RouteLoader();
 
@@ -110,7 +105,8 @@ export default class Main {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
         this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
 
-        this._gui.createLabel( this.route );
+        // this._gui.createLabel( this.route );
+        this.render();
       }) 
     }).catch(() => {console.warn("Error loading height data image")});
 
@@ -151,7 +147,7 @@ export default class Main {
     });
 
     // Start render which does not wait for model fully loaded
-    this.render();
+    // this.render();
   }
 
   render() {

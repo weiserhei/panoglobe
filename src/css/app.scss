@@ -1,7 +1,9 @@
-@import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Utils
-@import './utils/normalize';
+// @import './utils/normalize';
+
+@import '../../node_modules/bootstrap/dist/css/bootstrap.min';
+// @import "~bootstrap/scss/bootstrap";
 
 // App
 @import './app/base';
@@ -10,8 +12,10 @@
 
 // Components
 @import './components/loading';
-@import './components/simple-sidebar';
-@import './components/arrow-animations';
+// @import './components/simple-sidebar';
+// @import './components/arrow-animations';
 
+@import "//use.fontawesome.com/releases/v5.0.6/css/all.css";
+@import "../vendor/pro-sidebar/css/jquery.mCustomScrollbar.min";
 @import "../vendor/pro-sidebar/css/custom";
-@import "../vendor/pro-sidebar/css/custom-themes"
+@import "../vendor/pro-sidebar/css/custom-themes";
