@@ -8191,6 +8191,9 @@ li > .selected {
   font-size: 8px; }
 
 /* CUSTOMIZE add class */
+a.hasInput {
+  cursor: pointer; }
+
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a.hasInput:before {
   content: "";
   font-size: 10px;

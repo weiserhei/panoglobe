@@ -366,7 +366,7 @@ li > .selected {
     margin-right: 10px;
     font-size: 8px;
 }
-/* CUSTOMIZE add class */
+/* CUSTOMIZE add class hasInput */
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a.hasInput:before {
     content:"";
     font-size: 10px;

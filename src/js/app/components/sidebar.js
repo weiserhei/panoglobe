@@ -7,18 +7,25 @@ class SidebarDropdown {
 
         const li = document.createElement("li");
         li.className = "sidebar-dropdown";
-        const a = document.createElement("a");
-        a.setAttribute("href", "#");
+        this.a = document.createElement("a");
+        this.a.setAttribute("href", "#");
         const i = document.createElement("i");
         i.className = iconClassName;
-        a.appendChild(i);
+        this.a.appendChild(i);
         const span = document.createElement("span");
         span.innerHTML = name;
-        a.appendChild(span);
-        li.appendChild(a);
+        this.a.appendChild(span);
+        li.appendChild(this.a);
 
         this.li = li;
 
+    }
+
+    addBadge(className, value) {
+        const span = document.createElement("span");
+        span.className = "badge badge-pill badge-"+className;
+        span.innerHTML = value;
+        this.a.appendChild(span);
     }
 
     setActive() {
@@ -85,7 +92,7 @@ export default class Sidebar {
 
         var li = document.createElement("li");
         li.className="header-menu sidebar-settings-menu";
-        li.innerHTML = "<span>Settings</span>";
+        li.innerHTML = "<span>Sidebar Settings</span>";
         container.appendChild(li);
 
         var li2 = document.createElement("li");
@@ -101,6 +108,10 @@ export default class Sidebar {
         $(".sidebar-settings-link").click(() => {
             $(".sidebar-settings-menu").fadeToggle();
             // $(".sidebar-settings-menu").slideToggle();
+
+            // $(".sidebar-content").mCustomScrollbar("scrollTo","bottom");
+            $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
+
             $(".badge-sonar").hide();
         });
     }
@@ -125,12 +136,43 @@ export default class Sidebar {
         
         // route settings
         const sub3 = new SidebarDropdown("Settings", "fa fa-cog"); 
+
         
+        let label2 = document.createElement("label");
+        label2.innerHTML = "Show Route";
+        label2.className = "form-check-label";
+        label2.htmlFor = route.name + "showRoute";
+        
+        var checkBox = document.createElement( "input" );
+		checkBox.setAttribute( "type", "checkbox" );
+		checkBox.id = route.name + "showRoute";
+		checkBox.className = "form-check-input";
+		checkBox.checked = true;
+		checkBox.addEventListener( 'change', changeHandler.bind( route ) );
+        
+        function changeHandler( event ) {
+			if ( event.target.checked === true ) {
+				this.show();
+                // todo grey out
+			}
+			else {
+				this.hide();
+			}
+		}
+        
+        const a2 = document.createElement("a");
+        a2.className = "hasInput";
+        a2.setAttribute("href","#");
+        a2.appendChild(checkBox);
+        a2.appendChild(label2);
+        let liLabel2 = document.createElement("li");
+        liLabel2.appendChild(a2);
+
         var checkBox = document.createElement( "input" );
 		checkBox.setAttribute( "type", "checkbox" );
 		checkBox.id = route.name + "showLabel";
 		checkBox.className = "form-check-input";
-		checkBox.checked = true;
+		checkBox.checked = route.showLabels;
 		checkBox.addEventListener( 'change', function() {
             route.showLabels = this.checked;
 		});
@@ -142,11 +184,13 @@ export default class Sidebar {
 
         const a = document.createElement("a");
         a.className = "hasInput";
+        a.setAttribute("href","#");
         a.appendChild(checkBox);
         a.appendChild(label);
         let liLabel = document.createElement("li");
         liLabel.appendChild(a);
-        sub3.submenu(liLabel);
+
+        sub3.submenu([liLabel, liLabel2]);
         
         const sub4 = new SidebarDropdown("test", "fa fa-wrench");
         sub4.setActive();
@@ -154,7 +198,7 @@ export default class Sidebar {
         // POIS
         const sub2 = new SidebarDropdown("Points of Interest", "fa fa-map-marker");
         // sub2.submenu(["Mexico", "USA", "Kanada", "Zurück nach Unterwegs"].map(x => liplusa(x)));
-
+        
         const pois = route.pois.map(poi => {
             const hopDistance = numberWithCommas( Math.floor( poi.hopDistance ) );
             const li = document.createElement("li");
@@ -163,7 +207,8 @@ export default class Sidebar {
             li.appendChild( a );
             return li;
         });
-
+        
+        sub2.addBadge("info", pois.length);
         sub2.submenu(pois);
 /*
         // POIS
@@ -204,6 +249,9 @@ export default class Sidebar {
         // slide open onload any active links
         $(".sidebar-dropdown > a").parent(".active").children(".sidebar-submenu").slideDown(200);
 
+        // remove click handler to prevent errors on multiple calls on init
+        $(".sidebar-dropdown > a").off("click");
+
         $(".sidebar-dropdown > a").click(function () {
             // $(".sidebar-submenu").slideUp(200);
             if ($(this).parent().hasClass("active")) {
@@ -216,18 +264,7 @@ export default class Sidebar {
                 $(this).parent().addClass("active");
             }
         });
-        /*
-    
 
-        var themes = "chiller-theme ice-theme cool-theme light-theme green-theme spicy-theme purple-theme";
-        $('[data-theme]').click(function () {
-            $('[data-theme]').removeClass("selected");
-            $(this).addClass("selected");
-            $('.page-wrapper').removeClass(themes);
-            $('.page-wrapper').addClass($(this).attr('data-theme'));
-        });
-    
-        */
     }
 
 };
