@@ -140,13 +140,13 @@ export default class Sidebar {
         
         let label2 = document.createElement("label");
         label2.innerHTML = "Show Route";
-        label2.className = "form-check-label";
+        label2.className = "custom-control-label";
         label2.htmlFor = route.name + "showRoute";
         
         var checkBox = document.createElement( "input" );
 		checkBox.setAttribute( "type", "checkbox" );
 		checkBox.id = route.name + "showRoute";
-		checkBox.className = "form-check-input";
+		checkBox.className = "custom-control-input";
 		checkBox.checked = true;
 		checkBox.addEventListener( 'change', changeHandler.bind( route ) );
         
@@ -161,7 +161,7 @@ export default class Sidebar {
 		}
         
         const a2 = document.createElement("a");
-        a2.className = "hasInput";
+        a2.className = "hasInput custom-control custom-checkbox";
         a2.setAttribute("href","#");
         a2.appendChild(checkBox);
         a2.appendChild(label2);
@@ -171,7 +171,8 @@ export default class Sidebar {
         var checkBox = document.createElement( "input" );
 		checkBox.setAttribute( "type", "checkbox" );
 		checkBox.id = route.name + "showLabel";
-		checkBox.className = "form-check-input";
+		// checkBox.className = "form-check-input";
+		checkBox.className = "custom-control-input";
 		checkBox.checked = route.showLabels;
 		checkBox.addEventListener( 'change', function() {
             route.showLabels = this.checked;
@@ -179,18 +180,18 @@ export default class Sidebar {
         
         let label = document.createElement("label");
         label.innerHTML = "Show Labels";
-        label.className = "form-check-label";
+        label.className = "custom-control-label";
         label.htmlFor = route.name + "showLabel";
 
         const a = document.createElement("a");
-        a.className = "hasInput";
+        a.className = "hasInput custom-control custom-checkbox";
         a.setAttribute("href","#");
         a.appendChild(checkBox);
         a.appendChild(label);
         let liLabel = document.createElement("li");
         liLabel.appendChild(a);
 
-        sub3.submenu([liLabel, liLabel2]);
+        sub3.submenu([liLabel2, liLabel]);
         
         const sub4 = new SidebarDropdown("test", "fa fa-wrench");
         sub4.setActive();

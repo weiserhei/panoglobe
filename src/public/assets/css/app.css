@@ -8190,9 +8190,10 @@ li > .selected {
   margin-right: 10px;
   font-size: 8px; }
 
-/* CUSTOMIZE add class */
-a.hasInput {
-  cursor: pointer; }
+/* CUSTOMIZE add class hasInput */
+.sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a.hasInput {
+  /* align to work with bootstrap custom input box */
+  line-height: 1.7em; }
 
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a.hasInput:before {
   content: "";
