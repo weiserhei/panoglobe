@@ -81,7 +81,7 @@ export default class RouteLine {
 		
         this.line = new Line2( geometry, lineMaterial );
 		this.line.computeLineDistances();
-		
+
 		// render "on top"
 		// interferes with atmosphere material
 		// this.line.renderOrder = 999;

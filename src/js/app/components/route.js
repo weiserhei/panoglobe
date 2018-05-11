@@ -47,7 +47,7 @@ export default class Route {
 		this.showLabels = true;
 
         this.group	= new THREE.Group();
-        scene.add( this.group );
+		scene.add( this.group );
 
         this._createRoute( this._routeData, this.group, this.phase, this.steps );
 
