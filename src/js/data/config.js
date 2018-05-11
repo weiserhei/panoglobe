@@ -18,7 +18,7 @@ export default {
     scale: 20
   },
   routes: {
-    linewidth: 2,
+    linewidth: 1,
     lineSegments: 9
   },
   texture: {

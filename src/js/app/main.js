@@ -11,25 +11,20 @@ import Controls from './components/controls';
 import Globus from './components/globus';
 
 // Helpers
-import Geometry from './helpers/geometry';
+// import Geometry from './helpers/geometry';
 import Stats from './helpers/stats';
 import DomEvents from './helpers/domevents';
 
 // Model
 import Texture from './model/texture';
-import Model from './model/model';
+// import Model from './model/model';
 
 import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
 import MarkerFactory from "./components/markerFactory";
-import HUD from "./components/hud";
-
-import fontawesome from '@fortawesome/fontawesome';
-import solid from '@fortawesome/fontawesome-free-solid';
-
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import Sidebar from "./components/sidebar";
 
 // Managers
 import Interaction from './managers/interaction';
@@ -58,6 +53,9 @@ export default class Main {
       Config.dpr = window.devicePixelRatio;
     }
 
+
+    this.routes = [];
+
     // Main renderer constructor
     this.renderer = new Renderer(this.scene, container);
 
@@ -84,7 +82,7 @@ export default class Main {
     this.skybox = new Skybox ( this.scene );
 
     const div = document.getElementById('wrapper');
-    this._gui = new HUD( div );
+    this.sidebar = new Sidebar();
 
     this.routeLoader = new RouteLoader();
 
@@ -103,15 +101,26 @@ export default class Main {
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
-      // const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
-      const url = "//relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
-      // const route = new Route( url,  );
+      // amerika
+      const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+      // asien
+      const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        this.route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
-
-        this._gui.createLabel( this.route );
+        const route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+        route.showLabels = false;
+        this.routes.push(route);
+        this.sidebar.addRoute( route );
       }) 
+
+      this.routeLoader.load(url2, routeData => {
+        const phase = getRandomArbitrary( 0, Math.PI * 2 );
+        const route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+        this.sidebar.addRoute( route );
+        this.routes.push(route);
+      }); 
+
     }).catch(() => {console.warn("Error loading height data image")});
 
 
@@ -133,17 +142,17 @@ export default class Main {
       //   console.log(`${item}: ${loaded} ${total}`);
       // };
 
-              // Set up interaction manager with the app now that the model is finished loading
-              new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls);
+      // Set up interaction manager with the app now that the model is finished loading
+      new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls);
 
-              // Add dat.GUI controls if dev
-              if(Config.isDev) {
-                new DatGUI(this, this.globus.mesh);
-              }
-      
-              // Everything is now fully loaded
-              Config.isLoaded = true;
-              // this.container.querySelector('#loading').style.display = 'none';
+      // Add dat.GUI controls if dev
+      if(Config.isDev) {
+        new DatGUI(this, this.globus.mesh);
+      }
+
+      // Everything is now fully loaded
+      Config.isLoaded = true;
+      // this.container.querySelector('#loading').style.display = 'none';
 
       // All loaders done now
       // this.manager.onLoad = () => {
@@ -152,6 +161,21 @@ export default class Main {
 
     // Start render which does not wait for model fully loaded
     this.render();
+  }
+
+  update( delta ) {
+    // Call any vendor or module frame updates here
+    // TWEEN.update();
+    this.controls.threeControls.update();
+    this.skybox.update( delta );
+    this.globus.update( delta );
+    this.light.update( this.clock );
+
+    for( let i = 0; i < this.routes.length; i++ ) {
+      if( this.routes[i] instanceof Route) {
+        this.routes[i].update(delta, this.camera.threeCamera);
+      }
+    }
   }
 
   render() {
@@ -171,16 +195,7 @@ export default class Main {
       Stats.end();
     }
 
-    // Call any vendor or module frame updates here
-    // TWEEN.update();
-    this.controls.threeControls.update();
-    this.skybox.update( delta );
-    this.globus.update( delta );
-    this.light.update( this.clock );
-
-    if( this.route !== undefined ) {
-      this.route.update( delta, this.camera.threeCamera );
-    }
+    this.update( delta );
 
     // RAF
     // requestAnimationFrame(this.render.bind(this)); // Bind the main class instead of window object

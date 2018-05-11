@@ -5,7 +5,7 @@
  */
 
 import * as THREE from "three";
-import {LineGeometry, LineMaterial, Line2, hilbert3D} from 'three-full';
+import {LineGeometry, LineMaterial, Line2} from 'three-full';
 
 import { makeColorGradient } from "../../utils/colors";
 import { createSphereArc } from "../../utils/panoutils";
@@ -28,9 +28,9 @@ export default class RouteLine {
 		// calculate Positions and Colors
 		// based on steps and color phase
 
-        let numberVertices = this._lineMergeGeometry.vertices.length;
-		let color = new THREE.Color();
-		let frequency = 1 /  ( steps * numberVertices );
+        const numberVertices = this._lineMergeGeometry.vertices.length;
+		const color = new THREE.Color();
+		const frequency = 1 /  ( steps * numberVertices );
 
 		this.positions = new Float32Array( numberVertices * 3 ); // 3 vertices per point
 		this.colors = new Float32Array( numberVertices * 3 );
@@ -67,11 +67,11 @@ export default class RouteLine {
 
 		this._build( steps, phase );
 
-        var geometry = new LineGeometry();
+        const geometry = new LineGeometry();
         geometry.setPositions( this.positions );
 		geometry.setColors( this.colors );
 		
-        let lineMaterial = new LineMaterial( {
+        const lineMaterial = new LineMaterial( {
             color: 0xffffff,
             linewidth: linewidth, // in pixels
             vertexColors: THREE.VertexColors,
@@ -80,7 +80,14 @@ export default class RouteLine {
 		} );
 		
         this.line = new Line2( geometry, lineMaterial );
-        this.line.computeLineDistances();
+		this.line.computeLineDistances();
+
+		// render "on top"
+		// interferes with atmosphere material
+		// this.line.renderOrder = 999;
+		// this.line.onBeforeRender = function( renderer ) { 
+		// 	renderer.clearDepth(); 
+		// };
 
         return this.line;
     }
@@ -91,12 +98,12 @@ export default class RouteLine {
 		this._build( steps, phase );
 
 		// geometry
-		var geometry = new THREE.BufferGeometry();
+		const geometry = new THREE.BufferGeometry();
 		geometry.addAttribute( 'position', new THREE.BufferAttribute( this.positions, 3 ) );
 		geometry.addAttribute( 'color', new THREE.BufferAttribute( this.colors, 3 ) );
 
 		// material
-		let lineMaterial = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
+		const lineMaterial = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
 
 		// line
 		this.line = new THREE.Line( geometry, lineMaterial );
@@ -107,8 +114,8 @@ export default class RouteLine {
 
 	connectGeometry( from, to ) {
 
-		var curve = createSphereArc( from, to );
-		var lineGeometry = new THREE.Geometry();
+		const curve = createSphereArc( from, to );
+		const lineGeometry = new THREE.Geometry();
 		lineGeometry.vertices = curve.getPoints( this.segments ); // how many vertices do we want on this guy? this is for *each* side
 		// lineGeometry.computeLineDistances();
 		this._lineMergeGeometry.merge( lineGeometry );

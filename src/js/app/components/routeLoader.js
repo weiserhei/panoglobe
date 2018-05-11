@@ -53,6 +53,6 @@ export default class RouteLoader {
 			alert("Call to loadRoute without providing a Link to a datalist");
 		}
 	
-	};
+	}
 
 }

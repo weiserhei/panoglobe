@@ -4,7 +4,7 @@ import Config from '../../data/config';
 
 // Class that creates and updates the main camera
 export default class Skybox {
-  constructor(scene, texture) {
+  constructor(scene) {
 
     // SKYBOX
     var geometry = new THREE.SphereBufferGeometry( Config.galaxy.radius, Config.galaxy.widthSegments, Config.galaxy.heightSegments );
@@ -19,8 +19,8 @@ export default class Skybox {
   }
 
   setTexture( texture ) {
-      this.mesh.material.map = texture;
-      this.mesh.material.needsUpdate = true;
+    this.mesh.material.map = texture;
+    this.mesh.material.needsUpdate = true;
   }
 
   update( delta ) {

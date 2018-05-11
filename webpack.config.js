@@ -10,7 +10,6 @@ var entry           = './src/js/app.js',
 
 // Environment
 var PROD = JSON.parse(process.env.NODE_ENV || 0);
-console.log("prod", PROD);
 
 // Dev environment
 var env = 'dev',
@@ -30,6 +29,10 @@ if(PROD) {
 
 var plugins = [
   //new webpack.NoErrorsPlugin(),
+  new webpack.ProvidePlugin({
+    $: "jquery",
+    jQuery: "jquery"
+  }),
   new webpack.DefinePlugin({
     __ENV__: JSON.stringify(env),
     ___BUILD_TIME___: time,
