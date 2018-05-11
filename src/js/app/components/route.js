@@ -9,23 +9,24 @@ import * as THREE from "three";
 
 import Config from '../../data/config';
 
-import { calc3DPositions } from "../../utils/panoutils";
+import { calc3DPositions, numberWithCommas } from "../../utils/panoutils";
 import { makeColorGradient } from "../../utils/colors";
 
 import RouteLine from "./routeLine";
 import TextSprite from "./textSprite";
 
 export default class Route {
-    constructor( scene, markerFactory, routeData, heightData, radius, phase ) {
+    constructor( scene, container, domEvents, routeData, heightData, radius, phase ) {
 
         this.name = routeData.meta.name || "";
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
-		this._markerIndexes = [];
 		this._cityMarkers = [];
-		// this._controls = controls;
-		this._markerFactory = markerFactory;
 		this._routeLine = null;
+
+		this.active = null;
+		this._container = container;
+		this._domEvents = domEvents;
 
 		this.heightData = [];
 		this.phase = phase; // which color out of 2xPI
@@ -38,46 +39,26 @@ export default class Route {
 		this.sprites = [];
 
 		this.isVisible = false;
+		this.showLabels = true;
 
 		this._animation = false;
 		this._currentInfoBox = 0;
 		this.drawCount = 0;
 		this.vertices = 0;
 
-		this.showLabels = true;
 
         this.group	= new THREE.Group();
 		scene.add( this.group );
 
+		const markergeo = new THREE.SphereGeometry(1, 8, 6);
+		const markerMaterial = new THREE.MeshLambertMaterial();
+		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
+
         this._createRoute( this._routeData, this.group, this.phase, this.steps );
 
-
-		// // load datalist
-		// if ( url ) {			
-
-		// 	$.getJSON( url, {
-		// 		format: "json"
-		// 	})
-		// 	.done(data => {
-        //         console.log( "Route has been loaded", data );
-        //         this.numberCrunching( data );
-		// 	})
-		// 	.fail(function() {
-		// 		alert( "Sorry! An Error occured while loading the route :(" );
-		// 	});
-		// 	// .always(function() {
-		// 	// 	alert( "complete" );
-		// 	// });
-
-		// }
-		// else {
-		// 	//IF NO JSON OBJECT GIVEN
-		// 	alert("Call to loadRoute without providing a Link to a datalist");
-		// }
     }
 
     update( delta, camera ) {
-        // if( this.line.material.resolution !== undefined ) {
         if( this.line.material.resolution !== undefined ) {
             this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
 		}
@@ -94,6 +75,124 @@ export default class Route {
 	get pois() {
 		return this._cityMarkers;
 	}
+
+	_getMarker(position, color) {
+        const marker = this._markermesh.clone();
+        marker.material = this._markermesh.material.clone();
+        const hsl = color.getHSL({});
+        //LOWER SATURATION FOR BLOBS
+        hsl.s -= 0.2;
+        marker.material.color.setHSL(hsl.h, hsl.s, hsl.l);
+        // marker.material.uniforms.diffuse.value.setHSL ( hsl.h, hsl.s, hsl.l );
+        //LOWER BRIGHTNESS FOR EMISSIVE COLOR
+        hsl.l -= 0.3;
+        // marker.material.uniforms.emissive.value.setHSL ( hsl.h, hsl.s, hsl.l );
+        marker.material.emissive.setHSL(hsl.h, hsl.s, hsl.l);
+        // var ohgodwhy = position.clone();
+        // ohgodwhy.y += markermesh.geometry.parameters.height / 10; // pyramid geometry
+        marker.position.copy(position); // place marker
+        // marker.lookAt( globe.mesh.position );
+        const outlineMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide });
+        const outlineMesh2 = new THREE.Mesh(marker.geometry, outlineMaterial2);
+        outlineMesh2.scale.multiplyScalar(1.3);
+        outlineMesh2.visible = false;
+        marker.add(outlineMesh2);
+        return marker;
+	}
+
+	_getInfoBox(city, marker) {
+        const lng = (Math.round(city.lng * 100) / 100).toFixed(2);
+        const lat = (Math.round(city.lat * 100) / 100).toFixed(2);
+        const box = document.createElement('div');
+        let text = "<div class='labelHead'>";
+        text += "<b>" + city.adresse + "</b>";
+        text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
+        text += "</div>";
+        text += "<div class='labelContent'>";
+        text += "<p>Lat: " + lat + " | Long: " + lng + "</p>";
+        text += "<p><a href='" + city.externerlink + "' target='_blank'><i class='fas fa-external-link-alt'></i> Point of Interest</a></p>";
+        text += "</div>";
+        text += "<div class='arrow'></div>";
+        box.innerHTML = text;
+        box.className = "hudLabel";
+        box.style.display = "none";
+
+		const button = document.createElement("button");
+		button.className = "btn btn-sm btn-danger closeButton";
+		button.innerHTML = '<i class="fas fa-times"></i>';
+		box.appendChild(button);
+
+		// close label on X click
+		button.addEventListener("click", ()=>{
+			box.style.display = "none";
+			box.classList.remove("fadeIn");
+			// hide outline mesh
+			marker.children[0].visible = false;
+			this.active = null;
+		});
+
+        return box;
+	}
+	
+	_linkify(mesh, domElement, lat, lon) {
+        var that = this;
+        var eventTarget = mesh;
+        var infoBox = domElement || undefined;
+
+        function handleClick(event) {
+            function cleanUp() {
+                if (that.active.infoBox !== undefined) {
+                    // cleanup CSS
+                    that.active.infoBox.style.display = "none";
+                    that.active.infoBox.classList.remove("fadeIn");
+                }
+                // hide outline mesh
+                that.active.children[0].visible = false;
+            }
+            // Hide the infoBox when itself is clicked again
+            if (that.active === mesh) {
+                cleanUp();
+                that.active = null;
+                return;
+            }
+            // if (this._controls.rotateToCoordinate instanceof Function) {
+            if (this._controls !== undefined) {
+                // todo
+                // modify current rotation, dont overwrite it!
+                // center clicked point in the middle of the screen
+                controls.rotateToCoordinate(lat, lng);
+            }
+            if (that.active !== null) {
+                // Cleanup when the user clicked another marker 
+                // without deselecting the last
+                cleanUp();
+            }
+            that.active = mesh;
+            if (that.active.infoBox !== undefined) {
+                infoBox.style.display = "block";
+                infoBox.classList.add("fadeIn");
+            }
+            mesh.children[0].visible = true;
+        }
+        // this._domEvents.addEventListener( eventTarget, 'click', handleClick, false);
+        this._domEvents.bind(eventTarget, 'click', handleClick, false);
+        // this._domEvents.bind( eventTarget, 'touchend', handleClick );
+        // bind 'mouseover'
+        this._domEvents.addEventListener(eventTarget, 'mouseover', function (event) {
+            // do nottin' when route is hidden
+            if (mesh.parent.visible === false) {
+                return;
+            }
+            document.body.style.cursor = 'pointer';
+            mesh.children[0].visible = true;
+        }, false);
+        this._domEvents.bind(eventTarget, 'mouseout', function (event) {
+            if (that.active !== mesh) {
+                mesh.children[0].visible = false;
+            }
+            document.body.style.cursor = 'default';
+        }, false);
+    }
 
     _createRoute( routeData, group, phase, steps ) {
 
@@ -121,14 +220,17 @@ export default class Route {
 			
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
-			marker = this._markerFactory.createMarker( currentCoordinate.displacedPos.clone(), color );
+			marker = this._getMarker( currentCoordinate.displacedPos.clone(), color );
 			this.meshGroup.add( marker );
 
 			// CREATE HUDLABELS FOR MARKER
-			infoBox = this._markerFactory.createInfoBox( currentCoordinate, marker );
+			infoBox = this._getInfoBox( currentCoordinate, marker );
+			this._container.appendChild(infoBox);
+			// used to update the position
+			marker.infoBox = infoBox;
 
 			//MAKE MARKER CLICKABLE
-			this._markerFactory.linkify( marker, infoBox, currentCoordinate.lat, currentCoordinate.lon );
+			this._linkify( marker, infoBox, currentCoordinate.lat, currentCoordinate.lon );
 
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
@@ -419,32 +521,32 @@ Route.prototype._updateLabel = (function() {
 					
 					this.sprites[i].update( ocluded, eye, this.showLabels, dot );
 
-					if( this._markerFactory.active !== null ) { 
+					if( this.active !== null ) { 
 						// hide marker when overlay is active
-						this._markerFactory.active.sprite.update( ocluded, eye, false, dot );
+						this.active.sprite.update( ocluded, eye, false, dot );
 					}
 
 					//IF BLOBS VISIBLE: SET BLOB+SPRITE VISIBLE AND SCALE ACCORDING TO ZOOM LEVEL
 					if ( !ocluded ) {
 						this.meshGroup.children[ i ].scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
 
-						if( this._markerFactory.active !== null ) {
+						if( this.active !== null ) {
 
-							this._markerFactory.active.infoBox.style.display = "block";
-							this._markerFactory.active.infoBox.classList.add("fadeIn");
-							this._markerFactory.active.children[0].visible = true;
+							this.active.infoBox.style.display = "block";
+							this.active.infoBox.classList.add("fadeIn");
+							this.active.children[0].visible = true;
 
 							// overlay is visible
 							_screenVector.set(0, 0, 0);
-							this._markerFactory.active.localToWorld(_screenVector);
+							this.active.localToWorld(_screenVector);
 							_screenVector.project(camera);
 
-							var posx = Math.round((_screenVector.x + 1) * this._markerFactory._domElement.offsetWidth / 2);
-							var posy = Math.round((1 - _screenVector.y) * this._markerFactory._domElement.offsetHeight / 2);
+							var posx = Math.round((_screenVector.x + 1) * this._container.offsetWidth / 2);
+							var posy = Math.round((1 - _screenVector.y) * this._container.offsetHeight / 2);
 
-							var boundingRect = this._markerFactory.active.infoBox.getBoundingClientRect();
-							this._markerFactory.active.infoBox.style.left = (posx - boundingRect.width - 28) + 'px';
-							this._markerFactory.active.infoBox.style.top = (posy - 23) + 'px';
+							var boundingRect = this.active.infoBox.getBoundingClientRect();
+							this.active.infoBox.style.left = (posx - boundingRect.width - 28) + 'px';
+							this.active.infoBox.style.top = (posy - 23) + 'px';
 
 						}
 						

@@ -181,34 +181,12 @@
 }
 
 .closeButton {
-
 	position:absolute; 
 	top:0; 
 	right:0;
-	padding-right:9px;
-	/*border: 1px solid #333;*/
-	/*border-width: 0 0 1px 1px;*/
-
-}
-
-/*.closeX {*/
-.closeButton a {
-
-	display:block; 
-	text-decoration:none; 
-	font-weight:bold; 
-	line-height:initial;
-	font-size: 0.8em;
-	color:#FF0000;
-	text-transform: lowercase;
-	outline:0;
-
-}
-
-.closeButton a:hover, .closeButton a:active, .closeButton a:focus {
-
-	text-shadow: 1px 1px 2px rgba(255, 150, 150, 1);
-
+	margin-right:9px;
+	border-top-left-radius:0;
+	border-top-right-radius:0;
 }
 
 /* Chrome, Safari, Opera */

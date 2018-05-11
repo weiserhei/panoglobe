@@ -5,7 +5,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-@import url(//fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
 @import "//use.fontawesome.com/releases/v5.0.6/css/all.css";
 :root {
   --blue:#007bff;
@@ -6716,23 +6716,9 @@ body {
   position: absolute;
   top: 0;
   right: 0;
-  padding-right: 9px;
-  /*border: 1px solid #333;*/
-  /*border-width: 0 0 1px 1px;*/ }
-
-/*.closeX {*/
-.closeButton a {
-  display: block;
-  text-decoration: none;
-  font-weight: bold;
-  line-height: initial;
-  font-size: 0.8em;
-  color: #FF0000;
-  text-transform: lowercase;
-  outline: 0; }
-
-.closeButton a:hover, .closeButton a:active, .closeButton a:focus {
-  text-shadow: 1px 1px 2px #ff9696; }
+  margin-right: 9px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
 
 /* Chrome, Safari, Opera */
 /*@-webkit-keyframes fadeIn {

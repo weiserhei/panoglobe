@@ -94,9 +94,9 @@ export default class Main {
     // });
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
 
-    const domEvents = new DomEvents( this.camera.threeCamera, this.container );
+    this._domEvents = new DomEvents( this.camera.threeCamera, this.container );
 
-    this.markerFactory = new MarkerFactory(domEvents, this.container, this.controls.threeControls );
+    // this.markerFactory = new MarkerFactory(domEvents, this.container, this.controls.threeControls );
 
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
@@ -108,7 +108,7 @@ export default class Main {
 
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase );
         route.showLabels = false;
         this.routes.push(route);
         this.sidebar.addRoute( route );
@@ -116,7 +116,7 @@ export default class Main {
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.markerFactory, routeData, this.heightData, Config.globus.radius, phase );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase );
         this.sidebar.addRoute( route );
         this.routes.push(route);
       }); 
