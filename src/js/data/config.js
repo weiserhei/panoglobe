@@ -105,7 +105,8 @@ export default {
     autoRotate: false,
     autoRotateSpeed: -0.5,
     rotateSpeed: 0.15,
-    zoomSpeed: 0.8,
+    enableZoom: true,
+    zoomSpeed: 1.8,
     minDistance: 200,
     maxDistance: 600,
     minPolarAngle: Math.PI / 5,
@@ -114,7 +115,7 @@ export default {
     maxAzimuthAngle: Infinity,
     enableDamping: true,
     dampingFactor: 0.3,
-    enableZoom: true,
+    enablePan: false,
     target: {
       x: 0,
       y: 0,

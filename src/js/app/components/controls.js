@@ -10,6 +10,25 @@ export default class Controls {
     const orbitControls = new OrbitControls(camera, container);
     this.threeControls = orbitControls;
 
+    
+    function handleMouseMove() {
+      document.body.style.cursor = 'grabbing';
+    }
+    
+    function onMouseUp() {
+      container.removeEventListener("mousemove", handleMouseMove, false);
+      document.body.style.cursor = 'default';
+    }
+
+    container.addEventListener("mousedown", (event)=>{
+
+      container.addEventListener("mousemove", handleMouseMove, false);
+      
+      container.addEventListener("mouseup", onMouseUp, false);
+      container.addEventListener("mouseout", onMouseUp, false);
+
+    }, false);
+
     this.init();
   }
 
@@ -26,5 +45,6 @@ export default class Controls {
     this.threeControls.enableDamping = Config.controls.enableDamping;
     this.threeControls.enableZoom = Config.controls.enableZoom;
     this.threeControls.dampingFactor = Config.controls.dampingFactor;
+    this.threeControls.enablePan = Config.controls.enablePan;
   }
 }
