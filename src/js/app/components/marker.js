@@ -1,15 +1,21 @@
 import * as THREE from "three";
 import { numberWithCommas } from "../../utils/panoutils";
 import TextSprite from "./textSprite";
+import InfoBox from "./infobox";
+import Label from "./label";
 
 export default class Marker {
 
-    constructor(color, positionVector, protoMesh) {
+    constructor(color, positionVector, protoMesh, activeHandler) {
 
         this._active = false;
-        this._domLabel = null;
+        this._infoBox = null;
         this._mesh = null;
         this._isVisible = true;
+
+        this._label = null;
+
+        this._activeHandler = activeHandler;
 
         const mesh = protoMesh.clone();
         mesh.material = protoMesh.material.clone();
@@ -35,33 +41,63 @@ export default class Marker {
         this._mesh = mesh;
     }
 
-    get isVisible() {
-        return this._isVisible;
-    }
-
-    set isVisible(value) {
-        this._outlineMesh.visible = value;
-        this.mesh.visible = value;
-        this.sprite.isVisible = value;
-        this.deselect();
-
-        this._isVisible = value;
-    }
-
+    
     get active() {
         return this._active;
+    }
+
+    set active( value ) {
+        // only one active
+        if( this._activeHandler.active !== null ) {
+            const otherMarker = this._activeHandler.active;
+            // clear handle to prevent recursion
+            this._activeHandler.active = null;
+            otherMarker.active = false;
+        }
+        this._activeHandler.active = this;
+        this._active = value;
+
+        if( this._infoBox !== null ) {
+            this._infoBox.isVisible = value;
+        }
+        this._label.isVisible = !value;
+        // this.sprite.visible = false;
+        this._outlineMesh.visible = value;
     }
 
     get mesh() {
         return this._mesh;
     }
 
-    get domElement() {
-        return this._domLabel;
-    }
-
     get sprite() {
         return this._sprite;
+    }
+
+    get label() {
+        return this._label;
+    }
+
+    get isVisible() {
+        return this._isVisible;
+    }
+
+    set isVisible(value) {
+        this.mesh.visible = value;
+        this._label.isVisible = value;
+        // this._infoBox.isVisible = value;
+        // this.sprite.isVisible = value;
+
+        this._isVisible = value;
+    }
+
+    getLabel(parentDomNode, text, showLabel) {
+        this._label = new Label(parentDomNode, text);
+        this._label.isVisible = showLabel;
+        this._label.domElement.addEventListener("click", ()=>{
+            this.active = true;
+        });
+
+        return this._label;
     }
 
     getSprite(text, position, showLabel) {
@@ -79,86 +115,19 @@ export default class Marker {
         return this._sprite;
     }
 
-    getInfoBox(parentDomNode, city, activeHandler) {
+    getInfoBox(parentDomNode, city) {
 
-        const lng = (Math.round(city.lng * 100) / 100).toFixed(2);
-        const lat = (Math.round(city.lat * 100) / 100).toFixed(2);
-        const box = document.createElement('div');
-        let text = "<div class='labelHead'>";
-        text += "<b>" + city.adresse + "</b>";
-        text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
-        text += "</div>";
-        text += "<div class='labelContent'>";
-        text += "<p>Lat: " + lat + " | Long: " + lng + "</p>";
-        text += "<p><a href='" + city.externerlink + "' target='_blank'><i class='fas fa-external-link-alt'></i> Point of Interest</a></p>";
-        text += "</div>";
-        text += "<div class='arrow'></div>";
-        box.innerHTML = text;
-        box.className = "hudLabel";
-        box.style.display = "none";
-
-		const button = document.createElement("button");
-		button.className = "btn btn-sm btn-danger closeButton";
-		button.innerHTML = '<i class="fas fa-times"></i>';
-        box.appendChild(button);
-        
-		// close label on X click
-		button.addEventListener("click", ()=>{
-            this.deselect();
-			activeHandler.active = null;
-		});
-        
-        this._domLabel = box;
-
-        const screenVector = new THREE.Vector3();
-
-        box.hide = function() {
-            this.style.display = "none";
-            this.classList.remove("fadeIn");
-        };
-        box.show = function() {
-            this.style.display = "block";
-            this.classList.add("fadeIn");
-        }
-        box.update = function( camera, followMesh ) {
-            this.show();
-
-            // overlay is visible
-            screenVector.set(0, 0, 0);
-            followMesh.localToWorld(screenVector);
-            screenVector.project(camera);
-
-            var posx = Math.round((screenVector.x + 1) * parentDomNode.offsetWidth / 2);
-            var posy = Math.round((1 - screenVector.y) * parentDomNode.offsetHeight / 2);
-
-            var boundingRect = this.getBoundingClientRect();
-            this.style.left = (posx - boundingRect.width - 28) + 'px';
-            this.style.top = (posy - 23) + 'px';
-        }
-
-        parentDomNode.appendChild(box);
+        const box = new InfoBox(parentDomNode, city);
+        this._infoBox = box;
+                
+        // close label on X click
+        box.closeButton.addEventListener("click", ()=>{
+            this.active = false;
+            // this.handleActive( false );
+        });
 
         return box;
-    }
-    
-    select() {
-        this._active = true;
-        if( this.domElement !== null ) {
-            this.domElement.show();
-        }
-        this.sprite.visible = false;
-        // show outline mesh
-        this._outlineMesh.visible = true;
-    }
-    
-    deselect() {
-        this._active = false;
-        if( this.domElement !== null ) {
-            this.domElement.hide();
-        }
-        this.sprite.visible = true;
-        // hide outline mesh
-        this._outlineMesh.visible = false;
+
     }
     
     linkify(activeHandler, lat, lon) {
@@ -168,7 +137,7 @@ export default class Marker {
         function handleClick(event) {
             // Hide the infoBox when itself is clicked again
             if (that.active === this) {
-                this.deselect();
+                this.active = false;
                 that.active = null;
                 return;
             }
@@ -182,10 +151,10 @@ export default class Marker {
             if (that.active !== null) {
                 // when the user clicked another marker 
                 // without deselecting the last
-                that.active.deselect();
+                that.active = false;
             }
             that.active = this;
-            this.select();
+            this.active = true;
         }
 
         that._domEvents.addEventListener( eventTarget, 'click', handleClick.bind(this), false);
@@ -237,25 +206,22 @@ Marker.prototype.update = (function() {
             // const spriteDistance = camera.position.distanceTo(this.sprites[i].sprite.position);
             // const ocluded = spriteDistance > meshDistance;
 
+            if ( this._label !== null ) {
+                this._label.update(camera, this.mesh, ocluded, dot);
+            }
             if ( this.sprite !== undefined ) {
                 // hide marker when overlay is active
                 this.sprite.update( ocluded, eye, dot );
+            }
+            if ( this._infoBox !== undefined ) {
+            // if ( this._infoBox !== undefined && this.active === true ) {
+                this._infoBox.update( camera, this.mesh, ocluded, this.active );
             }
 
             if ( !ocluded ) {
                 //IF BLOBS VISIBLE: SCALE ACCORDING TO ZOOM LEVEL
                 this.mesh.scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
-                
-                if( this.domElement !== null && this.active === true ) {
-                    this.domElement.update( camera, this.mesh );
-                }
-
-            } else {
-                if( this.domElement !== null ) {
-                    this.domElement.hide();
-                }
             }
-
         }
 
 })();

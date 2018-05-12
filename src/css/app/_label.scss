@@ -2,7 +2,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
 /*https://www.google.com/fonts*/
 
-.labelContent {
+.infobox .labelContent {
 	padding: 8px 12px;
 	font-size:16px;
 	font-weight:normal;
@@ -10,14 +10,12 @@
 	color: #000;
 }
 
-.labelContent p {
-
+.infobox .labelContent p {
 	margin-top: 8px;
-
 }
 
 
-.labelHead {
+.infobox .labelHead {
 	background:#000;
 	color:#fff;
 	padding:8px 12px 8px 12px;
@@ -38,7 +36,7 @@
 	border-top-right-radius: 10px;*/
 
 }
-.hudLabel .arrow {
+.infobox .arrow {
     /*left: 40px;*/
     right: -20px;
     top: 0px;
@@ -91,9 +89,12 @@
 
 }
 
-.hudLabel {
-
+.htmlLabel {
 	position:absolute;
+}
+
+.infobox {
+	z-index: 10;
 	width: 280px;
 	/*height:150px;*/
 	/*position:relative;*/
@@ -137,7 +138,7 @@
 	-moz-box-shadow: 0px 4px 8px -3px rgba(0,0,0,0.75);
 	box-shadow: 0px 4px 8px -5px rgba(0,0,0,0.75);
 
-	background:rgba( 255, 255, 255, 0.8 );
+	background:rgba( 255, 255, 255, 0.9 );
 
 	/*http://www.colorzilla.com/gradient-editor/*/
 	/*white glossy*/
@@ -152,35 +153,23 @@
 
 }
 
-.next {
-
-	position:absolute; 
-	bottom:0; 
-	right:0;
-	padding-right:9px;
-	/*border: 1px solid #333;*/
-	/*border-width: 0 0 1px 1px;*/
-
-}
-
-
 
 /*http://www.color-hex.com/color-palette/176*/
-.hudLabel a:visited {
+.infobox a:visited {
 	/*color:#0892d0;*/ /* nice dark blue für black background */
 	color:#2c539e;
 }
-.hudLabel a:hover {
+.infobox a:hover {
 	color:#2c539e;
 	text-decoration:none;
 }
-.hudLabel a {
+.infobox a {
 	color:#2c539e;
 	/*font-size:0.6em;*/
 	/*display:block;*/
 }
 
-.closeButton {
+.infobox .closeButton {
 	position:absolute; 
 	top:0; 
 	right:0;

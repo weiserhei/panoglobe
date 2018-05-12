@@ -66,7 +66,8 @@ export default class Route {
 
 	set showLabels( value ) {
 		this._showLabels = value;
-		this.marker.forEach(marker => {marker.sprite.isVisible = value });
+		// this.marker.forEach(marker => {marker.sprite.isVisible = value });
+		this.marker.forEach(marker => {marker._label.isVisible = value });
 	}
 
 	get isVisible() {
@@ -126,7 +127,7 @@ export default class Route {
 
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
-			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh);
+			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this);
 			this.marker.push(marker);
 			this.meshGroup.add( marker.mesh );
 
@@ -135,13 +136,14 @@ export default class Route {
 
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, currentCoordinate, this );
-
+			
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
 			const text = this._cityMarkers.length + " " + name;
-			sprite = marker.getSprite(text, marker.mesh.position, this.showLabels);
-			this.spriteGroup.add ( sprite.sprite );
-			this.sprites.push( sprite );
+			marker.getLabel( this._container, text, this.showLabels );
+			// sprite = marker.getSprite(text, marker.mesh.position, this.showLabels);
+			// this.spriteGroup.add ( sprite.sprite );
+			// this.sprites.push( sprite );
 
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
