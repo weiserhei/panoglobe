@@ -13,19 +13,21 @@ import { calc3DPositions } from "../../utils/panoutils";
 import { makeColorGradient } from "../../utils/colors";
 
 import RouteLine from "./routeLine";
-import TextSprite from "./textSprite";
+import Marker from "./marker";
 
 export default class Route {
-    constructor( scene, markerFactory, routeData, heightData, radius, phase ) {
+    constructor( scene, container, domEvents, routeData, heightData, radius, phase ) {
 
         this.name = routeData.meta.name || "";
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
-		this._markerIndexes = [];
 		this._cityMarkers = [];
-		// this._controls = controls;
-		this._markerFactory = markerFactory;
-		this._routeLine = null;
+		this._routeLine;
+		this.line = null;
+
+		this.active = null;
+		this._container = container;
+		this._domEvents = domEvents;
 
 		this.heightData = [];
 		this.phase = phase; // which color out of 2xPI
@@ -34,61 +36,66 @@ export default class Route {
 		this.meshGroup = new THREE.Object3D();
 		this.lightGroup = new THREE.Object3D();
 		this.spriteGroup = new THREE.Object3D();
-		this.line = null;
 		this.sprites = [];
+		this.marker = [];
 
-		this.isVisible = false;
+		this._isVisible = false;
+		this._showLabels = true;
 
 		this._animation = false;
 		this._currentInfoBox = 0;
 		this.drawCount = 0;
 		this.vertices = 0;
 
-		this.showLabels = true;
 
         this.group	= new THREE.Group();
 		scene.add( this.group );
 
+		const markergeo = new THREE.SphereGeometry(1, 8, 6);
+		const markerMaterial = new THREE.MeshLambertMaterial();
+		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
+
         this._createRoute( this._routeData, this.group, this.phase, this.steps );
 
+	}
 
-		// // load datalist
-		// if ( url ) {			
 
-		// 	$.getJSON( url, {
-		// 		format: "json"
-		// 	})
-		// 	.done(data => {
-        //         console.log( "Route has been loaded", data );
-        //         this.numberCrunching( data );
-		// 	})
-		// 	.fail(function() {
-		// 		alert( "Sorry! An Error occured while loading the route :(" );
-		// 	});
-		// 	// .always(function() {
-		// 	// 	alert( "complete" );
-		// 	// });
+	get showLabels() {
+		return this._showLabels;
+	}
 
-		// }
-		// else {
-		// 	//IF NO JSON OBJECT GIVEN
-		// 	alert("Call to loadRoute without providing a Link to a datalist");
-		// }
-    }
+	set showLabels( value ) {
+		this._showLabels = value;
+		// this.marker.forEach(marker => {marker.sprite.isVisible = value });
+		this.marker.forEach(marker => {marker._label.isVisible = value });
+	}
+
+	get isVisible() {
+		return this._isVisible;
+	}
+	set isVisible( value ) {
+		this.marker.forEach(marker => {marker.isVisible = value });
+		this.lightGroup.visible = value; 
+		this.line.visible = value; 
+		
+		this._isVisible = value;
+	}
 
     update( delta, camera ) {
-        // if( this.line.material.resolution !== undefined ) {
+
         if( this.line.material.resolution !== undefined ) {
             this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
 		}
 		
 		// hide occluded, scale on zoom
-		this._updateLabel( camera );
+		let i = this.marker.length - 1;
+		for ( ; i >= 0 ; i -- ) {
+			this.marker[i].update( camera );
+		}
 
 		// if ( this._animation === true ) {
 		// 	this.animate( controls );		
 		// }
-
 	}
 	
 	get pois() {
@@ -99,7 +106,6 @@ export default class Route {
 
 		var currentCoordinate;
 		var color = new THREE.Color();
-		var infoBox;
 		var marker;
 		var sprite;
 
@@ -118,32 +124,26 @@ export default class Route {
 			if ( ! currentCoordinate.adresse ) { return; }
 			
 			this._cityMarkers.push ( currentCoordinate );
-			
+
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
-			marker = this._markerFactory.createMarker( currentCoordinate.displacedPos.clone(), color );
-			this.meshGroup.add( marker );
-
-			// CREATE HUDLABELS FOR MARKER
-			infoBox = this._markerFactory.createInfoBox( currentCoordinate, marker );
+			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this);
+			this.marker.push(marker);
+			this.meshGroup.add( marker.mesh );
 
 			//MAKE MARKER CLICKABLE
-			this._markerFactory.linkify( marker, infoBox, currentCoordinate.lat, currentCoordinate.lon );
+			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lon );
 
+			// CREATE HUDLABELS FOR MARKER
+			marker.getInfoBox( this._container, currentCoordinate, this );
+			
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
 			const text = this._cityMarkers.length + " " + name;
-			const params = {
-				fontsize: 28,
-				borderThickness: 0,
-				borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
-				backgroundColor: { r: 0, g: 0, b: 0, a: 0.4 },
-				fontWeight: "normal"
-			};
-			sprite = new TextSprite(text, params, marker.position, this.showLabels);
-			marker.sprite = sprite;
-			this.spriteGroup.add ( sprite.sprite );
-			this.sprites.push( sprite );
+			marker.getLabel( this._container, text, this.showLabels );
+			// sprite = marker.getSprite(text, marker.mesh.position, this.showLabels);
+			// this.spriteGroup.add ( sprite.sprite );
+			// this.sprites.push( sprite );
 
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
@@ -210,28 +210,6 @@ export default class Route {
 		// this.box2.innerHTML = output;
 
 
-	}
-
-	show() {
-		
-		this.meshGroup.visible = true; 
-		this.lightGroup.visible = true; 
-		this.spriteGroup.visible = true; 
-		this.line.visible = true; 
-		
-		this.isVisible = true;
-		
-	}
-	
-	hide() {
-		
-		this.meshGroup.visible = false; 
-		this.lightGroup.visible = false; 
-		this.spriteGroup.visible = false; 
-		this.line.visible = false; 
-		
-		this.isVisible = false;
-		
 	}
 
 	toggleAnimate( scope ) {
@@ -379,86 +357,3 @@ export default class Route {
 	}
 
 }
-
-Route.prototype._updateLabel = (function() { 
-	
-		var meshVector = new THREE.Vector3();
-		var eye = new THREE.Vector3();
-		var dot = new THREE.Vector3();
-		var ocluded = false;
-
-		var _screenVector = new THREE.Vector3();
-
-		var width, height;
-
-		return function updateLabel ( camera ) {
-
-			var i = this.meshGroup.children.length - 1;
-			for ( ; i >= 0 ; i -- ) {
-				
-				// http://stackoverflow.com/questions/15098479/how-to-get-the-global-world-position-of-a-child-object
-				// var meshVector = new THREE.Vector3().setFromMatrixPosition( meshGroup.children[ i ].matrixWorld ); 
-
-				// Annotations HTML
-				// https://codepen.io/dxinteractive/pen/reNpOR
-
-				// Like Sketchfab
-				// https://manu.ninja/webgl-three-js-annotations
-				
-				this.meshGroup.children[ i ].getWorldPosition( meshVector );
-				eye = camera.position.clone().sub( meshVector );
-				dot = eye.clone().normalize().dot( meshVector.normalize() );
-				ocluded = true ? (dot < 0.0) : false; //IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
-
-				// alternative from like Sketchfab
-				// const meshDistance = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
-				// const spriteDistance = camera.position.distanceTo(this.sprites[i].sprite.position);
-				// const ocluded = spriteDistance > meshDistance;
-				
-				if ( this.sprites[i] !== undefined ) {
-					
-					this.sprites[i].update( ocluded, eye, this.showLabels, dot );
-
-					if( this._markerFactory.active !== null ) { 
-						// hide marker when overlay is active
-						this._markerFactory.active.sprite.update( ocluded, eye, false, dot );
-					}
-
-					//IF BLOBS VISIBLE: SET BLOB+SPRITE VISIBLE AND SCALE ACCORDING TO ZOOM LEVEL
-					if ( !ocluded ) {
-						this.meshGroup.children[ i ].scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
-
-						if( this._markerFactory.active !== null ) {
-
-							this._markerFactory.active.infoBox.style.display = "block";
-							this._markerFactory.active.infoBox.classList.add("fadeIn");
-							this._markerFactory.active.children[0].visible = true;
-
-							// overlay is visible
-							_screenVector.set(0, 0, 0);
-							this._markerFactory.active.localToWorld(_screenVector);
-							_screenVector.project(camera);
-
-							var posx = Math.round((_screenVector.x + 1) * this._markerFactory._domElement.offsetWidth / 2);
-							var posy = Math.round((1 - _screenVector.y) * this._markerFactory._domElement.offsetHeight / 2);
-
-							var boundingRect = this._markerFactory.active.infoBox.getBoundingClientRect();
-							this._markerFactory.active.infoBox.style.left = (posx - boundingRect.width - 28) + 'px';
-							this._markerFactory.active.infoBox.style.top = (posy - 23) + 'px';
-
-						}
-						
-					} else {
-
-						this.meshGroup.children[ i ].infoBox.style.display = "none";
-						this.meshGroup.children[ i ].infoBox.classList.remove("fadeIn");
-						// this.meshGroup.children[ i ].children[0].visible = false;
-					}
-
-				}
-
-			}
-
-		}
-	}
-)();

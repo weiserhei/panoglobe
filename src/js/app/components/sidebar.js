@@ -118,7 +118,7 @@ export default class Sidebar {
 
     addRoute( route ) {
 
-        // const safeName = route.name.replace(/[^A-Z0-9]+/ig, "_") + "collapse";
+        const safeName = route.name.replace(/[^A-Z0-9]+/ig, "_") + "collapse";
         const info = route.name;
 
         // header
@@ -136,30 +136,31 @@ export default class Sidebar {
         
         // route settings
         const sub3 = new SidebarDropdown("Settings", "fa fa-cog"); 
-
         
         let label2 = document.createElement("label");
         label2.innerHTML = "Show Route";
         label2.className = "custom-control-label";
-        label2.htmlFor = route.name + "showRoute";
+        label2.htmlFor = safeName + "showRoute";
         
-        var checkBox = document.createElement( "input" );
+        const checkBox = document.createElement( "input" );
 		checkBox.setAttribute( "type", "checkbox" );
-		checkBox.id = route.name + "showRoute";
+		checkBox.id = safeName + "showRoute";
 		checkBox.className = "custom-control-input";
 		checkBox.checked = true;
 		checkBox.addEventListener( 'change', changeHandler.bind( route ) );
-        
+                                        
         function changeHandler( event ) {
 			if ( event.target.checked === true ) {
-				this.show();
+                this.isVisible = true;
+                this.showLabels = checkboxShowLabels.checked;
+                // this.showLabels = this.showLabels;
                 // todo grey out
 			}
 			else {
-				this.hide();
+				this.isVisible = false;
 			}
 		}
-        
+
         const a2 = document.createElement("a");
         a2.className = "hasInput custom-control custom-checkbox";
         a2.setAttribute("href","#");
@@ -168,25 +169,26 @@ export default class Sidebar {
         let liLabel2 = document.createElement("li");
         liLabel2.appendChild(a2);
 
-        var checkBox = document.createElement( "input" );
-		checkBox.setAttribute( "type", "checkbox" );
-		checkBox.id = route.name + "showLabel";
+        const checkboxShowLabels = document.createElement( "input" );
+		checkboxShowLabels.setAttribute( "type", "checkbox" );
+		checkboxShowLabels.id = safeName + "showLabel";
 		// checkBox.className = "form-check-input";
-		checkBox.className = "custom-control-input";
-		checkBox.checked = route.showLabels;
-		checkBox.addEventListener( 'change', function() {
+		checkboxShowLabels.className = "custom-control-input";
+		checkboxShowLabels.checked = route.showLabels;
+		checkboxShowLabels.addEventListener( 'change', function() {
             route.showLabels = this.checked;
-		});
+        });
+
         
         let label = document.createElement("label");
         label.innerHTML = "Show Labels";
         label.className = "custom-control-label";
-        label.htmlFor = route.name + "showLabel";
+        label.htmlFor = safeName + "showLabel";
 
         const a = document.createElement("a");
         a.className = "hasInput custom-control custom-checkbox";
         a.setAttribute("href","#");
-        a.appendChild(checkBox);
+        a.appendChild(checkboxShowLabels);
         a.appendChild(label);
         let liLabel = document.createElement("li");
         liLabel.appendChild(a);

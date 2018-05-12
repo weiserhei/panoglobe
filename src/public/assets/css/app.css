@@ -5,7 +5,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-@import url(//fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
 @import "//use.fontawesome.com/releases/v5.0.6/css/all.css";
 :root {
   --blue:#007bff;
@@ -6567,17 +6567,17 @@ body {
 
 /*@import url(//fonts.googleapis.com/css?family=Montserrat:700);*/
 /*https://www.google.com/fonts*/
-.labelContent {
+.infobox .labelContent {
   padding: 8px 12px;
   font-size: 16px;
   font-weight: normal;
   line-height: 20px;
   color: #000; }
 
-.labelContent p {
+.infobox .labelContent p {
   margin-top: 8px; }
 
-.labelHead {
+.infobox .labelHead {
   background: #000;
   color: #fff;
   padding: 8px 12px 8px 12px;
@@ -6595,7 +6595,7 @@ body {
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;*/ }
 
-.hudLabel .arrow {
+.infobox .arrow {
   /*left: 40px;*/
   right: -20px;
   top: 0px;
@@ -6641,8 +6641,11 @@ body {
 
 */ }
 
-.hudLabel {
-  position: absolute;
+.htmlLabel {
+  position: absolute; }
+
+.infobox {
+  z-index: 10;
   width: 280px;
   /*height:150px;*/
   /*position:relative;*/
@@ -6677,7 +6680,7 @@ body {
   -webkit-box-shadow: 0px 4px 8px -3px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 4px 8px -3px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 4px 8px -5px rgba(0, 0, 0, 0.75);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   /*http://www.colorzilla.com/gradient-editor/*/
   /*white glossy*/
   /*	background: #f6f8f9;
@@ -6689,50 +6692,28 @@ body {
 	background: linear-gradient(to bottom, #f6f8f9 0%,#e5ebee 50%,#d7dee3 51%,#f5f7f9 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#f6f8f9", endColorstr="#f5f7f9",GradientType=0 );*/ }
 
-.next {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding-right: 9px;
-  /*border: 1px solid #333;*/
-  /*border-width: 0 0 1px 1px;*/ }
-
 /*http://www.color-hex.com/color-palette/176*/
-.hudLabel a:visited {
+.infobox a:visited {
   /*color:#0892d0;*/
   /* nice dark blue für black background */
   color: #2c539e; }
 
-.hudLabel a:hover {
+.infobox a:hover {
   color: #2c539e;
   text-decoration: none; }
 
-.hudLabel a {
+.infobox a {
   color: #2c539e;
   /*font-size:0.6em;*/
   /*display:block;*/ }
 
-.closeButton {
+.infobox .closeButton {
   position: absolute;
   top: 0;
   right: 0;
-  padding-right: 9px;
-  /*border: 1px solid #333;*/
-  /*border-width: 0 0 1px 1px;*/ }
-
-/*.closeX {*/
-.closeButton a {
-  display: block;
-  text-decoration: none;
-  font-weight: bold;
-  line-height: initial;
-  font-size: 0.8em;
-  color: #FF0000;
-  text-transform: lowercase;
-  outline: 0; }
-
-.closeButton a:hover, .closeButton a:active, .closeButton a:focus {
-  text-shadow: 1px 1px 2px #ff9696; }
+  margin-right: 9px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0; }
 
 /* Chrome, Safari, Opera */
 /*@-webkit-keyframes fadeIn {
