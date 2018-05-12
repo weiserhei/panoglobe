@@ -22,7 +22,8 @@ export default class Route {
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
 		this._cityMarkers = [];
-		this._routeLine = null;
+		this._routeLine;
+		this.line = null;
 
 		this.active = null;
 		this._container = container;
@@ -35,10 +36,10 @@ export default class Route {
 		this.meshGroup = new THREE.Object3D();
 		this.lightGroup = new THREE.Object3D();
 		this.spriteGroup = new THREE.Object3D();
-		this.line = null;
 		this.sprites = [];
+		this.marker = [];
 
-		this.isVisible = false;
+		this._isVisible = false;
 		this._showLabels = true;
 
 		this._animation = false;
@@ -57,14 +58,26 @@ export default class Route {
         this._createRoute( this._routeData, this.group, this.phase, this.steps );
 
 	}
-	
+
+
 	get showLabels() {
 		return this._showLabels;
 	}
 
 	set showLabels( value ) {
 		this._showLabels = value;
-		this.sprites.forEach(sprite => {sprite.visible = value });
+		this.marker.forEach(marker => {marker.sprite.isVisible = value });
+	}
+
+	get isVisible() {
+		return this._isVisible;
+	}
+	set isVisible( value ) {
+		this.marker.forEach(marker => {marker.isVisible = value });
+		this.lightGroup.visible = value; 
+		this.line.visible = value; 
+		
+		this._isVisible = value;
 	}
 
     update( delta, camera ) {
@@ -93,7 +106,6 @@ export default class Route {
 		var currentCoordinate;
 		var color = new THREE.Color();
 		var marker;
-		this.marker = [];
 		var sprite;
 
 		var phase = phase;
@@ -122,7 +134,7 @@ export default class Route {
 			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lon );
 
 			// CREATE HUDLABELS FOR MARKER
-			// marker.getInfoBox( this._container, currentCoordinate, this );
+			marker.getInfoBox( this._container, currentCoordinate, this );
 
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
@@ -196,28 +208,6 @@ export default class Route {
 		// this.box2.innerHTML = output;
 
 
-	}
-
-	show() {
-		
-		this.meshGroup.visible = true; 
-		this.lightGroup.visible = true; 
-		this.spriteGroup.visible = true; 
-		this.line.visible = true; 
-		
-		this.isVisible = true;
-		
-	}
-	
-	hide() {
-		
-		this.meshGroup.visible = false; 
-		this.lightGroup.visible = false; 
-		this.spriteGroup.visible = false; 
-		this.line.visible = false; 
-		
-		this.isVisible = false;
-		
 	}
 
 	toggleAnimate( scope ) {

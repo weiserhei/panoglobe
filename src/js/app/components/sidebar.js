@@ -152,11 +152,11 @@ export default class Sidebar {
         
         function changeHandler( event ) {
 			if ( event.target.checked === true ) {
-				this.show();
+				this.isVisible = true;
                 // todo grey out
 			}
 			else {
-				this.hide();
+				this.isVisible = false;
 			}
 		}
         

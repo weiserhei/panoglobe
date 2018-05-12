@@ -9,6 +9,7 @@ export default class Marker {
         this._active = false;
         this._domLabel = null;
         this._mesh = null;
+        this._isVisible = true;
 
         const mesh = protoMesh.clone();
         mesh.material = protoMesh.material.clone();
@@ -32,6 +33,19 @@ export default class Marker {
 		mesh.add(this._outlineMesh);
 		
         this._mesh = mesh;
+    }
+
+    get isVisible() {
+        return this._isVisible;
+    }
+
+    set isVisible(value) {
+        this._outlineMesh.visible = value;
+        this.mesh.visible = value;
+        this.sprite.isVisible = value;
+        this.deselect();
+
+        this._isVisible = value;
     }
 
     get active() {

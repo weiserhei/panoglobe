@@ -13,11 +13,11 @@ export default class TextSprite {
 
     }
 
-    get visible() {
+    get isVisible() {
         return this._showLabel;
     }
 
-    set visible(value) {
+    set isVisible(value) {
         this._showLabel = value;
         this.sprite.material.visible = value;
     }
