@@ -177,6 +177,17 @@ export default class Marker {
         }, false);
     }
 
+    // createLight(positionVec3, color, intensity) {
+    //     var light = new THREE.PointLight(color, intensity, 8);
+    //     var lightPos = positionVec3.multiplyScalar(1.03); //place light a little bit above the markers
+    //     light.position.copy(lightPos);
+
+    //     // var helper = new THREE.PointLightHelper( light, light.distance );
+    //     // helper.update();
+    //     // scene.add( helper );
+    //     return light;
+    // }
+
 }
 
 Marker.prototype.update = (function() {

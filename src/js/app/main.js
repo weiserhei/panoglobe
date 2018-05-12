@@ -23,7 +23,6 @@ import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
-import MarkerFactory from "./components/markerFactory";
 import Sidebar from "./components/sidebar";
 
 // Managers
