@@ -6,12 +6,14 @@ import Label from "./label";
 
 export default class Marker {
 
-    constructor(color, positionVector, protoMesh, activeHandler) {
+    constructor(color, positionVector, protoMesh, activeHandler, controls) {
 
         this._active = false;
         this._infoBox = null;
         this._mesh = null;
         this._isVisible = true;
+
+        this._controls = controls;
 
         this._label = null;
 
@@ -96,7 +98,16 @@ export default class Marker {
         this._label.domElement.addEventListener("click", ()=>{
             this.active = true;
         });
+        
+        function handleMouseUp() {
+            this._controls.enabled = true;
+        }
+        this._label.domElement.addEventListener("mousedown", ()=>{
+            this._controls.enabled = false;
 
+            this._label.domElement.addEventListener("mouseup", handleMouseUp.bind(this), false);
+            this._label.domElement.addEventListener("mouseout", handleMouseUp.bind(this), false);
+        }, false);
         return this._label;
     }
 
@@ -126,6 +137,16 @@ export default class Marker {
             // this.handleActive( false );
         });
 
+        function handleMouseUp() {
+            this._controls.enabled = true;
+        }
+        box.closeButton.addEventListener("mousedown", ()=>{
+            this._controls.enabled = false;
+
+            box.closeButton.addEventListener("mouseup", handleMouseUp.bind(this), false);
+            box.closeButton.addEventListener("mouseout", handleMouseUp.bind(this), false);
+        }, false);
+
         return box;
 
     }
@@ -146,7 +167,7 @@ export default class Marker {
                 // todo
                 // modify current rotation, dont overwrite it!
                 // center clicked point in the middle of the screen
-                controls.rotateToCoordinate(lat, lng);
+                // controls.rotateToCoordinate(lat, lng);
             }
             if (that.active !== null) {
                 // when the user clicked another marker 

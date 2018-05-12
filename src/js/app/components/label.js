@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Controls from './controls';
 
 export default class Label {
 

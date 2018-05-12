@@ -107,7 +107,7 @@ export default class Main {
 
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls );
         route.showLabels = false;
         this.routes.push(route);
         this.sidebar.addRoute( route );
@@ -115,7 +115,7 @@ export default class Main {
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls );
         this.sidebar.addRoute( route );
         this.routes.push(route);
       }); 

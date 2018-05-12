@@ -16,7 +16,7 @@ import RouteLine from "./routeLine";
 import Marker from "./marker";
 
 export default class Route {
-    constructor( scene, container, domEvents, routeData, heightData, radius, phase ) {
+    constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls ) {
 
         this.name = routeData.meta.name || "";
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
@@ -55,7 +55,7 @@ export default class Route {
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
-        this._createRoute( this._routeData, this.group, this.phase, this.steps );
+        this._createRoute( this._routeData, this.group, this.phase, this.steps, controls );
 
 	}
 
@@ -102,7 +102,7 @@ export default class Route {
 		return this._cityMarkers;
 	}
 
-    _createRoute( routeData, group, phase, steps ) {
+    _createRoute( routeData, group, phase, steps, controls ) {
 
 		var currentCoordinate;
 		var color = new THREE.Color();
@@ -127,7 +127,7 @@ export default class Route {
 
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
-			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this);
+			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls);
 			this.marker.push(marker);
 			this.meshGroup.add( marker.mesh );
 
@@ -140,7 +140,7 @@ export default class Route {
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
 			const text = this._cityMarkers.length + " " + name;
-			marker.getLabel( this._container, text, this.showLabels );
+			marker.getLabel( this._container, text, this.showLabels, controls );
 			// sprite = marker.getSprite(text, marker.mesh.position, this.showLabels);
 			// this.spriteGroup.add ( sprite.sprite );
 			// this.sprites.push( sprite );
