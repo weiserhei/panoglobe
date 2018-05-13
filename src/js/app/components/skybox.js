@@ -7,8 +7,8 @@ export default class Skybox {
   constructor(scene) {
 
     // SKYBOX
-    var geometry = new THREE.SphereBufferGeometry( Config.galaxy.radius, Config.galaxy.widthSegments, Config.galaxy.heightSegments );
-    var material = new THREE.MeshBasicMaterial( { side: THREE.BackSide } );
+    const geometry = new THREE.SphereBufferGeometry( Config.galaxy.radius, Config.galaxy.widthSegments, Config.galaxy.heightSegments );
+    const material = new THREE.MeshBasicMaterial( { side: THREE.BackSide } );
     // http://www.1zoom.net/Space/wallpaper/330018/z747.9/
     this.mesh = new THREE.Mesh( geometry, material	);
     this.mesh.position.set( Config.galaxy.x, Config.galaxy.y, Config.galaxy.z );

@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { numberWithCommas } from "../../utils/panoutils";
 import * as prosidebar from "../../../vendor/pro-sidebar/js/custom";
+import Config from '../../data/config';
 
 class SidebarDropdown {
     constructor( name, iconClassName ) {
@@ -60,7 +61,7 @@ function liplusa(el) {
 }
 
 export default class Sidebar {
-    constructor() {
+    constructor(lights, globus) {
 
         const sidebar = document.getElementById("sidebar").firstElementChild;
         const div = document.createElement("div");
@@ -71,7 +72,10 @@ export default class Sidebar {
 
         this.container = ul;
 
-        this.addSettings( ul );
+        this._lights = lights;
+        this._globus = globus;
+
+        this._addSettings( ul );
         
         $("#toggle-sidebar2").click(() => {
             $(".page-wrapper").toggleClass("toggled");
@@ -79,7 +83,7 @@ export default class Sidebar {
 
     }
 
-    addSettings(container) {
+    _addSettings(container) {
 
         function getLink(title) {
             const a = document.createElement("a");
@@ -94,14 +98,38 @@ export default class Sidebar {
         li.className="header-menu sidebar-settings-menu";
         li.innerHTML = "<span>Sidebar Settings</span>";
         container.appendChild(li);
-
+        
         var li2 = document.createElement("li");
         li2.className = "sidebar-settings-menu";
+
+
+        // const span = document.createElement("span");
+        // span.className = "badge badge-pill badge-"+className;
+        // span.innerHTML = value;
+        // this.a.appendChild(span);
+
+        const a = document.createElement("a");
+        a.setAttribute("href", "#");
+        // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
+        a.innerHTML = '<i class="far fa-moon"></i> Lights Out';
+        li2.appendChild(a);
+        
+        a.addEventListener("click", ()=>{
+            this._lights.night = !this._lights.night;
+            this._globus.night = !this._globus.night;
+            if( this._globus.night ) {
+                a.innerHTML = '<i class="far fa-moon text-warning"></i> Lights Out';
+            } else {
+                a.innerHTML = '<i class="far fa-moon"></i> Lights Out';
+            }
+        });
+
         const themes = ["chiller-theme", "ice-theme", "cool-theme", "light-theme","green-theme","spicy-theme","purple-theme"];
         themes.forEach((theme)=>{
             li2.appendChild(getLink(theme.slice(0,-6)));
-            container.appendChild(li2);
         });
+        container.appendChild(li2);
+        
 
         $(".sidebar-settings-menu").hide();
         

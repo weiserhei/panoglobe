@@ -61,6 +61,7 @@ export default class Main {
     // Components instantiations
     this.camera = new Camera(this.renderer.threeRenderer);
     this.controls = new Controls(this.camera.threeCamera, container);
+    this.scene.add( this.controls.threeControls.object );
     this.light = new Light(this.scene, this.controls.threeControls.object );
 
     // Create and place lights in scene
@@ -81,7 +82,7 @@ export default class Main {
     this.skybox = new Skybox ( this.scene );
 
     const div = document.getElementById('wrapper');
-    this.sidebar = new Sidebar();
+    this.sidebar = new Sidebar(this.light, this.globus);
 
     this.routeLoader = new RouteLoader();
 
@@ -100,9 +101,9 @@ export default class Main {
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
-      // amerika
-      const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
       // asien
+      const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+      // amerika
       const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 
       this.routeLoader.load(url, routeData => {
@@ -168,11 +169,11 @@ export default class Main {
     this.controls.threeControls.update();
     this.skybox.update( delta );
     this.globus.update( delta );
-    this.light.update( this.clock );
+    this.light.update( this.clock, this.camera.threeCamera );
 
     for( let i = 0; i < this.routes.length; i++ ) {
       if( this.routes[i] instanceof Route) {
-        this.routes[i].update(delta, this.camera.threeCamera);
+        this.routes[i].update(delta, this.camera.threeCamera, this.clock);
       }
     }
   }

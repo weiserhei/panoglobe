@@ -18,13 +18,13 @@ export default {
     scale: 20
   },
   routes: {
-    linewidth: 1,
+    linewidth: 2.1, // error on 2.0 width wtf lol
     lineSegments: 9
   },
   texture: {
     path: './assets/textures/',
     imageFiles: [
-      {name: 'UV', image: 'UV_Grid_Sm.jpg'},
+      // {name: 'UV', image: 'UV_Grid_Sm.jpg'},
       {name: 'clouds', image: '4k/fair_clouds_4k.jpg'},
       {name: 'stars', image: 'galaxy_starfield.png'},
       {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
@@ -32,11 +32,12 @@ export default {
       {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
       {name: 'normalmap', image: '4k/earth_normalmap_flat_4k.jpg'},
       {name: 'displacemap', image: '4k/Bump_4k.jpg'},
+      // {name: 'night', image: '4k/Night-Lights-4k.jpg'},
     ]
   },
   galaxy: {
     rotationSpeed: 0.007,
-    radius: 420,
+    radius: 500,
     widthSegments: 8,
     heightSegments: 4,
     x: 0,
@@ -51,6 +52,7 @@ export default {
       shininess: 8,
       specular: 0xBBBBBB,
       map: "earthColor",
+      nightmap: "night",
       // normalMap: ,
       // specularMap: ,
       normalScale: -0.4,
@@ -104,7 +106,9 @@ export default {
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
-    rotateSpeed: 0.15,
+    rotateSpeed: 0.13,
+    enableDamping: true,
+    dampingFactor: 0.2,
     enableZoom: true,
     zoomSpeed: 1.8,
     minDistance: 200,
@@ -113,8 +117,6 @@ export default {
     maxPolarAngle: Math.PI / 1.5,
     minAzimuthAngle: -Infinity,
     maxAzimuthAngle: Infinity,
-    enableDamping: true,
-    dampingFactor: 0.3,
     enablePan: false,
     target: {
       x: 0,
@@ -126,21 +128,8 @@ export default {
     enabled: false,
     color: 0x141414
   },
-  directionalLight: {
-    enabled: true,
-    color: 0xffffff,
-    colorH: 0.1,
-    colorS: 0.1,
-    colorL: 0.45,
-    // intensity: 0.4,
-    intensity: 1,
-    x: -1,
-    y: 1.75,
-    z: 1,
-    multiplyScalarPosition: 50
-  },
   shadow: {
-    enabled: true,
+    enabled: false,
     helperEnabled: false,
     bias: 0,
     mapWidth: 2048,
@@ -155,10 +144,11 @@ export default {
   spotlight: {
     //0xCEECF5 orig //0x44ffaa mystic green 500, 4	
     color: 0xCEECF5,
-    intensity: 1.2,
+    // color: 0xffaa00,
+    intensity: 0.8,
     distance: 500,
-    angle: "Math.PI / 4",
-    decay: 5,
+    angle: Math.PI / 4,
+    decay: 2,
     x: 147,
     y: -179,
     z: -21,
@@ -180,14 +170,38 @@ export default {
     color: 0xffffff,
     groundColor: 0xffffff,
     hColor: 0.6,
-    sColor: 0.5,
-    lColor: 1,
-    groundHColor: 0.095,
-    groundSColor: 0.5,
-    groundLColor: 0.8,
-    intensity: 0.6,
+    sColor: 0.2,
+    lColor: 0.6,
+    groundHColor: 0.5,
+    groundSColor: 0.2,
+    groundLColor: 0.4,
+    intensity: 1,
     x: 0,
     y: 500,
-    z: 0
-  }
+    z: 0,
+    night: {
+      // color:0xffc600,
+      color: 16754688,
+      // groundHColor: 0xffc600,
+      groundHColor: 16754688,
+      intensity: 1.3
+    }
+  }, 
+  directionalLight: {
+    enabled: true,
+    color: 0xffffff,
+    colorH: 0.1,
+    colorS: 0.1,
+    colorL: 0.40,
+    intensity: 0.0,
+    x: -1,
+    y: 5,
+    z: 1,
+    multiplyScalarPosition: 50,
+    night: {
+      // color: 0x8ebbff,
+      color: 7391996,
+      intensity: 0.7
+    }
+  },
 };

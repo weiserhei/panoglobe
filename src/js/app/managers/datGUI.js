@@ -100,6 +100,7 @@ export default class DatGUI {
       this.light.directionalLight.visible = value;
     });
     directionalLightFolder.addColor(Config.directionalLight, 'color').name('Color').onChange((value) => {
+      // console.log("dirlight hex", value);
       this.light.directionalLight.color.setHex(value);
     });
     const directionalLightIntensityGui = directionalLightFolder.add(Config.directionalLight, 'intensity', 0, 2).name('Intensity');

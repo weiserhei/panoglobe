@@ -38,11 +38,21 @@ export default class Marker {
         this._outlineMesh = new THREE.Mesh(mesh.geometry, outlineMaterial);
         this._outlineMesh.scale.multiplyScalar(1.3);
         this._outlineMesh.visible = false;
-		mesh.add(this._outlineMesh);
+        mesh.add(this._outlineMesh);
+        
+        this.a = document.createElement("div");
+        this.a.className="htmlLabel";
+        this.a.style = "background-color:#ffffff; bottom:0; right:0;";
 		
         this._mesh = mesh;
     }
 
+    get last() {
+        return this._last;
+    }
+    set last( value ) {
+        this._last = value;
+    }
     
     get active() {
         return this._active;
@@ -93,6 +103,8 @@ export default class Marker {
     }
 
     getLabel(parentDomNode, text, showLabel) {
+        parentDomNode.appendChild(this.a);
+
         this._label = new Label(parentDomNode, text);
         this._label.isVisible = showLabel;
         this._label.domElement.addEventListener("click", ()=>{
@@ -109,6 +121,7 @@ export default class Marker {
             this._label.domElement.addEventListener("mouseout", handleMouseUp.bind(this), false);
         }, false);
         return this._label;
+
     }
 
     getSprite(text, position, showLabel) {
@@ -134,7 +147,21 @@ export default class Marker {
         // close label on X click
         box.closeButton.addEventListener("click", ()=>{
             this.active = false;
-            // this.handleActive( false );
+        });
+        
+        if( this.next === undefined ) {
+            box.nextButton.className = "d-none";
+        }
+        if( this.previous === undefined ) {
+            box.prevButton.className = "d-none";
+        }
+        box.nextButton.addEventListener("click", ()=>{
+            this.next.active = true;
+        });
+
+        // close label on X click
+        box.prevButton.addEventListener("click", ()=>{
+            this.previous.active = true;
         });
 
         function handleMouseUp() {
@@ -145,6 +172,12 @@ export default class Marker {
 
             box.closeButton.addEventListener("mouseup", handleMouseUp.bind(this), false);
             box.closeButton.addEventListener("mouseout", handleMouseUp.bind(this), false);
+        }, false);
+        box.domElement.addEventListener("mousedown", ()=>{
+            this._controls.enabled = false;
+
+            box.domElement.addEventListener("mouseup", handleMouseUp.bind(this), false);
+            box.domElement.addEventListener("mouseout", handleMouseUp.bind(this), false);
         }, false);
 
         return box;
@@ -198,17 +231,6 @@ export default class Marker {
         }, false);
     }
 
-    // createLight(positionVec3, color, intensity) {
-    //     var light = new THREE.PointLight(color, intensity, 8);
-    //     var lightPos = positionVec3.multiplyScalar(1.03); //place light a little bit above the markers
-    //     light.position.copy(lightPos);
-
-    //     // var helper = new THREE.PointLightHelper( light, light.distance );
-    //     // helper.update();
-    //     // scene.add( helper );
-    //     return light;
-    // }
-
 }
 
 Marker.prototype.update = (function() {
@@ -218,7 +240,7 @@ Marker.prototype.update = (function() {
     let dot = new THREE.Vector3();
     let ocluded = false;
 
-    return function update( camera ) {
+    return function update( camera, delta, clock ) {
 
             // http://stackoverflow.com/questions/15098479/how-to-get-the-global-world-position-of-a-child-object
             // var meshVector = new THREE.Vector3().setFromMatrixPosition( meshGroup.children[ i ].matrixWorld ); 
@@ -252,8 +274,23 @@ Marker.prototype.update = (function() {
 
             if ( !ocluded ) {
                 //IF BLOBS VISIBLE: SCALE ACCORDING TO ZOOM LEVEL
-                this.mesh.scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
+                // this.mesh.scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
+                let x = 1;
+                if( this._last ) {
+                    const freq = 0.5;
+                    const amp = 3;
+                    const minSize = 10;
+                    const shift = 1;
+                    const wave = amp * Math.sin( freq * (clock.elapsedTime + shift) * Math.PI * 2 ) + amp + minSize;
+                    // const wave = amp * Math.sin( freq * (clock.elapsedTime + shift) * ( 0.5 * Math.cos( clock.elapsedTime )) ) + amp + minSize;
+                    // const x = (amp * Math.sin( ( freq * clock.elapsedTime * Math.PI * 2 ) ) ) + minSize;
+                    // this.a.innerHTML = x;
+                    x = wave / 10;
+                    if( x > 2.4 ) { x = 2.4; }
+                }
+                this.mesh.scale.set( x, x, x ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
             }
+
         }
 
 })();

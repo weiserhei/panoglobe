@@ -9,7 +9,6 @@ export default class Controls {
     // Orbit controls first needs to pass in THREE to constructor
     const orbitControls = new OrbitControls(camera, container);
     this.threeControls = orbitControls;
-
     
     function handleMouseMove() {
       document.body.style.cursor = 'grabbing';

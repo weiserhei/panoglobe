@@ -47,7 +47,6 @@ export default class Route {
 		this.drawCount = 0;
 		this.vertices = 0;
 
-
         this.group	= new THREE.Group();
 		scene.add( this.group );
 
@@ -81,16 +80,17 @@ export default class Route {
 		this._isVisible = value;
 	}
 
-    update( delta, camera ) {
+    update( delta, camera, clock ) {
 
-        if( this.line.material.resolution !== undefined ) {
-            this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
-		}
+		// resolution set not in loop necessary 
+		// 	if( this.line.material.resolution !== undefined ) {
+		// 		this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
+		// 	}
 		
 		// hide occluded, scale on zoom
 		let i = this.marker.length - 1;
 		for ( ; i >= 0 ; i -- ) {
-			this.marker[i].update( camera );
+			this.marker[i].update( camera, delta, clock );
 		}
 
 		// if ( this._animation === true ) {
@@ -115,6 +115,12 @@ export default class Route {
 
 		this._routeLine = new RouteLine( Config.routes.lineSegments );
 
+		let quickdirty = [];
+		routeData.forEach((currentCoordinate, index) => {
+			if ( ! currentCoordinate.adresse ) { return; }
+			quickdirty.push ( currentCoordinate );
+		});
+
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			if(index > 0) {
@@ -127,15 +133,28 @@ export default class Route {
 
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
+
 			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls);
 			this.marker.push(marker);
 			this.meshGroup.add( marker.mesh );
 
+			// function createLight (positionVec3, color, intensity) {
+			// 	var light = new THREE.PointLight(color, intensity, 8);
+			// 	var lightPos = positionVec3.multiplyScalar(1.03); //place light a little bit above the markers
+			// 	light.position.copy(lightPos);
+		
+			// 	// var helper = new THREE.PointLightHelper( light, light.distance );
+			// 	// helper.update();
+			// 	// scene.add( helper );
+			// 	return light;
+			// }
+			        
+			// const light = createLight(marker.mesh.position.clone(), color, 2);
+			// this.lightGroup.add( light );
+
 			//MAKE MARKER CLICKABLE
 			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lon );
 
-			// CREATE HUDLABELS FOR MARKER
-			marker.getInfoBox( this._container, currentCoordinate, this );
 			
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
@@ -151,6 +170,21 @@ export default class Route {
 			// var light = this._markerFactory.createLight( currentCoordinate.displacedPos.clone(), color, intensity );
 			// this.lightGroup.add( light );
 
+		})
+
+		this.marker[this.marker.length-1].last = true;
+
+		this.marker.forEach( (marker, index) => {
+
+			if( index !== 0 ) {
+				marker.previous = this.marker[index-1]
+			}
+			if ( index !== this.marker.length-1 ) {
+				marker.next = this.marker[index+1];
+			}
+
+			// CREATE HUDLABELS FOR MARKER
+			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
 		})
 
 		// $.when.apply(null, promises).done(function(){

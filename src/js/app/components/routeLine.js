@@ -89,6 +89,8 @@ export default class RouteLine {
 		// 	renderer.clearDepth(); 
 		// };
 
+		this.line.material.resolution.set( window.innerWidth, window.innerHeight );
+
         return this.line;
     }
 

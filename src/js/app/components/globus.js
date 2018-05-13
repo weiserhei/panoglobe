@@ -33,10 +33,36 @@ export default class Globus {
         scene.add(this.mesh);
 
         this.light = light;
+        this._textures;
 
     }
 
+    get night() {
+        return this._night;
+    }
+    set night( value ) {
+        this._night = value;
+        
+        if( value ) {
+
+            if( this._textures[Config.globus.material.nightmap] === undefined ) {
+                console.log("undef");
+                const textureLoader = new THREE.TextureLoader();
+                const url = "./assets/textures/4k/Night-Lights-4k.jpg";
+                this._textures[Config.globus.material.nightmap] = textureLoader.load(url, texture => {
+                    this.material.map = texture;
+                })
+            } else {
+                this.material.map = this._textures[Config.globus.material.nightmap]
+            }
+        } else {
+            this.material.map = this._textures[Config.globus.material.map];
+        }
+    }
+
     setTextures( textures ) {
+
+        this._textures = textures;
 
         this.material = new THREE.MeshPhongMaterial({
             wireframe: false,

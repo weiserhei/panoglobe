@@ -26,18 +26,18 @@ export default class InfoBox {
         this._box.className = "htmlLabel infobox";
         this._box.style.display = "none";
 
-        const nextButton = document.createElement("button");
-        nextButton.className = "btn btn-secondary float-right";
-        nextButton.innerHTML = "Next";
+        this._nextButton = document.createElement("button");
+        this._nextButton.className = "btn btn-secondary float-right btn-sm";
+        this._nextButton.innerHTML = "Next";
 
-        const prevButton = document.createElement("button");
-        prevButton.className = "btn btn-secondary";
-        prevButton.innerHTML = "Previous";
+        this._prevButton = document.createElement("button");
+        this._prevButton.className = "btn btn-secondary btn-sm";
+        this._prevButton.innerHTML = "Previous";
         const footer = document.createElement("div");
         footer.className = "card-footer";
 
-        footer.appendChild(nextButton);
-        footer.appendChild(prevButton);
+        footer.appendChild(this._nextButton);
+        footer.appendChild(this._prevButton);
         this._box.appendChild(footer);
 
         this._closeButton = document.createElement("button");
@@ -90,6 +90,14 @@ export default class InfoBox {
             this._box.style.display = "none";
             this._box.classList.remove("fadeIn");
         }
+    }
+
+    get nextButton() {
+        return this._nextButton;
+    }
+
+    get prevButton() {
+        return this._prevButton;
     }
     
     get domElement() {
