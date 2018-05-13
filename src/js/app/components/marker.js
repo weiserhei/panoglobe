@@ -103,7 +103,7 @@ export default class Marker {
     }
 
     getLabel(parentDomNode, text, showLabel) {
-        parentDomNode.appendChild(this.a);
+        // parentDomNode.appendChild(this.a);
 
         this._label = new Label(parentDomNode, text);
         this._label.isVisible = showLabel;
