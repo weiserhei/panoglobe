@@ -40,9 +40,9 @@ export default class Marker {
         this._outlineMesh.visible = false;
         mesh.add(this._outlineMesh);
         
-        this.a = document.createElement("div");
-        this.a.className="htmlLabel";
-        this.a.style = "background-color:#ffffff; bottom:0; right:0;";
+        // this.a = document.createElement("div");
+        // this.a.className="htmlLabel";
+        // this.a.style = "background-color:#ffffff; bottom:0; right:0;";
 		
         this._mesh = mesh;
     }
