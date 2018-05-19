@@ -102,7 +102,7 @@ export default class Main {
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
       // asien
-      const url = "//relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+      const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
       // amerika
       const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 

@@ -2,8 +2,9 @@ import Config from './data/config';
 import Detector from './utils/detector';
 import Main from './app/main';
 
-// import fontawesome from '@fortawesome/fontawesome';
-// import solid from '@fortawesome/fontawesome-free-solid';
+import fontawesome from '@fortawesome/fontawesome';
+import solid from '@fortawesome/fontawesome-free-solid';
+import regular from '@fortawesome/fontawesome-free-regular';
 // fontawesome.config = {
 //   familyPrefix: 'xd',
 //   autoReplaceSvg: false,

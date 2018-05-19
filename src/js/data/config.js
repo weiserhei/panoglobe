@@ -18,7 +18,7 @@ export default {
     scale: 20
   },
   routes: {
-    linewidth: 2.1, // error on 2.0 width wtf lol
+    linewidth: 1, // error on 2.0 width wtf lol
     lineSegments: 9
   },
   texture: {

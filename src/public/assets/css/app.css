@@ -6,7 +6,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
-@import "//use.fontawesome.com/releases/v5.0.6/css/all.css";
 :root {
   --blue:#007bff;
   --indigo:#6610f2;
@@ -7898,6 +7897,8 @@ body {
     transform: scale(2);
     opacity: 0; } }
 
+/* CUSTOMIZE FOR FONTAWESOME SVG ICONS */
+/* https://github.com/azouaoui-med/pro-sidebar-template/issues/2#issuecomment-390239095 */
 /* CUSTOMIZE dont change fontsize */
 /* body{
     font-size: .9rem;
@@ -8122,30 +8123,44 @@ li > .selected {
   position: relative;
   padding: 8px 30px 8px 20px; }
 
-.sidebar-wrapper .sidebar-menu ul li a i {
+.sidebar-wrapper .sidebar-menu ul li a i,
+.sidebar-wrapper .sidebar-menu ul li a span.svg-icon {
   margin-right: 10px;
   font-size: 12px;
   width: 30px;
   height: 30px;
   line-height: 30px;
   text-align: center;
-  border-radius: 4px; }
+  border-radius: 4px;
+  /* CUSTOMIZE FOR SVG */
+  display: inline-block; }
 
-.sidebar-wrapper .sidebar-menu ul li a:hover > i::before {
-  display: inline-block;
-  animation: swing ease-in-out .5s 1 alternate; }
+.sidebar-wrapper .sidebar-menu ul li a span.svg-icon svg {
+  width: 30px; }
 
-.sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f0da";
-  font-style: normal;
+.sidebar-wrapper .sidebar-menu ul li a:hover > i::before,
+.sidebar-wrapper .sidebar-menu ul li a:hover > span.svg-icon svg {
   display: inline-block;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  animation: swing ease-in-out .7s 1 alternate; }
+
+/* .sidebar-wrapper .sidebar-menu .sidebar-dropdown>a:after {   
+    font-family:"Font Awesome 5 Free";
+    font-weight: 900;
+    content:"\f0da";
+    font-style: normal;
+    display: inline-block;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    background: 0 0;
+    position: absolute;
+    right: 15px;
+    top: 14px;
+} */
+.sidebar-wrapper .sidebar-menu .sidebar-dropdown > a .caret {
+  display: inline-block;
   text-align: center;
   background: 0 0;
   position: absolute;
@@ -8159,18 +8174,30 @@ li > .selected {
   padding-left: 25px;
   font-size: 13px; }
 
+/*
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before {
-  content: "\f111";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 400;
-  font-style: normal;
-  display: inline-block;
-  text-align: center;
-  text-decoration: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    content: "\f111";
+    font-family:"Font Awesome 5 Free";
+    font-weight: 400;
+    font-style: normal;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin-right: 10px;
+    font-size: 8px;
+}
+*/
+.sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a span.bulletpoint {
   margin-right: 10px;
-  font-size: 8px; }
+  font-size: 8px;
+  /* line-height: 30px; */
+  /* width: 30px; */
+  /* height: 30px; */
+  /* margin-left:10px; */
+  text-align: center;
+  display: inline-block; }
 
 /* CUSTOMIZE add class hasInput */
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a.hasInput {
@@ -8196,7 +8223,8 @@ li > .selected {
 .sidebar-wrapper .sidebar-menu .sidebar-submenu {
   display: none; }
 
-.sidebar-wrapper .sidebar-menu .sidebar-dropdown.active > a:after {
+.sidebar-wrapper .sidebar-menu .sidebar-dropdown.active > a:after,
+.sidebar-wrapper .sidebar-menu .sidebar-dropdown.active > a .caret {
   transform: rotate(90deg);
   right: 17px; }
 
@@ -8375,6 +8403,7 @@ li > .selected {
   color: #EFEFEF; }
 
 .ice-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.ice-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .ice-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .ice-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .ice-theme .sidebar-wrapper .sidebar-search .input-group-text {

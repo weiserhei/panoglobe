@@ -12,11 +12,23 @@ class SidebarDropdown {
         this.a.setAttribute("href", "#");
         const i = document.createElement("i");
         i.className = iconClassName;
-        this.a.appendChild(i);
+        const svgSpan = document.createElement("span");
+        svgSpan.className = "svg-icon";
+        svgSpan.appendChild(i);
+        this.a.appendChild(svgSpan);
+        // this.a.appendChild(i);
         const span = document.createElement("span");
         span.innerHTML = name;
         this.a.appendChild(span);
         li.appendChild(this.a);
+
+        // icon on right side of dropdown list
+        const svgSpanCaret = document.createElement("span");
+        svgSpanCaret.className = "caret";
+        const bulletpoint = document.createElement("i");
+        bulletpoint.className = "fas fa-caret-right";
+        svgSpanCaret.appendChild(bulletpoint);
+        this.a.appendChild(svgSpanCaret);
 
         this.li = li;
 
@@ -53,9 +65,18 @@ class SidebarDropdown {
 
 function liplusa(el) {
     const li = document.createElement("li");
+    const svgSpan = document.createElement("span");
+    svgSpan.className = "bulletpoint";
+    const bulletpoint = document.createElement("i");
+    bulletpoint.className = "far fa-circle";
+    // bulletpoint.className = "far fa-dot-circle";
+    // bulletpoint.className = "fas fa-circle";
+    svgSpan.appendChild(bulletpoint);
+    
     const a = document.createElement("a");
+    a.appendChild(svgSpan);
     a.setAttribute("href", "#");
-    a.innerHTML = el;
+    a.innerHTML = svgSpan.outerHTML + el;
     li.appendChild(a)
     return li;
 }
@@ -111,16 +132,20 @@ export default class Sidebar {
         const a = document.createElement("a");
         a.setAttribute("href", "#");
         // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
-        a.innerHTML = '<i class="far fa-moon"></i> Lights Out';
+        const className = "far fa-moon";
+        const classNameActive = "far fa-moon text-warning";
+        const linkName = '<span class="svg-icon"><i class="'+className+'"></i></span> Lights Out';
+        const linkNameActive = '<span class="svg-icon"><i class="'+classNameActive+'"></i></span> Lights Out';
+        a.innerHTML = linkName;
         li2.appendChild(a);
         
         a.addEventListener("click", ()=>{
             this._lights.night = !this._lights.night;
             this._globus.night = !this._globus.night;
             if( this._globus.night ) {
-                a.innerHTML = '<i class="far fa-moon text-warning"></i> Lights Out';
+                a.innerHTML = linkNameActive;
             } else {
-                a.innerHTML = '<i class="far fa-moon"></i> Lights Out';
+                a.innerHTML = linkName;
             }
         });
 
@@ -234,7 +259,16 @@ export default class Sidebar {
             const hopDistance = numberWithCommas( Math.floor( poi.hopDistance ) );
             const li = document.createElement("li");
             const a = document.createElement("a");
-            a.innerHTML = poi.adresse + " (" + hopDistance + " km)";
+
+            const svgSpan = document.createElement("span");
+            svgSpan.className = "bulletpoint";
+            const bulletpoint = document.createElement("i");
+            bulletpoint.className = "far fa-circle";
+            // bulletpoint.className = "far fa-dot-circle";
+            // bulletpoint.className = "fas fa-circle";
+            svgSpan.appendChild(bulletpoint);
+
+            a.innerHTML = svgSpan.outerHTML + poi.adresse + " (" + hopDistance + " km)";
             li.appendChild( a );
             return li;
         });
