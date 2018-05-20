@@ -3,21 +3,21 @@ import $ from "jquery";
 export default class LoadingScreen {
     constructor(container) {
 
-        var progressbutton = document.getElementById( "progress-button" );
+        this.container = container;
+        // this.container = document.getElementById("loadcontainer");
+
         this.progressbar = document.getElementsByClassName( "progress-bar2" )[ 0 ];
         this.progressbar.style.width = "0px";
-        // this.container = document.getElementById("loadcontainer");
-        this.container = container;
-        // this.message = document.getElementById("message");
         
-        let loader = document.getElementsByClassName("progress2")[0];
-        // this.barwidth = parseInt( window.getComputedStyle( progressbutton ).getPropertyValue('width') );
+        const loader = document.getElementsByClassName("progress2")[0];
         this.barwidth = parseInt( window.getComputedStyle( loader ).getPropertyValue('width') );
         
     }
     setProgress( loaded, total ) {
         const progress = ( loaded / total ) * 100;
-        console.log(progress);
+
+        // colors from
+        // https://www.bypeople.com/animated-progress-bar/
         if( progress > 0 ) {
             var color = "#f63a0f";
         }
