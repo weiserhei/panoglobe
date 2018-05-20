@@ -86,7 +86,7 @@ export default class Main {
 
     this.routeLoader = new RouteLoader();
 
-    var imageLoader = new THREE.ImageLoader ();
+    var imageLoader = new THREE.ImageLoader (this.preloader.manager);
     const heightImageUrl = "./assets/textures/heightmap_1440.jpg";
     // var heightImage = imageLoader.load( heightImageUrl, image => { 
     //   var scale = 20;

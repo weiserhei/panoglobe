@@ -5,7 +5,7 @@ import Config from '../../data/config';
 // import { Water2 } from 'three-full';
 import AtmosphereMaterial from "../helpers/atmosphereMaterial";
 
-
+import Preloader from "./preloader";
 // Class that creates and updates the main camera
 export default class Globus {
     constructor(scene, light) {
@@ -35,6 +35,8 @@ export default class Globus {
         this.light = light;
         this._textures;
 
+        this._preloader = new Preloader(document.getElementById('loadcontainer'));
+
     }
 
     get night() {
@@ -46,8 +48,7 @@ export default class Globus {
         if( value ) {
 
             if( this._textures[Config.globus.material.nightmap] === undefined ) {
-                console.log("undef");
-                const textureLoader = new THREE.TextureLoader();
+                const textureLoader = this._preloader.textureLoader;
                 const url = "./assets/textures/4k/Night-Lights-4k.jpg";
                 this._textures[Config.globus.material.nightmap] = textureLoader.load(url, texture => {
                     this.material.map = texture;
