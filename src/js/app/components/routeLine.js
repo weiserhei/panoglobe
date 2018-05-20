@@ -22,13 +22,19 @@ export default class RouteLine {
 		this.positions;
 		this.colors;
 
+		this._numberVertices = 0;
+
+	}
+
+	get numberVertices() {
+		return this._numberVertices;
 	}
 
 	_build( steps, phase ) {
 		// calculate Positions and Colors
 		// based on steps and color phase
 
-        const numberVertices = this._lineMergeGeometry.vertices.length;
+        const numberVertices = this._numberVertices = this._lineMergeGeometry.vertices.length;
 		const color = new THREE.Color();
 		const frequency = 1 /  ( steps * numberVertices );
 

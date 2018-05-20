@@ -41,7 +41,7 @@ class SidebarDropdown {
         this.a.appendChild(span);
     }
 
-    setActive() {
+    set active( value ) {
         this.li.className += " active";
     }
 
@@ -185,8 +185,83 @@ export default class Sidebar {
 
         // Animation
         const sub1 = new SidebarDropdown("Animation", "fa fa-tachometer-alt");
-        sub1.submenu(liplusa("play pause oder so"));
+        let links = [];
+        // links.push(liplusa("play pause oder so"));
+
+        var li2 = document.createElement("li");
+        var svgSpan = document.createElement("span");
+        svgSpan.className = "bulletpoint";
+        var bulletpoint = document.createElement("i");
+        bulletpoint.className = "far fa-play-circle";
+        svgSpan.appendChild(bulletpoint);
         
+        var a3 = document.createElement("a");
+        a3.appendChild(svgSpan);
+        a3.setAttribute("href", "#");
+        a3.innerHTML = svgSpan.outerHTML + '<i class="far fa-play-circle"></i>';
+        // li2.appendChild(a3)
+
+        const buttonClass = "btn btn-lg btn-primary shadow-none";
+
+        var buttonGroup = document.createElement("div");
+		buttonGroup.className = "btn-group";
+
+		var playButton = document.createElement("button");
+		playButton.className = buttonClass;
+		playButton.type = "button";
+		playButton.innerText = " Play";
+		playButton.onclick = () => route.runAnimation = true;
+
+		var playIcon = document.createElement("i");
+		playIcon.id = "play";
+		playIcon.className = "fas fa-play-circle";
+
+		playButton.insertBefore(playIcon, playButton.firstChild);
+
+		var pauseButton = document.createElement("button");
+		pauseButton.className = buttonClass;
+		pauseButton.type = "button";
+		// pauseButton.onclick = route.pauseAnimate.bind(route);
+		// pauseButton.innerText = " Pause";
+
+		var pauseIcon = document.createElement("i");
+		pauseIcon.id = "pause";
+		pauseIcon.className = "fas fa-pause-circle";
+
+        pauseButton.insertBefore(pauseIcon, pauseButton.firstChild);
+
+		var stopButton = document.createElement("button");
+		stopButton.className = buttonClass;
+		stopButton.type = "button";
+		// stopButton.innerText = " Stop";
+		// stopButton.onclick = reset;
+
+		var stopIcon = document.createElement("i");
+		stopIcon.id = "stop";
+		stopIcon.className = "fas fa-stop-circle";
+
+        stopButton.insertBefore(stopIcon, stopButton.firstChild);
+
+		function togglePlay() { 
+			// this.classList.toggle( "play" );
+			// this.classList.toggle( "pause" );
+			route.toggleAnimate();
+			return false;
+		};
+
+		buttonGroup.appendChild( playButton );
+		buttonGroup.appendChild( pauseButton );
+		buttonGroup.appendChild( stopButton );
+		// li.className="list-group-item text-center";
+		li2.appendChild( buttonGroup );
+
+        // li2.innerHTML = controls;
+
+
+        links.push(li2);
+        sub1.submenu(links);
+        sub1.active = true;
+
         // route settings
         const sub3 = new SidebarDropdown("Settings", "fa fa-cog"); 
         
@@ -249,7 +324,7 @@ export default class Sidebar {
         sub3.submenu([liLabel2, liLabel]);
         
         const sub4 = new SidebarDropdown("test", "fa fa-wrench");
-        sub4.setActive();
+        sub4.active = true;
 
         // POIS
         const sub2 = new SidebarDropdown("Points of Interest", "fa fa-map-marker");

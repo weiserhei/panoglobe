@@ -185,16 +185,17 @@ export default class Marker {
     }
     
     linkify(activeHandler, lat, lon) {
-        var that = activeHandler;
         var eventTarget = this.mesh;
 
         function handleClick(event) {
             // Hide the infoBox when itself is clicked again
-            if (that.active === this) {
+            if (activeHandler.active === this) {
                 this.active = false;
-                that.active = null;
+                activeHandler.active = null;
                 return;
             }
+            this.active = true;
+            return;
             // if (this._controls.rotateToCoordinate instanceof Function) {
             if (this._controls !== undefined) {
                 // todo
@@ -202,20 +203,14 @@ export default class Marker {
                 // center clicked point in the middle of the screen
                 // controls.rotateToCoordinate(lat, lng);
             }
-            if (that.active !== null) {
-                // when the user clicked another marker 
-                // without deselecting the last
-                that.active = false;
-            }
-            that.active = this;
-            this.active = true;
+
         }
 
-        that._domEvents.addEventListener( eventTarget, 'click', handleClick.bind(this), false);
-        // that._domEvents.bind(eventTarget, 'click', handleClick, false);
+        activeHandler._domEvents.addEventListener( eventTarget, 'click', handleClick.bind(this), false);
+        // activeHandler._domEvents.bind(eventTarget, 'click', handleClick, false);
         // this._domEvents.bind( eventTarget, 'touchend', handleClick );
         // bind 'mouseover'
-        that._domEvents.addEventListener(eventTarget, 'mouseover', (event) => {
+        activeHandler._domEvents.addEventListener(eventTarget, 'mouseover', (event) => {
             // do nottin' when route is hidden
             if (this.mesh.parent.visible === false) {
                 return;
@@ -223,7 +218,7 @@ export default class Marker {
             document.body.style.cursor = 'pointer';
             this._outlineMesh.visible = true;
         }, false);
-        that._domEvents.bind(eventTarget, 'mouseout', (event) => {
+        activeHandler._domEvents.bind(eventTarget, 'mouseout', (event) => {
             if (this.active !== true) {
                 this._outlineMesh.visible = false;
             }

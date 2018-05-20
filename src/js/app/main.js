@@ -74,7 +74,7 @@ export default class Main {
       this.stats.setUp();
     }
 
-    this.preloader = new Preloader();
+    this.preloader = new Preloader(document.getElementById('loadcontainer'));
 
     // Instantiate texture class
     this.texture = new Texture(this.preloader.manager);
@@ -92,12 +92,9 @@ export default class Main {
     //   var scale = 20;
     //   this.heightData = Panoutils.getHeightData( heightImage, scale );
     // });
-    const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
-
     this._domEvents = new DomEvents( this.camera.threeCamera, this.container );
 
-    // this.markerFactory = new MarkerFactory(domEvents, this.container, this.controls.threeControls );
-
+    const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
     loadHeightData(heightImageUrl).then((heightImage) => {
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
@@ -112,7 +109,7 @@ export default class Main {
         route.showLabels = false;
         this.routes.push(route);
         this.sidebar.addRoute( route );
-      }) 
+      });
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );

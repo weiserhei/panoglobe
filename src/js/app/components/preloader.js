@@ -4,11 +4,12 @@ import LoadingScreen from './loadingScreen';
 
 // Main webGL renderer class
 export default class preloader {
-  constructor() {
+  constructor(container) {
 
-    var loadingScreen = new LoadingScreen();
+    var loadingScreen = new LoadingScreen(container);
 
     this.manager = new THREE.LoadingManager ();
+    this.textureLoader = new THREE.TextureLoader( this.manager );
 
     this.manager.onProgress = function ( item, loaded, total ) {
       loadingScreen.setProgress( loaded, total );
@@ -20,7 +21,6 @@ export default class preloader {
       loadingScreen.complete();
     }
 
-    this.textureLoader = new THREE.TextureLoader( this.manager );
 
   }
 

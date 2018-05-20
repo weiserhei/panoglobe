@@ -1,5 +1,6 @@
 .main {
-  // position: relative; /* destroys navigation */
+  position: relative; /* destroys navigation */
+  top:0;
   width: 100%;
   height: 100vh;
 }

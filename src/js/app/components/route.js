@@ -42,10 +42,10 @@ export default class Route {
 		this._isVisible = false;
 		this._showLabels = true;
 
-		this._animation = false;
+		this._animate = false;
 		this._currentInfoBox = 0;
 		this.drawCount = 0;
-		this.vertices = 0;
+		this._vertices = 0;
 
         this.group	= new THREE.Group();
 		scene.add( this.group );
@@ -55,7 +55,7 @@ export default class Route {
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
         this._createRoute( this._routeData, this.group, this.phase, this.steps, controls );
-
+		this._vertices = this._routeLine.numberVertices;
 	}
 
 
@@ -93,9 +93,9 @@ export default class Route {
 			this.marker[i].update( camera, delta, clock );
 		}
 
-		// if ( this._animation === true ) {
-		// 	this.animate( controls );		
-		// }
+		if ( this._animate === true ) {
+			this.animate( this._controls );		
+		}
 	}
 	
 	get pois() {
@@ -103,6 +103,8 @@ export default class Route {
 	}
 
     _createRoute( routeData, group, phase, steps, controls ) {
+
+		this._controls = controls;
 
 		var currentCoordinate;
 		var color = new THREE.Color();
@@ -246,49 +248,77 @@ export default class Route {
 
 	}
 
-	toggleAnimate( scope ) {
+	// toggleAnimate( scope ) {
 
-		var that = scope || this;
+	// 	var that = scope || this;
 
-		if ( that._animation === false ) {
+	// 	if ( that._animation === false ) {
 
-			that.startAnimate();
+	// 		that.startAnimate();
 
+	// 	} else {
+
+	// 		that.pauseAnimate();
+
+	// 	}
+
+	// }
+
+	get runAnimation() {
+		return this._animate;
+	}
+
+	set runAnimation( value ) {
+
+		if( this._animate === value ) {
+			// do nothing when already set
+			return;
+		}
+		this._animate = value;
+		this.showLabels = !value;
+
+		if( value === false ) {
+			// stop animation
+			this.drawCount = 0;
+			this.line.geometry.setDrawRange( 0, this._vertices );
+			if( this.active !== null ) {
+				this.active.active = false;
+			}
 		} else {
-
-			that.pauseAnimate();
-
+			if(this.active === null) {
+				this.active = this._cityMarkers[0];
+			}
 		}
 
 	}
 
-	startAnimate() {
+	// startAnimate() {
 
-		this._animation = true;
-		this.showLabels = false;
+	// 	this._animation = true;
+	// 	this.showLabels = false;
 
-		for ( var i = 0; i < this.meshGroup.children.length; i ++ ) {
+	// 	for ( var i = 0; i < this.meshGroup.children.length; i ++ ) {
 
-			if ( this._currentInfoBox > i ) {
+	// 		if ( this._currentInfoBox > i ) {
 
-				this.meshGroup.children[ i ].visible = true;
+	// 			this.meshGroup.children[ i ].visible = true;
 
-			}
-			else {
+	// 		}
+	// 		else {
 
-				this.meshGroup.children[ i ].visible = false;
+	// 			this.meshGroup.children[ i ].visible = false;
 
-			}
+	// 		}
 			
-		}
+	// 	}
 
-	}
+	// }
 
-	pauseAnimate() {
+	// pauseAnimate() {
 
-		this._animation = false;
+	// 	this._animation = false;
 
-	}
+	// }
 
 	stopAnimate() {
 
@@ -326,28 +356,24 @@ export default class Route {
 	
 	animate( controls ) {
 
-			var drawCallCityIndex = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox ] ) * this._routeLine.segments;
-			var drawCallCityIndexBefore = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
-			var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore;
-
+		var drawCallCityIndex = this._routeData.indexOf( this.pois[ this._currentInfoBox ] ) * this._routeLine.segments;
+		var drawCallCityIndexBefore = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
+		var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore;
 
 			if ( this.drawCount === drawCallCityIndex )
 			{
-
-				this.meshGroup.children[ this._currentInfoBox ].visible = true;
+				// this.meshGroup.children[ this._currentInfoBox ].visible = true;
+				this.pois[this._currentInfoBox].active = true;
+				// this.active.active = true;
 				this._currentInfoBox = ( this._currentInfoBox + 1 ) % ( this._cityMarkers.length );
-
 			}
 
 			if ( this.drawCount >= drawCallCityIndex ) {
 
 				if ( this.meshGroup.children[ this._currentInfoBox - 1 ] !== undefined ) {
-
 					// show infoBox
+
 					this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
-
-
-
 				} 
 				else if( this.meshGroup.children[ this._currentInfoBox - 1 ] === undefined ) {
 
@@ -364,29 +390,26 @@ export default class Route {
 			}
 			// meh because float drawCount
 			else if ( this.drawCount >= closeDelay && this.drawCount <= closeDelay ) {
-
 				// close infoBox
 				this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
-
 			}
-
 
 			// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
 			this.line.geometry.setDrawRange( 0, this.drawCount );
 			// drawCount must be all vertices
-			this.drawCount = ( this.drawCount + 0.5 ) % ( this.vertices );
-
-			// "camera" follows route
-			var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
-			var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
-
+			this.drawCount = ( this.drawCount + 0.5 ) % ( this._vertices );
+		/*
 			if( controls.rotateToCoordinate instanceof Function ){
+				// "camera" follows route
+				var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
+				var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
 				// present the starting point on load to the user
 				controls.rotateToCoordinate ( lat, lng );
 			}
 			// controls.rotateToCoordinate ( lat, lng );
 			// debug
 			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
+		*/
 
 	}
 

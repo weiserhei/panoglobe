@@ -6562,6 +6562,9 @@ body {
   background-color: #ffaa00; }
 
 .main {
+  position: relative;
+  /* destroys navigation */
+  top: 0;
   width: 100%;
   height: 100vh; }
 
@@ -6770,23 +6773,138 @@ body {
   /*animation-iteration-count: infinite;*/
   /*animation-iteration-count: 2;*/ }
 
-#loading {
+#loadcontainer .progress2 {
+  margin: 0 auto;
+  width: 120px;
+  top: 50%; }
+
+#loadcontainer .progress2 {
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08); }
+
+.progress-bar2 {
+  width: 0;
+  height: 4px;
+  border-radius: 1px;
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  -webkit-transition: 0.4s linear;
+  -moz-transition: 0.4s linear;
+  -o-transition: 0.4s linear;
+  transition: 0.4s linear;
+  -webkit-transition-property: width, background-color;
+  -moz-transition-property: width, background-color;
+  -o-transition-property: width, background-color;
+  transition-property: width, background-color;
+  -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1); }
+
+#loadcontainer {
+  background-color: #222;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#222222+0,000000+100 */
+  background: #222222;
+  /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover, #222222 0%, #000000 100%);
+  /* FF3.6-15 */
+  background: -webkit-radial-gradient(center, ellipse cover, #222222 0%, #000000 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: radial-gradient(ellipse at center, #222222 0%, #000000 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222222', endColorstr='#000000',GradientType=1 );
+  /* IE6-9 fallback on horizontal gradient */ }
+
+#loader {
+  display: block;
+  position: relative;
+  left: 50%;
+  top: 40%;
+  width: 350px;
+  height: 350px;
+  margin: -175px 0 0 -175px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #9370DB;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite; }
+
+#loader:before {
+  content: "";
   position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 35px); }
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #BA55D3;
+  -webkit-animation: spin 3s linear infinite;
+  animation: spin 3s linear infinite; }
+
+#loader:after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #FF00FF;
+  -webkit-animation: spin 1.5s linear infinite;
+  animation: spin 1.5s linear infinite; }
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg); } }
 
 #loadcontainer {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   margin: 0 auto;
-  width: 60%;
+  width: 100%;
+  height: 100vh;
   text-align: center;
-  top: 100px;
-  position: relative;
+  top: 0;
+  position: fixed;
+  z-index: 1000;
+  /* pro-sidebar z-index: 999 */
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 1em;
   line-height: 4; }
+
+#loadcontainer h1 {
+  top: 50%;
+  position: relative; }
+
+#loadcontainer .progress2 {
+  position: relative; }
 
 #message {
   font-family: "Arial", "Helvetica", "sans-serif";
