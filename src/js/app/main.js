@@ -79,6 +79,30 @@ export default class Main {
 
     this.preloader = new Preloader(document.getElementById('loadcontainer'));
 
+    const listener = new THREE.AudioListener();
+    
+		let audio = new THREE.Audio( listener );
+    let audioLoader = new THREE.AudioLoader(this.preloader.manager);
+    // audioLoader.load( 'assets/sounds/lightswitch.ogg', function ( buffer ) {
+      audioLoader.load( 'assets/sounds/drawKnife1.ogg', function ( buffer ) {
+        audio.setBuffer( buffer );
+        audio.setLoop( false );
+        audio.setVolume(0.3);
+        // audio.play();
+      } );
+    let audio2 = new THREE.Audio( listener );
+    // audioLoader.load( 'assets/sounds/handleSmallLeather2.ogg', function ( buffer ) {
+    audioLoader.load( 'assets/sounds/bookFlip3.ogg', function ( buffer ) {
+      audio2.setBuffer( buffer );
+      audio2.setLoop( false );
+      audio2.setVolume(0.1);
+      // audio.play();
+      } );
+
+      let audios = {};
+      audios.open = audio;
+      audios.close = audio2;
+
     // Instantiate texture class
     this.texture = new Texture(this.preloader.manager);
     this.globus = new Globus( this.scene, this.light.directionalLight );
@@ -108,7 +132,7 @@ export default class Main {
 
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
         route.showLabels = false;
         this.routes.push(route);
         this.sidebar.addRoute( route );
@@ -116,7 +140,7 @@ export default class Main {
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
         this.sidebar.addRoute( route );
         this.routes.push(route);
       }); 

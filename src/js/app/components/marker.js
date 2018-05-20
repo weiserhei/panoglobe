@@ -6,7 +6,7 @@ import Label from "./label";
 
 export default class Marker {
 
-    constructor(color, positionVector, protoMesh, activeHandler, controls, particles) {
+    constructor(color, positionVector, protoMesh, activeHandler, controls, particles, audio) {
 
         this._active = false;
         this._infoBox = null;
@@ -46,6 +46,8 @@ export default class Marker {
         // this.a = document.createElement("div");
         // this.a.className="htmlLabel";
         // this.a.style = "background-color:#ffffff; bottom:0; right:0;";
+
+        this._audio = audio;
 		
         this._mesh = mesh;
     }
@@ -62,6 +64,11 @@ export default class Marker {
     }
 
     set active( value ) {
+        
+        // only play sound on close, not when opening another marker
+        if( !value && this._activeHandler.active !== null ) {
+            this._audio.close.play();
+        }
         // only one active
         if( this._activeHandler.active !== null ) {
             const otherMarker = this._activeHandler.active;
@@ -69,23 +76,24 @@ export default class Marker {
             this._activeHandler.active = null;
             otherMarker.active = false;
         }
-        this._activeHandler.active = this;
+
         this._active = value;
-
+        
         if( value ) {
-
+            this._audio.open.play();
+            this._activeHandler.active = this;
             // on Hit something trigger hit effect emitter
             // this.particles.setNormal( target.face.normal );
             // this.particles.particleGroup.mesh.position.copy( target.point );
             this._particles.setColor(this._color, new THREE.Color("black"));
-
+            
             this._particles.particleGroup.mesh.position.copy( this._mesh.position );
             this._particles.triggerPoolEmitter( 1 );
             // sadly broken
             // const impactPosition = new THREE.Vector3();
             // this.particles.particleGroup.triggerPoolEmitter( 1, ( impactPosition.set( target.point.x, target.point.y, target.point.z ) ) );
-
         }
+
         if( this._infoBox !== null ) {
             this._infoBox.isVisible = value;
         }
