@@ -123,7 +123,6 @@ export default class Sidebar {
         var li2 = document.createElement("li");
         li2.className = "sidebar-settings-menu";
 
-
         // const span = document.createElement("span");
         // span.className = "badge badge-pill badge-"+className;
         // span.innerHTML = value;
@@ -186,7 +185,6 @@ export default class Sidebar {
         // Animation
         const sub1 = new SidebarDropdown("Animation", "fa fa-tachometer-alt");
         let links = [];
-        // links.push(liplusa("play pause oder so"));
 
         var li2 = document.createElement("li");
         var svgSpan = document.createElement("span");
@@ -194,69 +192,47 @@ export default class Sidebar {
         var bulletpoint = document.createElement("i");
         bulletpoint.className = "far fa-play-circle";
         svgSpan.appendChild(bulletpoint);
-        
-        var a3 = document.createElement("a");
-        a3.appendChild(svgSpan);
-        a3.setAttribute("href", "#");
-        a3.innerHTML = svgSpan.outerHTML + '<i class="far fa-play-circle"></i>';
-        // li2.appendChild(a3)
+
+        function icon(className, id) {
+            const icon = document.createElement("i");
+            icon.className = className;
+            icon.id = id;
+            return icon;
+        }
+
+        function mediaControlButton(text, className, icon) {
+            const button = document.createElement("button");
+            button.className = className;
+            button.innerText = text;
+            button.type = "button";
+            button.insertBefore(icon, button.firstChild);
+            return button;
+        }
 
         const buttonClass = "btn btn-lg btn-primary shadow-none";
 
         var buttonGroup = document.createElement("div");
 		buttonGroup.className = "btn-group";
-
-		var playButton = document.createElement("button");
-		playButton.className = buttonClass;
-		playButton.type = "button";
-		playButton.innerText = " Play";
-		playButton.onclick = () => route.runAnimation = true;
-
-		var playIcon = document.createElement("i");
-		playIcon.id = "play";
-		playIcon.className = "fas fa-play-circle";
-
-		playButton.insertBefore(playIcon, playButton.firstChild);
-
-		var pauseButton = document.createElement("button");
-		pauseButton.className = buttonClass;
-		pauseButton.type = "button";
+        
+		var playIcon = icon("fas fa-play-circle", "play");
+		var playButton = mediaControlButton(" Play", buttonClass, playIcon);
+        playButton.onclick = () => route.runAnimation = true;
+        
+		var pauseIcon = icon("fas fa-pause-circle", "pause");
+		var pauseButton = mediaControlButton("", buttonClass, pauseIcon);
 		// pauseButton.onclick = route.pauseAnimate.bind(route);
 		// pauseButton.innerText = " Pause";
-
-		var pauseIcon = document.createElement("i");
-		pauseIcon.id = "pause";
-		pauseIcon.className = "fas fa-pause-circle";
-
-        pauseButton.insertBefore(pauseIcon, pauseButton.firstChild);
-
-		var stopButton = document.createElement("button");
-		stopButton.className = buttonClass;
-		stopButton.type = "button";
+        
+		var stopIcon = icon("fas fa-stop-circle", "stop");
+		var stopButton = mediaControlButton("", buttonClass, stopIcon);
 		// stopButton.innerText = " Stop";
 		// stopButton.onclick = reset;
-
-		var stopIcon = document.createElement("i");
-		stopIcon.id = "stop";
-		stopIcon.className = "fas fa-stop-circle";
-
-        stopButton.insertBefore(stopIcon, stopButton.firstChild);
-
-		function togglePlay() { 
-			// this.classList.toggle( "play" );
-			// this.classList.toggle( "pause" );
-			route.toggleAnimate();
-			return false;
-		};
 
 		buttonGroup.appendChild( playButton );
 		buttonGroup.appendChild( pauseButton );
 		buttonGroup.appendChild( stopButton );
-		// li.className="list-group-item text-center";
+
 		li2.appendChild( buttonGroup );
-
-        // li2.innerHTML = controls;
-
 
         links.push(li2);
         sub1.submenu(links);
