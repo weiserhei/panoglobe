@@ -72,8 +72,13 @@ export default class Marker {
         if( this._infoBox !== null ) {
             this._infoBox.isVisible = value;
         }
-        this._label.isVisible = !value;
-        // this.sprite.visible = false;
+        // respect route setting on showing labels or not
+        if( this._activeHandler.showLabels ) {
+            this._label.isVisible = !value;
+        } else {
+            this._label.isVisible = false;
+        }
+
         this._outlineMesh.visible = value;
     }
 
