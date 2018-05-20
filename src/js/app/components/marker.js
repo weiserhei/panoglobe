@@ -6,7 +6,7 @@ import Label from "./label";
 
 export default class Marker {
 
-    constructor(color, positionVector, protoMesh, activeHandler, controls) {
+    constructor(color, positionVector, protoMesh, activeHandler, controls, particles) {
 
         this._active = false;
         this._infoBox = null;
@@ -14,10 +14,13 @@ export default class Marker {
         this._isVisible = true;
 
         this._controls = controls;
+        this._particles = particles;
 
         this._label = null;
 
         this._activeHandler = activeHandler;
+
+        this._color = color;
 
         const mesh = protoMesh.clone();
         mesh.material = protoMesh.material.clone();
@@ -69,6 +72,20 @@ export default class Marker {
         this._activeHandler.active = this;
         this._active = value;
 
+        if( value ) {
+
+            // on Hit something trigger hit effect emitter
+            // this.particles.setNormal( target.face.normal );
+            // this.particles.particleGroup.mesh.position.copy( target.point );
+            this._particles.setColor(this._color, new THREE.Color("black"));
+
+            this._particles.particleGroup.mesh.position.copy( this._mesh.position );
+            this._particles.triggerPoolEmitter( 1 );
+            // sadly broken
+            // const impactPosition = new THREE.Vector3();
+            // this.particles.particleGroup.triggerPoolEmitter( 1, ( impactPosition.set( target.point.x, target.point.y, target.point.z ) ) );
+
+        }
         if( this._infoBox !== null ) {
             this._infoBox.isVisible = value;
         }

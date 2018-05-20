@@ -17,6 +17,7 @@ export default class Preloader {
     this.barwidth = parseInt( window.getComputedStyle( loader ).getPropertyValue('width') );
 
     this.manager.onStart = () => {
+      // make visible if hidden with fadeOut()
       this.container.style.display = "";
     };
 

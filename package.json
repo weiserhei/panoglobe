@@ -30,6 +30,7 @@
     "jquery-mousewheel": "^3.1.13",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "popper.js": "^1.14.3",
+    "shader-particle-engine": "^1.0.6",
     "three": "^0.92.0",
     "three-full": "^6.0.0",
     "tween.js": "^16.6.0"

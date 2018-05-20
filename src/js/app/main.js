@@ -24,6 +24,7 @@ import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import RouteLoader from "./components/routeLoader";
 import Sidebar from "./components/sidebar";
+import Particles from "./components/particles";
 
 // Managers
 import Interaction from './managers/interaction';
@@ -63,6 +64,8 @@ export default class Main {
     this.controls = new Controls(this.camera.threeCamera, container);
     this.scene.add( this.controls.threeControls.object );
     this.light = new Light(this.scene, this.controls.threeControls.object );
+
+    this.particles = new Particles( this.scene );
 
     // Create and place lights in scene
     const lights = ['spot', 'directional', 'hemi', "point"];
@@ -105,7 +108,7 @@ export default class Main {
 
       this.routeLoader.load(url, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles );
         route.showLabels = false;
         this.routes.push(route);
         this.sidebar.addRoute( route );
@@ -113,7 +116,7 @@ export default class Main {
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles );
         this.sidebar.addRoute( route );
         this.routes.push(route);
       }); 
@@ -158,11 +161,48 @@ export default class Main {
 
     // Start render which does not wait for model fully loaded
     this.render();
+
+
+    // var raycaster = new THREE.Raycaster();
+    // var mouse = new THREE.Vector2();
+
+    // function onMouseMove( event ) {
+    //   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    //   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // }
+    // window.addEventListener( 'mousemove', onMouseMove, false );
+
+    // document.addEventListener("click", () => {
+    //   raycaster.setFromCamera( mouse, this.camera.threeCamera );
+
+    //   // calculate objects intersecting the picking ray
+    //   var intersects = raycaster.intersectObjects( [this.globus.mesh] );
+    //   // for ( var i = 0; i < intersects.length; i++ ) {
+    //   //   intersects[ i ].object.material.color.set( 0xff0000 );
+    //   // }
+  
+    //   if ( intersects.length > 0 ) {
+    //     var target = intersects[ 0 ];
+    //     console.log( target);
+    //     // on Hit something trigger hit effect emitter
+    //     this.particles.setNormal( target.face.normal );
+    //     this.particles.particleGroup.mesh.position.copy( target.point );
+    //     this.particles.triggerPoolEmitter( 1 );
+    //     // sadly broken
+    //     // const impactPosition = new THREE.Vector3();
+    //     // this.particles.particleGroup.triggerPoolEmitter( 1, ( impactPosition.set( target.point.x, target.point.y, target.point.z ) ) );
+  
+    //   }
+
+    // });
+
+
   }
 
   update( delta ) {
     // Call any vendor or module frame updates here
     // TWEEN.update();
+    this.particles.update( delta );
     this.controls.threeControls.update();
     this.skybox.update( delta );
     this.globus.update( delta );

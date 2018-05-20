@@ -42,7 +42,7 @@ class SidebarDropdown {
     }
 
     set active( value ) {
-        this.li.className += " active";
+        if(value) this.li.className += " active";
     }
 
     submenu(linkArray) {
@@ -236,7 +236,7 @@ export default class Sidebar {
 
         links.push(li2);
         sub1.submenu(links);
-        sub1.active = true;
+        sub1.active = false;
 
         // route settings
         const sub3 = new SidebarDropdown("Settings", "fa fa-cog"); 
