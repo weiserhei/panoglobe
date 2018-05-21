@@ -270,10 +270,6 @@ export default class Route {
 
 	set runAnimation( value ) {
 
-		if( this._animate === value ) {
-			// do nothing when already set
-			return;
-		}
 		this._animate = value;
 		this.showLabels = !value;
 
