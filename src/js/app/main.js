@@ -80,29 +80,28 @@ export default class Main {
 
     this.preloader = new Preloader(document.getElementById('loadcontainer'));
 
-    const listener = new THREE.AudioListener();
-    
-		let audio = new THREE.Audio( listener );
-    let audioLoader = new THREE.AudioLoader(this.preloader.manager);
-    // audioLoader.load( 'assets/sounds/lightswitch.ogg', function ( buffer ) {
-      audioLoader.load( 'assets/sounds/drawKnife1.ogg', function ( buffer ) {
-        audio.setBuffer( buffer );
-        audio.setLoop( false );
-        audio.setVolume(0.3);
-        // audio.play();
-      } );
-    let audio2 = new THREE.Audio( listener );
-    // audioLoader.load( 'assets/sounds/handleSmallLeather2.ogg', function ( buffer ) {
-    audioLoader.load( 'assets/sounds/bookFlip3.ogg', function ( buffer ) {
-      audio2.setBuffer( buffer );
-      audio2.setLoop( false );
-      audio2.setVolume(0.1);
-      // audio.play();
-      } );
+    // const listener = new THREE.AudioListener();
+		// let audio = new THREE.Audio( listener );
+    // let audioLoader = new THREE.AudioLoader(this.preloader.manager);
+    // // audioLoader.load( 'assets/sounds/lightswitch.ogg', function ( buffer ) {
+    //   audioLoader.load( 'assets/sounds/drawKnife1.ogg', function ( buffer ) {
+    //     audio.setBuffer( buffer );
+    //     audio.setLoop( false );
+    //     audio.setVolume(0.3);
+    //     // audio.play();
+    //   } );
+    // let audio2 = new THREE.Audio( listener );
+    // // audioLoader.load( 'assets/sounds/handleSmallLeather2.ogg', function ( buffer ) {
+    // audioLoader.load( 'assets/sounds/bookFlip3.ogg', function ( buffer ) {
+    //   audio2.setBuffer( buffer );
+    //   audio2.setLoop( false );
+    //   audio2.setVolume(0.1);
+    //   // audio.play();
+    //   } );
 
       let audios = {};
-      audios.open = audio;
-      audios.close = audio2;
+      // audios.open = audio;
+      // audios.close = audio2;
 
     // Instantiate texture class
     this.texture = new Texture(this.preloader.manager);

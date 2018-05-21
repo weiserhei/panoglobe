@@ -12,7 +12,6 @@ export default class Label {
         // google maps style labels
         this._box.className = "htmlLabel btn btn-link btn-sm text-white";
         this._box.style.textShadow = "0 0 3px #000";
-
         // this._box.style.textDecoration = "none";
         this._box.innerHTML = text;
 
