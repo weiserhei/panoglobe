@@ -80,7 +80,7 @@ export default class Route {
 		this._isVisible = value;
 	}
 
-    update( delta, camera, clock ) {
+    update( delta, camera ) {
 
 		// resolution set not in loop necessary 
 		// 	if( this.line.material.resolution !== undefined ) {
@@ -90,7 +90,7 @@ export default class Route {
 		// hide occluded, scale on zoom
 		let i = this.marker.length - 1;
 		for ( ; i >= 0 ; i -- ) {
-			this.marker[i].update( camera, delta, clock );
+			this.marker[i].update( camera, delta );
 		}
 
 		if ( this._animate === true ) {

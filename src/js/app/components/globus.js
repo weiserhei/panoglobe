@@ -6,37 +6,96 @@ import Config from '../../data/config';
 import AtmosphereMaterial from "../helpers/atmosphereMaterial";
 
 import Preloader from "./preloader";
-// Class that creates and updates the main camera
+
+
+function getClouds( geometry ) {
+
+    const cloudMaterial	= new THREE.MeshBasicMaterial( { 
+        // map	: this.textures.clouds,
+        transparent	: true, 
+        opacity	: Config.globus.clouds.opacity,
+        blending	: THREE.AdditiveBlending
+    } ); 
+
+    const cloudSphere = new THREE.Mesh( geometry.clone(), cloudMaterial );
+    cloudSphere.scale.multiplyScalar ( 1.035 );
+
+    cloudSphere.matrixAutoUpdate = false;
+    cloudSphere.updateMatrix();
+
+    return cloudSphere;
+}
+
+function getInnerGlow( geometry ) {
+    // inner Glow
+    const color = new THREE.Color( Config.globus.innerGlow.color );
+    const material = new AtmosphereMaterial( color );
+    material.uniforms.coeficient.value	= Config.globus.innerGlow.coeficient;
+    material.uniforms.power.value		= Config.globus.innerGlow.power;
+    // var mesh	= new THREE.Mesh( geometry.clone(), material );
+    const mesh	= new THREE.Mesh( geometry, material );
+    mesh.scale.multiplyScalar( 1.01 );
+    mesh.matrixAutoUpdate = false;
+    mesh.updateMatrix();
+
+    return mesh;
+}
+
+function getOuterGlow( geometry ) {
+    // outer Glow
+    const color = new THREE.Color( Config.globus.outerGlow.color );
+    const material = new AtmosphereMaterial( color );
+    material.side = THREE.BackSide;
+    material.uniforms.coeficient.value	= Config.globus.outerGlow.coeficient;
+    material.uniforms.power.value		= Config.globus.outerGlow.power;
+    // var mesh	= new THREE.Mesh( geometry.clone(), material );
+    const mesh	= new THREE.Mesh( geometry, material );
+    mesh.scale.multiplyScalar( 1.15 );
+    mesh.matrixAutoUpdate = false;
+    mesh.updateMatrix();
+
+    return mesh;
+}
+
+// Class that creates the globe
 export default class Globus {
-    constructor(scene, light) {
+    constructor( scene ) {
 
-        this.scene = scene;
-        this.geometry = new THREE.IcosahedronBufferGeometry( Config.globus.radius, Config.globus.detail );
-        this.geometry.applyMatrix( new THREE.Matrix4().makeScale( - 1, 1, - 1 ) ); 
+        this._textures;
 
-        this.mesh = new THREE.Mesh ( this.geometry );
+        this._preloader = new Preloader(document.getElementById('loadcontainer'));
+        this._preloader.inline = true;
+
+        const geometry = new THREE.IcosahedronBufferGeometry( Config.globus.radius, Config.globus.detail );
+        geometry.applyMatrix( new THREE.Matrix4().makeScale( - 1, 1, - 1 ) ); 
+
+        this.material = new THREE.MeshPhongMaterial({
+            wireframe: false,
+            color: Config.globus.material.color,
+            specular: Config.globus.material.specular,
+            shininess: Config.globus.material.shininess,
+            normalScale: new THREE.Vector2( Config.globus.material.normalScale, Config.globus.material.normalScale ),
+            displacementScale: Config.globus.material.displacementScale,
+            displacementBias: Config.globus.material.displacementBias,
+        });
+
+        this.mesh = new THREE.Mesh ( geometry, this.material );
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.matrixAutoUpdate = false;
         this.mesh.updateMatrix();
 
         if( Config.globus.innerGlow.enabled === true ) {
-            this.mesh.add( this.innerGlow );
+            this.mesh.add( getInnerGlow( geometry ) );
         }
         if( Config.globus.outerGlow.enabled === true ) {
-            this.mesh.add( this.outerGlow );
+            this.mesh.add( getOuterGlow( geometry ) );
         }
         if( Config.globus.clouds.enabled === true ) {
-            this._clouds = this.clouds;
+            this._clouds = getClouds( geometry );
             this.mesh.add( this._clouds );
         }
         scene.add(this.mesh);
-
-        this.light = light;
-        this._textures;
-
-        this._preloader = new Preloader(document.getElementById('loadcontainer'));
-        this._preloader.inline = true;
 
     }
 
@@ -66,19 +125,19 @@ export default class Globus {
 
         this._textures = textures;
 
-        this.material = new THREE.MeshPhongMaterial({
-            wireframe: false,
-            color: Config.globus.material.color,
-            specular: Config.globus.material.specular,
-            shininess: Config.globus.material.shininess,
-            map: textures[Config.globus.material.map],
-            specularMap: textures.invertedSpecularmap, 
-            normalMap: textures.normalmap,
-            normalScale: new THREE.Vector2( Config.globus.material.normalScale, Config.globus.material.normalScale ),
-            displacementMap: textures[Config.globus.material.displacementMap],
-            displacementScale: Config.globus.material.displacementScale,
-            displacementBias: Config.globus.material.displacementBias,
-        });
+        this.material.map = textures[Config.globus.material.map];
+        this.material.specularMap = textures.invertedSpecularmap; 
+        this.material.normalMap = textures.normalmap;
+        this.material.displacementMap = textures[Config.globus.material.displacementMap];
+        this.mesh.material.needsUpdate = true;
+
+        // material for shadows on displacement
+        // this.mesh.customDepthMaterial = new THREE.MeshDepthMaterial( {
+        //     depthPacking: THREE.RGBADepthPacking,
+        //     displacementMap: textures[Config.globus.material.displacementMap],
+        //     displacementScale: Config.globus.material.displacementScale,
+        //     displacementBias: Config.globus.material.displacementBias,
+        // } );
 
         if( Config.globus.clouds.enabled === true ) {
             this._clouds.material.map = textures.clouds;
@@ -101,102 +160,7 @@ export default class Globus {
         //     displacementScale: Config.globus.material.displacementScale,
         //     displacementBias: Config.globus.material.displacementBias,
         // });
-        // var spline = new THREE.CatmullRomCurve3( [
-        //     new THREE.Vector3( -20, 0, 0 ),
-        //     new THREE.Vector3( -20, -20, 0 ),
-        //     new THREE.Vector3( 20, -20, 0 ),
-        //     new THREE.Vector3( 20, 0, 0 ),
-        //     // new THREE.Vector3( -20, 0, 0 )
-        // ], true );
-
-
-        this.mesh.material = this.material;
-        this.mesh.material.needsUpdate = true;
-
-        this.mesh.customDepthMaterial = new THREE.MeshDepthMaterial( {
-            depthPacking: THREE.RGBADepthPacking,
-            displacementMap: textures[Config.globus.material.displacementMap],
-            displacementScale: Config.globus.material.displacementScale,
-            displacementBias: Config.globus.material.displacementBias,
-        } );
-
-        // textures.waternormals.wrapS = textures.waternormals.wrapT = THREE.RepeatWrapping;
-
-        // this.water = new Water(
-        //     this.geometry,
-        //     {
-        //         textureWidth: 512,
-        //         textureHeight: 512,
-        //         waterNormals: textures.waternormals,
-        //         alpha: 0.4,
-        //         sunDirection: this.light.position.clone().normalize(),
-        //         sunColor: 0xffffff,
-        //         // waterColor: 0x001e0f,
-        //         waterColor: 0x001eAf,
-        //         distortionScale:  3.7,
-        //         fog: this.scene.fog !== undefined
-        //     }
-        // );
-
-        // this.water = new THREEFULL.Water2( new THREE.PlaneBufferGeometry(100, 100), {
-        //     color: "#FFFFFF",
-        //     scale: 1,
-        //     flowDirection: new THREE.Vector2( 1, 1 ),
-        //     textureWidth: 1024,
-        //     textureHeight: 1024
-        // } );
-
-        // this.scene.add( this.water );
 
     }
 
-    update() {
-    }
-
-    get clouds() {
-        var geometry = this.geometry;
-
-        var cloudMaterial	= new THREE.MeshBasicMaterial( { 
-        // map	: this.textures.clouds,
-        transparent	: true, 
-        opacity	: Config.globus.clouds.opacity,
-        blending	: THREE.AdditiveBlending
-        } ); 
-
-        var cloudSphere = new THREE.Mesh( geometry.clone(), cloudMaterial );
-        cloudSphere.scale.multiplyScalar ( 1.035 );
-
-        return cloudSphere;
-    }
-
-    get innerGlow() {
-        // inner Glow
-        var geometry = this.geometry;
-        const color = new THREE.Color( Config.globus.innerGlow.color );
-        var material = new AtmosphereMaterial( color );
-        material.uniforms.coeficient.value	= Config.globus.innerGlow.coeficient;
-        material.uniforms.power.value		= Config.globus.innerGlow.power;
-        // var mesh	= new THREE.Mesh( geometry.clone(), material );
-        var mesh	= new THREE.Mesh( geometry, material );
-        mesh.scale.multiplyScalar( 1.01 );
-        // new THREEx.addAtmosphereMaterial2DatGui(material, datGUI)
-
-        return mesh;
-    }
-
-    get outerGlow() {
-        // outer Glow
-        var geometry = this.geometry;
-        const color = new THREE.Color( Config.globus.outerGlow.color );
-        var material = new AtmosphereMaterial( color );
-        material.side = THREE.BackSide;
-        material.uniforms.coeficient.value	= Config.globus.outerGlow.coeficient;
-        material.uniforms.power.value		= Config.globus.outerGlow.power;
-        // var mesh	= new THREE.Mesh( geometry.clone(), material );
-        var mesh	= new THREE.Mesh( geometry, material );
-        mesh.scale.multiplyScalar( 1.15 );
-        // new THREEx.addAtmosphereMaterial2DatGui(material, datGUI)
-
-        return mesh;
-    }
 }

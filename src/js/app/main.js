@@ -203,7 +203,6 @@ export default class Main {
     // Start render which does not wait for model fully loaded
     this.render();
 
-
     // var raycaster = new THREE.Raycaster();
     // var mouse = new THREE.Vector2();
 
@@ -244,10 +243,8 @@ export default class Main {
     // Call any vendor or module frame updates here
     // TWEEN.update();
     this.particles.update( delta );
-    this.controls.threeControls.update();
     this.skybox.update( delta );
-    this.globus.update( delta );
-    this.light.update( this.clock, this.camera.threeCamera );
+    this.controls.threeControls.update();
     this.routeManager.update(delta, this.camera.threeCamera, this.clock);
 
   }

@@ -10,10 +10,10 @@ export default class RouteManager {
         this.routes.push( route );
     }
 
-    update( delta, camera, clock )  {
+    update( delta, camera )  {
         for( let i = 0; i < this.routes.length; i++ ) {
             if( this.routes[i] instanceof Route) {
-              this.routes[i].update(delta, camera, clock);
+              this.routes[i].update(delta, camera);
             }
           }
     }

@@ -265,7 +265,7 @@ Marker.prototype.update = (function() {
     let dot = new THREE.Vector3();
     let ocluded = false;
 
-    return function update( camera, delta, clock ) {
+    return function update( camera, delta ) {
 
             // http://stackoverflow.com/questions/15098479/how-to-get-the-global-world-position-of-a-child-object
             // var meshVector = new THREE.Vector3().setFromMatrixPosition( meshGroup.children[ i ].matrixWorld ); 
@@ -306,7 +306,7 @@ Marker.prototype.update = (function() {
                     const amp = 3;
                     const minSize = 10;
                     const shift = 1;
-                    const wave = amp * Math.sin( freq * (clock.elapsedTime + shift) * Math.PI * 2 ) + amp + minSize;
+                    const wave = amp * Math.sin( freq * (performance.now() / 1000 + shift) * Math.PI * 2 ) + amp + minSize;
                     // const wave = amp * Math.sin( freq * (clock.elapsedTime + shift) * ( 0.5 * Math.cos( clock.elapsedTime )) ) + amp + minSize;
                     // const x = (amp * Math.sin( ( freq * clock.elapsedTime * Math.PI * 2 ) ) ) + minSize;
                     // this.a.innerHTML = x;
