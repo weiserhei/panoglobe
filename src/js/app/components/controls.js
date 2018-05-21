@@ -34,9 +34,9 @@ function tweenCamera(camera, position, target, time, easing){
   // .easing( TWEEN.Easing.Quadratic.InOut ).start()
   // .easing( TWEEN.Easing.Elastic.InOut ).start()
   .easing( easing ).start()
-  .onUpdate(() => {
+  // .onUpdate(() => {
     // console.log(camera.position.distanceTo(new THREE.Vector3(0,0,0)));
-  })
+  // })
   // t2 = new TWEEN.Tween( camera.up ).to( {
   //     x: 0,
   //     y: 1,
@@ -60,7 +60,6 @@ function tweenCamera(camera, position, target, time, easing){
 // Controls based on orbit controls
 export default class Controls {
   constructor(camera, container) {
-    // Orbit controls first needs to pass in THREE to constructor
     const controls = new OrbitControls(camera, container);
     this.threeControls = controls;
 
@@ -71,8 +70,8 @@ export default class Controls {
       // const RandomHeightOfLine = 600.5 // Or greater then your point distance to origin
 
       let cameraDistance = camera.position.distanceTo(new THREE.Vector3(0,0,0));
-      if( cameraDistance < 400 ) {
-        cameraDistance = 400;
+      if( cameraDistance < 300 ) {
+        cameraDistance = 300;
       }
       if( distance ) {
         cameraDistance = distance;

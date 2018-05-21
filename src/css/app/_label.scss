@@ -91,6 +91,9 @@
 
 .htmlLabel {
 	position:absolute;
+	/* needed for css transformation in JS code */
+	top:0;
+	left:0;
 }
 
 .infobox {

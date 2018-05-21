@@ -57,8 +57,11 @@ export default class InfoBox {
             var posy = Math.round((1 - screenVector.y) * parentDomNode.offsetHeight / 2);
 
             var boundingRect = this.getBoundingClientRect();
-            this.style.left = (posx - boundingRect.width - 28) + 'px';
-            this.style.top = (posy - 23) + 'px';
+
+            // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
+            this.style.transform = 'translate(' + Math.floor( (posx - boundingRect.width - 28) ) + 'px, ' + Math.floor( (posy - 23 ) ) + 'px)';
+            // this.style.left = (posx - boundingRect.width - 28) + 'px';
+            // this.style.top = (posy - 23) + 'px';
         }
     }
 

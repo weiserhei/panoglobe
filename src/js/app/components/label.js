@@ -52,8 +52,12 @@ export default class Label {
             var posy = Math.round((1 - this._screenVector.y) * this._parentDomNode.offsetHeight / 2);
             
             var boundingRect = this._box.getBoundingClientRect();
-            this._box.style.left = (posx - boundingRect.width + boundingRect.width / 2) + 'px';
-            this._box.style.top = (posy - boundingRect.height * 1.3) + 'px';
+            const left = (posx - boundingRect.width + boundingRect.width / 2);
+            const top = (posy - boundingRect.height * 1.3);
+            // this._box.style.left = (posx - boundingRect.width + boundingRect.width / 2) + 'px';
+            // this._box.style.top = (posy - boundingRect.height * 1.3) + 'px';
+            // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
+            this._box.style.transform = 'translate(' + Math.floor(left) + 'px, ' + Math.floor(top) + 'px)';
             
             if( ! ocluded ) {
                 // spriteGroup.children[ i ].scale.set( 1, 0.5, 1 ).multiplyScalar( 1 + eye.length() / 13 ); // SCALE SIZE OF FONT WHILE ZOOMING IN AND OUT //0.1800 * exe
