@@ -36,6 +36,7 @@ export default class Globus {
         this._textures;
 
         this._preloader = new Preloader(document.getElementById('loadcontainer'));
+        this._preloader.inline = true;
 
     }
 

@@ -22,17 +22,18 @@ import Texture from './model/texture';
 import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
+import Route from './components/route';
 import RouteLoader from "./components/routeLoader";
 import Sidebar from "./components/sidebar";
 import Particles from "./components/particles";
 
 // Managers
+import RouteManager from "./managers/routeManager";
 import Interaction from './managers/interaction';
 import DatGUI from './managers/datGUI';
 
 // data
 import Config from './../data/config';
-import Route from './components/route';
 // -- End of imports
 
 // This class instantiates and ties all of the components together, starts the loading process and renders the main loop
@@ -108,6 +109,8 @@ export default class Main {
     this.globus = new Globus( this.scene, this.light.directionalLight );
     this.skybox = new Skybox ( this.scene );
 
+    this.routeManager = new RouteManager();
+
     const div = document.getElementById('wrapper');
     this.sidebar = new Sidebar(this.light, this.globus);
 
@@ -123,6 +126,7 @@ export default class Main {
 
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
     loadHeightData(heightImageUrl).then((heightImage) => {
+
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
       // asien
@@ -130,19 +134,33 @@ export default class Main {
       // amerika
       const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 
-      this.routeLoader.load(url, routeData => {
-        const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
-        route.showLabels = false;
-        this.routes.push(route);
-        this.sidebar.addRoute( route );
-      });
+      // this.routeLoader.load(url, routeData => {
+      //   const phase = getRandomArbitrary( 0, Math.PI * 2 );
+      //   const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
+      //   route.showLabels = false;
+      //   this.routeManager.add(route);
+      //   this.sidebar.addRoute( route );
+      // });
 
       this.routeLoader.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
         const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
         this.sidebar.addRoute( route );
-        this.routes.push(route);
+        this.routeManager.add(route);
+
+            
+    this.sidebar.addLink("Asien 2010-2013", () => {
+      const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+
+      this.routeLoader.load(url, routeData => {
+        const phase = getRandomArbitrary( 0, Math.PI * 2 );
+        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
+        route.showLabels = false;
+        this.routeManager.add(route);
+        this.sidebar.addRoute( route );
+      });
+    });
+
       }); 
 
     }).catch(() => {console.warn("Error loading height data image")});
@@ -231,12 +249,8 @@ export default class Main {
     this.skybox.update( delta );
     this.globus.update( delta );
     this.light.update( this.clock, this.camera.threeCamera );
+    this.routeManager.update(delta, this.camera.threeCamera, this.clock);
 
-    for( let i = 0; i < this.routes.length; i++ ) {
-      if( this.routes[i] instanceof Route) {
-        this.routes[i].update(delta, this.camera.threeCamera, this.clock);
-      }
-    }
   }
 
   render() {

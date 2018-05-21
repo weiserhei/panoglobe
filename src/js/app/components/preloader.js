@@ -10,15 +10,20 @@ export default class Preloader {
     this.manager = new THREE.LoadingManager ();
     this.textureLoader = new THREE.TextureLoader( this.manager );
 
+    this.zIndex = container.style.zIndex;
+
     this.progressbar = document.getElementsByClassName( "progress-bar2" )[ 0 ];
     this.progressbar.style.width = "0px";
     
-    const loader = document.getElementsByClassName("progress2")[0];
-    this.barwidth = parseInt( window.getComputedStyle( loader ).getPropertyValue('width') );
+    this.loader = document.getElementsByClassName("progress2")[0];
+    this.barwidth = parseInt( window.getComputedStyle( this.loader ).getPropertyValue('width') );
 
     this.manager.onStart = () => {
       // make visible if hidden with fadeOut()
       this.container.style.display = "";
+      if( this._inline ) {
+        this._modifyCSS();
+      }
     };
 
     this.manager.onProgress = ( item, loaded, total ) => {
@@ -31,6 +36,20 @@ export default class Preloader {
       this.onLoad();
     }
 
+  }
+
+  _modifyCSS() {
+    this.container.style.zIndex = this.zIndex;
+    this.container.style.background = "radial-gradient(ellipse at center, rgba(10, 10, 10, 1) 30%,rgba(0, 0, 0, 0.5) 100%)";
+    // hide progress bar
+    this.loader.style.display = "none";
+  }
+
+  set inline( value ) {
+    this._inline = value;
+    if( value ) {
+      this.zIndex = 998;
+    }
   }
 
   onProgress( loaded, total ) {
@@ -54,13 +73,16 @@ export default class Preloader {
         var color = "#86e01e";
     }
 
+    const style = window.getComputedStyle( this.progressbar.parentElement );
+    const padding = parseInt( style.paddingLeft ) + parseInt( style.paddingRight );
     this.progressbar.style.backgroundColor = color;
-    this.progressbar.style.width = 1 / ( total / loaded ) * this.barwidth +"px";
+    this.progressbar.style.width = 1 / ( total / loaded ) * this.barwidth - padding + "px";
+
   }
 
   onLoad() {
     // set bar to 100% to prevent overflow
-    // progressbar.style.width = 1 * barwidth + "px";
+    // this.progressbar.style.width = 1 * this.barwidth + "px";
     // this.container.style.display = "none";
     // this.container.onclick = () => { $(this.container).fadeOut() };
     $(this.container).delay(400).fadeOut(800);

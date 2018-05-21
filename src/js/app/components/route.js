@@ -314,30 +314,9 @@ export default class Route {
 
 	// }
 
-	// pauseAnimate() {
-
-	// 	this._animation = false;
-
-	// }
-
-	stopAnimate() {
-
-		this._animation = false;
-		this._currentInfoBox = 0;
-		this.showLabels = true;
-		this.drawCount = 0;
-		this.line.geometry.setDrawRange( 0, this.vertices );
-
-		for ( var i = 0; i < this.meshGroup.children.length; i ++ ) {
-
-			this.meshGroup.children[ i ].visible = true;
-			// hide hover mesh
-			this.meshGroup.children[ i ].children[ 0 ].visible = false;
-			
-		}
-
+	set pauseAnimation( value ) {
+		this._animate = !value;
 	}
-
 
 	reset() {
 

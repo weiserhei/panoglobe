@@ -29,13 +29,14 @@ jQuery(function($) {
         $('.page-wrapper').addClass($(this).attr('data-theme'));
     });
 
+        
     if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $(".sidebar-content").mCustomScrollbar({
             axis: "y",
             autoHideScrollbar: true,
-            scrollInertia: 300
+            scrollInertia: 300,
         });
         $(".sidebar-content").addClass("desktop");
-
     }
+
 });

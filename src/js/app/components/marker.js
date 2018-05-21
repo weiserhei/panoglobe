@@ -67,7 +67,7 @@ export default class Marker {
         
         // only play sound on close, not when opening another marker
         if( !value && this._activeHandler.active !== null ) {
-            this._audio.close.play();
+            // this._audio.close.play();
         }
         // only one active
         if( this._activeHandler.active !== null ) {
@@ -80,7 +80,7 @@ export default class Marker {
         this._active = value;
         
         if( value ) {
-            this._audio.open.play();
+            // this._audio.open.play();
             this._activeHandler.active = this;
             // on Hit something trigger hit effect emitter
             // this.particles.setNormal( target.face.normal );

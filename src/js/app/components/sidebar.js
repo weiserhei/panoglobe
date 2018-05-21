@@ -84,19 +84,14 @@ function liplusa(el) {
 export default class Sidebar {
     constructor(lights, globus) {
 
-        const sidebar = document.getElementById("sidebar").firstElementChild;
-        const div = document.createElement("div");
-        div.className = "sidebar-menu";
-        sidebar.appendChild(div);
-        const ul = document.createElement("ul");
-        div.appendChild(ul);
+        const container = document.getElementById("sidebar").firstElementChild;
 
-        this.container = ul;
+        this.test = container;
 
         this._lights = lights;
         this._globus = globus;
 
-        this._addSettings( ul );
+        this._addSettings( container );
         
         $("#toggle-sidebar2").click(() => {
             $(".page-wrapper").toggleClass("toggled");
@@ -105,6 +100,12 @@ export default class Sidebar {
     }
 
     _addSettings(container) {
+
+        const div = document.createElement("div");
+        div.className = "sidebar-menu";
+        container.appendChild(div);
+        const ul = document.createElement("ul");
+        div.appendChild(ul);
 
         function getLink(title) {
             const a = document.createElement("a");
@@ -118,7 +119,7 @@ export default class Sidebar {
         var li = document.createElement("li");
         li.className="header-menu sidebar-settings-menu";
         li.innerHTML = "<span>Sidebar Settings</span>";
-        container.appendChild(li);
+        ul.appendChild(li);
         
         var li2 = document.createElement("li");
         li2.className = "sidebar-settings-menu";
@@ -152,35 +153,110 @@ export default class Sidebar {
         themes.forEach((theme)=>{
             li2.appendChild(getLink(theme.slice(0,-6)));
         });
-        container.appendChild(li2);
+        ul.appendChild(li2);
         
 
-        $(".sidebar-settings-menu").hide();
+        // $(".sidebar-settings-menu").hide();
+        $(div).hide();
         
         $(".sidebar-settings-link").click(() => {
-            $(".sidebar-settings-menu").fadeToggle();
+            // $(".sidebar-settings-menu").fadeToggle();
+            // $(div).fadeToggle();
+            $(div).slideToggle();
             // $(".sidebar-settings-menu").slideToggle();
 
+            $(div).promise().done( function() {
+                $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
+            } );
+
             // $(".sidebar-content").mCustomScrollbar("scrollTo","bottom");
-            $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
+            // $(".sidebar-content").mCustomScrollbar("scrollTo","top");
+            // $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
+            // $(".sidebar-content").mCustomScrollbar("scrollTo","first");
 
             $(".badge-sonar").hide();
         });
     }
 
-    addRoute( route ) {
+    addLink( headline, callback ) {
 
-        const safeName = route.name.replace(/[^A-Z0-9]+/ig, "_") + "collapse";
-        const info = route.name;
+        const div = document.createElement("div");
+        div.className = "sidebar-menu";
+        this.test.appendChild(div)
+        const ul = document.createElement("ul");
+        div.appendChild(ul);
 
+        const li = this._addHeader("Add more routes");
+        ul.appendChild(li);
+
+        // let li = document.createElement("li");
+        // // li.className = "sidebar-header";
+        // li.className = "header-menu";
+        // // this.container.appendChild(li);
+        // let span = document.createElement("span");        
+        // span.innerHTML = name;
+        // li.appendChild(span);
+
+        // const a = document.createElement("a");
+        // a.setAttribute("href", "#");
+        // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
+        // const className = "far fa-moon";
+        // const classNameActive = "far fa-moon text-warning";
+        // const linkName = '<span class="svg-icon"><i class="'+className+'"></i></span> Lights Out';
+        const linkName = headline;
+        // const linkNameActive = '<span class="svg-icon"><i class="'+classNameActive+'"></i></span> Lights Out';
+        
+        const s = document.createElement("span");
+        const a = document.createElement("button");
+        a.className = "btn btn-primary";
+        // a.innerHTML = '<i class="fas fa-spinner"></i> '+linkName;
+        a.innerHTML = '<i class="fas fa-plus"></i> '+linkName;
+        s.appendChild(a);
+
+        li.appendChild(s);
+        
+        a.addEventListener("click", ()=>{
+            div.style.display = "none";
+            callback();
+        });
+
+        this.init();
+
+    }
+
+    _addHeader( name ) {
         // header
         let li = document.createElement("li");
         li.className = "header-menu";
         // this.container.appendChild(li);
-        let span = document.createElement("span");
-        span.innerHTML = info;
+        let span = document.createElement("span");        
+        span.innerHTML = name;
         li.appendChild(span);
-        // header
+        return li;
+    }
+
+    addRoute( route ) {
+
+        const div = document.createElement("div");
+        div.className = "sidebar-menu";
+        this.test.appendChild(div);
+        // this.test.insertBefore(div, this.test.firstChild);
+        // this.test.insertBefore(div, this.test.children[1]);
+        const ul = document.createElement("ul");
+        div.appendChild(ul);
+
+        const safeName = route.name.replace(/[^A-Z0-9]+/ig, "_") + "collapse";
+        const info = route.name;
+        
+        let li = this._addHeader(info);
+        // // header
+        // let li = document.createElement("li");
+        // li.className = "header-menu";
+        // // this.container.appendChild(li);
+        // let span = document.createElement("span");
+        // span.innerHTML = info;
+        // li.appendChild(span);
+        // // header
 
         // Animation
         const sub1 = new SidebarDropdown("Animation", "fa fa-tachometer-alt");
@@ -220,13 +296,13 @@ export default class Sidebar {
         
 		var pauseIcon = icon("fas fa-pause-circle", "pause");
 		var pauseButton = mediaControlButton("", buttonClass, pauseIcon);
-		// pauseButton.onclick = route.pauseAnimate.bind(route);
+		pauseButton.onclick = () => route.pauseAnimation = true;
 		// pauseButton.innerText = " Pause";
         
 		var stopIcon = icon("fas fa-stop-circle", "stop");
 		var stopButton = mediaControlButton("", buttonClass, stopIcon);
 		// stopButton.innerText = " Stop";
-		// stopButton.onclick = reset;
+		stopButton.onclick = () => route.runAnimation = false;
 
 		buttonGroup.appendChild( playButton );
 		buttonGroup.appendChild( pauseButton );
@@ -351,17 +427,21 @@ export default class Sidebar {
         */
                
     //    this.container.insertBefore(sub4.li, this.container.firstChild);
-       this.container.insertBefore(sub3.li, this.container.firstChild);
-       this.container.insertBefore(sub2.li, this.container.firstChild);
-       this.container.insertBefore(sub1.li, this.container.firstChild);
-       this.container.insertBefore(li, this.container.firstChild);
+    //    this.container.insertBefore(sub3.li, this.container.firstChild);
+    //    this.container.insertBefore(sub2.li, this.container.firstChild);
+    //    this.container.insertBefore(sub1.li, this.container.firstChild);
+    //    this.container.insertBefore(li, this.container.firstChild);
+        ul.appendChild(li);
+        ul.appendChild(sub1.li);
+        ul.appendChild(sub2.li);
+        ul.appendChild(sub3.li);
 
-       this.init();
+        this.init( div );
 
     }
 
 
-    init() {
+    init( el ) {
         // slide open onload any active links
         $(".sidebar-dropdown > a").parent(".active").children(".sidebar-submenu").slideDown(200);
 
@@ -380,6 +460,18 @@ export default class Sidebar {
                 $(this).parent().addClass("active");
             }
         });
+
+        
+        $(".sidebar-content").mCustomScrollbar("destroy");
+        $(".sidebar-content").mCustomScrollbar({
+            axis: "y",
+            autoHideScrollbar: true,
+            scrollInertia: 300,
+        });
+
+        if( el !== undefined ) {
+            $(".sidebar-content").mCustomScrollbar("scrollTo", el );
+        }
 
     }
 
