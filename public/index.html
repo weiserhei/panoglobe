@@ -6,15 +6,16 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/app.css">
   </head>
   <body>
-    <div id="loadcontainer">
-        <div class="preloader">
-            <h1>Pano <br>Globe</h1><div class="progress2">
-                <div class="progress-bar2"></div>
-            </div>
-            Loading
-            <div id="loader"></div>
+    <div id="loadcontainer">    
+        <h1>Pano Globe</h1>
+        <div id="progress-button">
+            <span class="text">Creating virtual Globe</span>
+            <span class="progress">
+                <span class="progressbar"></span>
+            </span>
         </div>
     </div>
+    <div id="message">This may take some seconds...</div>
 
     <div class="page-wrapper ice-theme toggled">
         <nav id="sidebar" class="sidebar-wrapper">
@@ -50,7 +51,8 @@
         </nav>
         <!-- sidebar-wrapper  -->
 
-        <section id="appContainer" class="main"></section>
+        <section id="appContainer" class="main">
+        </section>
     </div>
     <!-- page-wrapper -->
 
