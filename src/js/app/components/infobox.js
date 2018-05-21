@@ -55,7 +55,6 @@ export default class InfoBox {
 
             var posx = Math.round((screenVector.x + 1) * parentDomNode.offsetWidth / 2);
             var posy = Math.round((1 - screenVector.y) * parentDomNode.offsetHeight / 2);
-
             var boundingRect = this.getBoundingClientRect();
 
             // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/

@@ -19,43 +19,6 @@ function createStepEasing(numSteps, easeFn) {
 
 var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
 
-// var t;
-// var t2;
-// var t3; //Put as Global or use Array, because GC likes to remove Tween objects.
-function tweenCamera(camera, position, target, time, easing){
-  // updateTween = true;
-  // let beforeTweenPos = camera.position.clone();
-  // let beforeTweenTarg = controls.target.clone();
-  const t = new TWEEN.Tween( camera.position ).to( {
-      x: position.x,
-      y: position.y,
-      z: position.z}, time )
-  // .easing( TWEEN.Easing.Quadratic.In ).start()
-  // .easing( TWEEN.Easing.Quadratic.InOut ).start()
-  // .easing( TWEEN.Easing.Elastic.InOut ).start()
-  .easing( easing ).start()
-  // .onUpdate(() => {
-    // console.log(camera.position.distanceTo(new THREE.Vector3(0,0,0)));
-  // })
-  // t2 = new TWEEN.Tween( camera.up ).to( {
-  //     x: 0,
-  //     y: 1,
-  //     z: 0}, time )
-  // .easing( TWEEN.Easing.Quadratic.In).start();
-  // t3 = new TWEEN.Tween( controls.target ).to( {
-  //     x: target.x,
-  //     y: target.y,
-  //     z: target.z}, time )
-  // .easing( TWEEN.Easing.Quadratic.In)
-  .onComplete(function () {
-      // updateTween = false;
-      // console.log("Turning off Update Tween");
-      // t = null;
-      // t2 = null;
-      // t3 = null;
-  }, this).start();
-}
-
 
 // Controls based on orbit controls
 export default class Controls {
@@ -63,20 +26,23 @@ export default class Controls {
     const controls = new OrbitControls(camera, container);
     this.threeControls = controls;
 
+    this.init();
+
+    controls.panoActive = function( value ) {
+      controls.enabled = value;
+      controls.enableZoom = value;
+      controls.enableRotate = value;
+    }
+
     controls.moveIntoCenter = function( lat, lng, time, easing, distance ) {
 
       const phi = (90 - lat) * Math.PI / 180;
       const theta = (-lng) * Math.PI / 180;
-      // const RandomHeightOfLine = 600.5 // Or greater then your point distance to origin
 
-      let cameraDistance = camera.position.distanceTo(new THREE.Vector3(0,0,0));
-      if( cameraDistance < 300 ) {
-        cameraDistance = 300;
-      }
-      if( distance ) {
-        cameraDistance = distance;
-      }
-      const RandomHeightOfLine = cameraDistance;
+      let cameraDistance = camera.position.distanceTo(controls.target);
+      cameraDistance = cameraDistance < 300 ? 300 : cameraDistance; // Zoom out if distance lower than 300 units
+
+      const RandomHeightOfLine = distance ? distance : cameraDistance; // Or greater then your point distance to origin
   
       const position = new THREE.Vector3(
                           RandomHeightOfLine * Math.sin(phi) * Math.cos(theta), 
@@ -88,8 +54,66 @@ export default class Controls {
       // var y = RandomHeightOfLine * Math.cos(phi);
       // var z = RandomHeightOfLine * Math.sin(phi) * Math.sin(theta);
       // controls.target.set( x, y, z );
-      tweenCamera(camera, position, new THREE.Vector3(0, 0, 0), time || 2000, easing || TWEEN.Easing.Quintic.InOut);
+      // tweenCamera(camera, position, new THREE.Vector3(0, 0, 0), time || 2000, easing || TWEEN.Easing.Quintic.InOut);
+
+      const t = new TWEEN.Tween( camera.position ).to( {
+        x: position.x,
+        y: position.y,
+        z: position.z}, time || 2000 )
+        .easing( easing || TWEEN.Easing.Quintic.InOut )
+        .onStart(function() {
+          controls.panoActive( false );
+        })
+        .onComplete(function () {
+          controls.panoActive( true );
+      }, this).start();
+
       
+    }
+
+    // var t;
+    // var t2;
+    // var t3; //Put as Global or use Array, because GC likes to remove Tween objects.
+    function tweenCamera(camera, position, target, time, easing){
+      // updateTween = true;
+      // let beforeTweenPos = camera.position.clone();
+      // let beforeTweenTarg = controls.target.clone();
+      controls.enabled = false;
+      console.log("controls", this, controls.enabled);
+
+      const t = new TWEEN.Tween( camera.position ).to( {
+          x: position.x,
+          y: position.y,
+          z: position.z}, time )
+      // .easing( TWEEN.Easing.Quadratic.In ).start()
+      // .easing( TWEEN.Easing.Quadratic.InOut ).start()
+      // .easing( TWEEN.Easing.Elastic.InOut ).start()
+      .easing( easing )
+      .onStart(function() {
+        controls.enabled = false;
+      })
+      // .onUpdate(() => {
+        // console.log(camera.position.distanceTo(new THREE.Vector3(0,0,0)));
+      // })
+      // t2 = new TWEEN.Tween( camera.up ).to( {
+      //     x: 0,
+      //     y: 1,
+      //     z: 0}, time )
+      // .easing( TWEEN.Easing.Quadratic.In).start();
+      // t3 = new TWEEN.Tween( controls.target ).to( {
+      //     x: target.x,
+      //     y: target.y,
+      //     z: target.z}, time )
+      // .easing( TWEEN.Easing.Quadratic.In)
+      .onComplete(function () {
+          console.log("controls enabled", controls.enabled);
+          controls.enabled = true;
+          // updateTween = false;
+          // console.log("Turning off Update Tween");
+          // t = null;
+          // t2 = null;
+          // t3 = null;
+      }, this).start();
     }
 
 
@@ -111,7 +135,6 @@ export default class Controls {
 
     }, false);
 
-    this.init();
   }
 
   init() {

@@ -42,8 +42,6 @@ export default class Route {
 
 		this.meshGroup = new THREE.Object3D();
 		this.lightGroup = new THREE.Object3D();
-		this.spriteGroup = new THREE.Object3D();
-		this.sprites = [];
 		this.marker = [];
 
 		this._isVisible = false;
@@ -81,7 +79,6 @@ export default class Route {
 
 	set showLabels( value ) {
 		this._showLabels = value;
-		// this.marker.forEach(marker => {marker.sprite.isVisible = value });
 		this.marker.forEach(marker => {marker._label.isVisible = value });
 	}
 
@@ -110,7 +107,7 @@ export default class Route {
 		}
 
 		if ( this._animate === true ) {
-			this.animate( this._controls );		
+			this.animate();		
 		}
 	}
 	
@@ -120,16 +117,9 @@ export default class Route {
 
     _createRoute( routeData, group, phase, steps, controls, particles, listener ) {
 
-		this._controls = controls;
-
-		var currentCoordinate;
-		var color = new THREE.Color();
-		var marker;
-		var sprite;
-
-		var phase = phase;
-		var steps = steps;
-		var frequency = 1 /  ( steps * routeData.length );
+		let marker;
+		const color = new THREE.Color();
+		const frequency = 1 /  ( steps * routeData.length );
 
 		this._routeLine = new RouteLine( Config.routes.lineSegments );
 
@@ -178,9 +168,6 @@ export default class Route {
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
 			const text = this._cityMarkers.length + " " + name;
 			marker.getLabel( this._container, text, this.showLabels, controls );
-			// sprite = marker.getSprite(text, marker.mesh.position, this.showLabels);
-			// this.spriteGroup.add ( sprite.sprite );
-			// this.sprites.push( sprite );
 
 			// CREATE LIGHTS FOR BLOBS
 			// when using lights wait for the route to be loaded!
@@ -230,7 +217,7 @@ export default class Route {
 			
 			// var group = [ coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup ];
 			// var group = new THREE.Group();
-			group.add( this.line, this.meshGroup, this.spriteGroup, this.lightGroup );
+			group.add( this.line, this.meshGroup, this.lightGroup );
 			// group.add( coloredLine, this.meshGroup, this.lightGroup );
 
 
@@ -346,7 +333,7 @@ export default class Route {
 
 	}
 	
-	animate( controls ) {
+	animate() {
 
 		var drawCallCityIndex = this._routeData.indexOf( this.pois[ this._currentInfoBox ] ) * this._routeLine.segments;
 		var drawCallCityIndexBefore = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;

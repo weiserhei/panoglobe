@@ -60,15 +60,11 @@ export default class Label {
             this._box.style.transform = 'translate(' + Math.floor(left) + 'px, ' + Math.floor(top) + 'px)';
             
             if( ! ocluded ) {
-                // spriteGroup.children[ i ].scale.set( 1, 0.5, 1 ).multiplyScalar( 1 + eye.length() / 13 ); // SCALE SIZE OF FONT WHILE ZOOMING IN AND OUT //0.1800 * exe
-                // this.spriteGroup.children[ i ].material.opacity = 0.9 / ( eye.length() / 100 );
                 this._box.style.opacity = 1;
             }
             else { 
                 //HIDE EACH BLOB+LABEL IF CAMERA CANT SEE IT (I.E. WHEN IT IS BEHIND THE GLOBE)
-                // this.sprite.visible = false;
                 this._box.style.opacity = 1 + dot * 2;
-                // console.log( this.sprite );
             }
         }
 
