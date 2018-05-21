@@ -34,7 +34,7 @@ export default class Preloader {
 
     this.manager.onStart = () => {
       // make visible if hidden with fadeOut()
-      container.style.display = "none";
+      container.style.display = "";
       if( this._inline ) {
         this._modifyCSS( container, progressbarContainer );
       }
@@ -54,7 +54,7 @@ export default class Preloader {
       // container.onclick = () => { $(container).fadeOut() };
       $(container).delay(400).fadeOut(800);
     };
-
+    
     this.manager.onError = ( url ) => {
       console.warn( "Loading Error", url );
     };

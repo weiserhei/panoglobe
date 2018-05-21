@@ -1,6 +1,6 @@
 // Global imports -
 import * as THREE from 'three';
-import TWEEN from 'tween.js';
+// import TWEEN from 'tween.js';
 
 // Local imports -
 // Components
@@ -23,7 +23,6 @@ import { getHeightData, getRandomArbitrary } from "../utils/panoutils";
 import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import Route from './components/route';
-import RouteLoader from "./components/routeLoader";
 import Sidebar from "./components/sidebar";
 import Particles from "./components/particles";
 
@@ -53,9 +52,6 @@ export default class Main {
     if(window.devicePixelRatio) {
       Config.dpr = window.devicePixelRatio;
     }
-
-
-    this.routes = [];
 
     // Main renderer constructor
     this.renderer = new Renderer(this.scene, container);
@@ -108,59 +104,45 @@ export default class Main {
     this.globus = new Globus( this.scene, this.light.directionalLight );
     this.skybox = new Skybox ( this.scene );
 
-    this.routeManager = new RouteManager();
-
     const div = document.getElementById('wrapper');
     this.sidebar = new Sidebar(this.light, this.globus);
-
-    this.routeLoader = new RouteLoader();
-
+    
     var imageLoader = new THREE.ImageLoader (this.preloader.manager);
     const heightImageUrl = "./assets/textures/heightmap_1440.jpg";
     // var heightImage = imageLoader.load( heightImageUrl, image => { 
-    //   var scale = 20;
-    //   this.heightData = Panoutils.getHeightData( heightImage, scale );
-    // });
+      //   var scale = 20;
+      //   this.heightData = Panoutils.getHeightData( heightImage, scale );
+      // });
     this._domEvents = new DomEvents( this.camera.threeCamera, this.container );
+    this.heightData = [];
+    this.routeManager = new RouteManager(this.scene, this.container, this._domEvents, this.heightData, Config.globus.radius, this.controls.threeControls, this.sidebar, this.particles, audios);
 
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
     loadHeightData(heightImageUrl).then((heightImage) => {
 
       var scale = 20;
       this.heightData = getHeightData( heightImage, scale );
+      this.routeManager.heightData = this.heightData;
+
       // asien
       const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
       // amerika
       const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
-
-      // this.routeLoader.load(url, routeData => {
-      //   const phase = getRandomArbitrary( 0, Math.PI * 2 );
-      //   const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
-      //   route.showLabels = false;
-      //   this.routeManager.add(route);
-      //   this.sidebar.addRoute( route );
-      // });
-
-      this.routeLoader.load(url2, routeData => {
+      RouteManager.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
-        this.sidebar.addRoute( route );
-        this.routeManager.add(route);
+        const route = this.routeManager.buildRoute( routeData, phase );
+        // route.showLabels = false;
 
-            
-    this.sidebar.addLink("Asien 2010-2013", () => {
-      const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+        // add in callback so first route is on top in sidebar
+        this.sidebar.addLink("Asien 2010-2013", () => {
+          RouteManager.load(url, routeData => {
+            const phase = getRandomArbitrary( 0, Math.PI * 2 );
+            const route2 = this.routeManager.buildRoute( routeData, phase );
+            // route.showLabels = false;
+          });
+        });
 
-      this.routeLoader.load(url, routeData => {
-        const phase = getRandomArbitrary( 0, Math.PI * 2 );
-        const route = new Route( this.scene, this.container, this._domEvents, routeData, this.heightData, Config.globus.radius, phase, this.controls.threeControls, this.particles, audios );
-        route.showLabels = false;
-        this.routeManager.add(route);
-        this.sidebar.addRoute( route );
       });
-    });
-
-      }); 
 
     }).catch(() => {console.warn("Error loading height data image")});
 

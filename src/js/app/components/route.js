@@ -18,6 +18,10 @@ import Marker from "./marker";
 export default class Route {
     constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls, particles, audio ) {
 
+		if( heightData.length === 0 ) {
+			console.warn("No height data for route ", routeData.meta.name );
+		}
+
         this.name = routeData.meta.name || "";
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 

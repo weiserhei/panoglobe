@@ -225,7 +225,7 @@ export default class Marker {
                 return;
             }
             this.active = true;
-            return;
+
             // if (this._controls.rotateToCoordinate instanceof Function) {
             if (this._controls !== undefined) {
                 // todo
