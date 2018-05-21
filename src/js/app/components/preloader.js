@@ -1,48 +1,71 @@
-import * as THREE from 'three';
+import { LoadingManager, TextureLoader } from 'three';
 import $ from "jquery";
+
+function getProgressColor( progress ) {
+  let color = "";
+  const colors = [[5, "#f63a0f"], [25, "#f27011"], [50, "#f2b01e"], [75, "#f2d31b"], [100, "#86e01e"]];
+  colors.forEach((step) => { 
+    if(progress >= step[0]) { 
+      color = step[1]; 
+    }
+  });
+  return color;
+}
 
 export default class Preloader {
   constructor(container) {
 
-    this.container = container;
     // this.container = document.getElementById("loadcontainer");
 
-    this.manager = new THREE.LoadingManager ();
-    this.textureLoader = new THREE.TextureLoader( this.manager );
+    this.manager = new LoadingManager ();
+    this.textureLoader = new TextureLoader( this.manager );
 
     this.zIndex = container.style.zIndex;
 
-    this.progressbar = document.getElementsByClassName( "progress-bar2" )[ 0 ];
-    this.progressbar.style.width = "0px";
+    const progressbar = document.getElementsByClassName( "progress-bar2" )[ 0 ];
+    progressbar.style.width = "0px";
     
-    this.loader = document.getElementsByClassName("progress2")[0];
-    this.barwidth = parseInt( window.getComputedStyle( this.loader ).getPropertyValue('width') );
+    const progressbarContainer = document.getElementsByClassName("progress2")[0];
+    // const style = window.getComputedStyle( this.progressbar.parentElement );
+    const style = window.getComputedStyle( progressbarContainer );
+    const padding = parseInt( style.paddingLeft ) + parseInt( style.paddingRight );
+
+    const barwidth = parseInt( window.getComputedStyle( progressbarContainer ).getPropertyValue('width') ) - padding;
 
     this.manager.onStart = () => {
       // make visible if hidden with fadeOut()
-      this.container.style.display = "";
+      container.style.display = "";
       if( this._inline ) {
-        this._modifyCSS();
+        this._modifyCSS( container, progressbarContainer );
       }
     };
 
     this.manager.onProgress = ( item, loaded, total ) => {
-      this.onProgress( loaded, total );
+      const progress = ( loaded / total ) * 100;
+
+      progressbar.style.backgroundColor = getProgressColor( progress );
+      progressbar.style.width = 1 / ( total / loaded ) * barwidth + "px";
     };
-    this.manager.onError = function ( url ) {
-      console.warn( "Loading Error", url );
-    }
+
     this.manager.onLoad = () => {
-      this.onLoad();
-    }
+      // set bar to 100% to prevent overflow
+      // this.progressbar.style.width = 1 * this.barwidth + "px";
+      // this.container.style.display = "none";
+      // container.onclick = () => { $(container).fadeOut() };
+      $(container).delay(400).fadeOut(800);
+    };
+    
+    this.manager.onError = ( url ) => {
+      console.warn( "Loading Error", url );
+    };
 
   }
 
-  _modifyCSS() {
-    this.container.style.zIndex = this.zIndex;
-    this.container.style.background = "radial-gradient(ellipse at center, rgba(10, 10, 10, 1) 30%,rgba(0, 0, 0, 0.5) 100%)";
+  _modifyCSS( container, progressbarContainer ) {
+    container.style.zIndex = this.zIndex;
+    container.style.background = "radial-gradient(ellipse at center, rgba(10, 10, 10, 1) 30%,rgba(0, 0, 0, 0.5) 100%)";
     // hide progress bar
-    this.loader.style.display = "none";
+    progressbarContainer.style.display = "none";
   }
 
   set inline( value ) {
@@ -50,42 +73,6 @@ export default class Preloader {
     if( value ) {
       this.zIndex = 998;
     }
-  }
-
-  onProgress( loaded, total ) {
-    const progress = ( loaded / total ) * 100;
-
-    // colors from
-    // https://www.bypeople.com/animated-progress-bar/
-    if( progress > 0 ) {
-        var color = "#f63a0f";
-    }
-    if ( progress > 5 ) {
-        var color = "#f27011";
-    } 
-    if ( progress > 25 ) {
-        var color = "#f2b01e";
-    } 
-    if ( progress > 50 ) {
-        var color = "#f2d31b";
-    } 
-    if( progress > 75 ) {
-        var color = "#86e01e";
-    }
-
-    const style = window.getComputedStyle( this.progressbar.parentElement );
-    const padding = parseInt( style.paddingLeft ) + parseInt( style.paddingRight );
-    this.progressbar.style.backgroundColor = color;
-    this.progressbar.style.width = 1 / ( total / loaded ) * this.barwidth - padding + "px";
-
-  }
-
-  onLoad() {
-    // set bar to 100% to prevent overflow
-    // this.progressbar.style.width = 1 * this.barwidth + "px";
-    // this.container.style.display = "none";
-    // this.container.onclick = () => { $(this.container).fadeOut() };
-    $(this.container).delay(400).fadeOut(800);
   }
 
 }

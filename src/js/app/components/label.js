@@ -8,7 +8,12 @@ export default class Label {
         // this._box = document.createElement('div');
         // this._box.className = "htmlLabel badge badge-dark";
         this._box = document.createElement("button");
-        this._box.className = "htmlLabel btn btn-sm btn-dark";
+        // this._box.className = "htmlLabel btn btn-sm btn-dark";
+        // google maps style labels
+        this._box.className = "htmlLabel btn btn-link btn-sm text-white";
+        this._box.style.textShadow = "0 0 3px #000";
+
+        // this._box.style.textDecoration = "none";
         this._box.innerHTML = text;
 
         parentDomNode.appendChild(this._box);

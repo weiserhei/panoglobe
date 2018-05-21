@@ -41,7 +41,7 @@ export default class InfoBox {
         this._box.appendChild(footer);
 
         this._closeButton = document.createElement("button");
-        this._closeButton.className = "btn btn-sm btn-danger closeButton";
+        this._closeButton.className = "btn btn-sm btn-danger shadow-none closeButton";
         this._closeButton.innerHTML = '<i class="fas fa-times"></i>';
         this._box.appendChild(this._closeButton);
 
