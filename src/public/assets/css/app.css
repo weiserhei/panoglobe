@@ -8449,6 +8449,7 @@ li > .selected {
   color: #ffffff; }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.chiller-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
@@ -8595,6 +8596,7 @@ li > .selected {
   color: #00a9fd; }
 
 .light-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.light-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .light-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .light-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .light-theme .sidebar-wrapper .sidebar-search .input-group-text {
@@ -8668,6 +8670,7 @@ li > .selected {
   color: #ff7bdb; }
 
 .cool-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.cool-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .cool-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .cool-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .cool-theme .sidebar-wrapper .sidebar-search .input-group-text {
@@ -8739,6 +8742,7 @@ li > .selected {
   color: #FFFEF1; }
 
 .green-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.green-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .green-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .green-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .green-theme .sidebar-wrapper .sidebar-search .input-group-text {
@@ -8808,6 +8812,7 @@ li > .selected {
   color: #ffffff; }
 
 .spicy-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.spicy-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .spicy-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .spicy-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .spicy-theme .sidebar-wrapper .sidebar-search .input-group-text {
@@ -8876,6 +8881,7 @@ li > .selected {
   color: #FAEEFF; }
 
 .purple-theme .sidebar-wrapper .sidebar-menu ul li a i,
+.purple-theme .sidebar-wrapper .sidebar-menu ul li a span.svg-icon,
 .purple-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .purple-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .purple-theme .sidebar-wrapper .sidebar-search .input-group-text {
