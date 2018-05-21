@@ -1,6 +1,6 @@
 // Global imports -
 import * as THREE from 'three';
-// import TWEEN from 'tween.js';
+import TWEEN from 'tween.js';
 
 // Local imports -
 // Components
@@ -105,7 +105,7 @@ export default class Main {
     this.skybox = new Skybox ( this.scene );
 
     const div = document.getElementById('wrapper');
-    this.sidebar = new Sidebar(this.light, this.globus);
+    this.sidebar = new Sidebar(this.light, this.globus, this.controls.threeControls);
     
     var imageLoader = new THREE.ImageLoader (this.preloader.manager);
     const heightImageUrl = "./assets/textures/heightmap_1440.jpg";
@@ -223,7 +223,7 @@ export default class Main {
 
   update( delta ) {
     // Call any vendor or module frame updates here
-    // TWEEN.update();
+    TWEEN.update();
     this.particles.update( delta );
     this.skybox.update( delta );
     this.controls.threeControls.update();

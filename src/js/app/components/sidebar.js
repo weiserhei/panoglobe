@@ -82,7 +82,7 @@ function liplusa(el) {
 }
 
 export default class Sidebar {
-    constructor(lights, globus) {
+    constructor(lights, globus, controls) {
 
         const container = document.getElementById("sidebar").firstElementChild;
 
@@ -90,6 +90,7 @@ export default class Sidebar {
 
         this._lights = lights;
         this._globus = globus;
+        this._controls = controls;
 
         this._addSettings( container );
         
@@ -386,6 +387,10 @@ export default class Sidebar {
             const hopDistance = numberWithCommas( Math.floor( poi.hopDistance ) );
             const li = document.createElement("li");
             const a = document.createElement("a");
+            a.setAttribute("href", "#");
+            a.addEventListener("click", ()=>{
+                this._controls.moveIntoCenter( poi.lat, poi.lng, 1000 );
+            });
 
             const svgSpan = document.createElement("span");
             svgSpan.className = "bulletpoint";

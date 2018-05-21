@@ -6,7 +6,7 @@ import Label from "./label";
 
 export default class Marker {
 
-    constructor(color, positionVector, protoMesh, activeHandler, controls, particles, audio) {
+    constructor(color, poi, positionVector, protoMesh, activeHandler, controls, particles, audio) {
 
         this._active = false;
         this._infoBox = null;
@@ -17,6 +17,8 @@ export default class Marker {
         this._particles = particles;
 
         this._label = null;
+
+        this._poi = poi;
 
         this._activeHandler = activeHandler;
 
@@ -89,6 +91,9 @@ export default class Marker {
             
             this._particles.particleGroup.mesh.position.copy( this._mesh.position );
             this._particles.triggerPoolEmitter( 1 );
+
+            this._controls.moveIntoCenter( this._poi.lat, this._poi.lng, 1000 );
+
             // sadly broken
             // const impactPosition = new THREE.Vector3();
             // this.particles.particleGroup.triggerPoolEmitter( 1, ( impactPosition.set( target.point.x, target.point.y, target.point.z ) ) );
@@ -214,7 +219,7 @@ export default class Marker {
 
     }
     
-    linkify(activeHandler, lat, lon) {
+    linkify(activeHandler, lat, lng) {
         var eventTarget = this.mesh;
 
         function handleClick(event) {
@@ -226,8 +231,9 @@ export default class Marker {
             }
             this.active = true;
 
-            // if (this._controls.rotateToCoordinate instanceof Function) {
-            if (this._controls !== undefined) {
+            if (this._controls.moveIntoCenter instanceof Function) {
+                // this._controls.moveIntoCenter( lat, lng, 1000 );
+            // if (this._controls !== undefined) {
                 // todo
                 // modify current rotation, dont overwrite it!
                 // center clicked point in the middle of the screen

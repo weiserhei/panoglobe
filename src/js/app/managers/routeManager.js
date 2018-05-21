@@ -25,6 +25,13 @@ export default class RouteManager {
         this.sidebar.addRoute( route );
         this.routes.push( route );
 
+        // const lat = 48.78232, lng = 9.17702; // stgt
+        // const lat = 19.432608, lng = -99.133209; // mexico
+        // select last Marker on first route, and first marker on following routes
+        const index = this.routes.length > 1 ? 0 : route.pois.length-1;
+        const marker = route.pois[ index ];
+        this.controls.moveIntoCenter( marker.lat, marker.lng, 2000);
+
         return route;
     }
 

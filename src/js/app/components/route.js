@@ -29,7 +29,7 @@ export default class Route {
 		this._routeLine;
 		this.line = null;
 
-		this.active = null;
+		// this.active = null;
 		this._activeMarker = null;
 		this.manager;
 
@@ -152,7 +152,7 @@ export default class Route {
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
 
-			marker = new Marker(color, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls, particles, listener);
+			marker = new Marker(color, currentCoordinate, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls, particles, listener);
 			this.marker.push(marker);
 			this.meshGroup.add( marker.mesh );
 
@@ -171,7 +171,7 @@ export default class Route {
 			// this.lightGroup.add( light );
 
 			//MAKE MARKER CLICKABLE
-			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lon );
+			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lng );
 
 			
 			// CREATE LABELS FOR MARKER
@@ -232,6 +232,7 @@ export default class Route {
 			// var group = new THREE.Group();
 			group.add( this.line, this.meshGroup, this.spriteGroup, this.lightGroup );
 			// group.add( coloredLine, this.meshGroup, this.lightGroup );
+
 
 			return group;
 
