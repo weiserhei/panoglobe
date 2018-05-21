@@ -30,6 +30,9 @@ export default class Route {
 		this.line = null;
 
 		this.active = null;
+		this._activeMarker = null;
+		this.manager;
+
 		this._container = container;
 		this._domEvents = domEvents;
 
@@ -62,6 +65,15 @@ export default class Route {
 		this._vertices = this._routeLine.numberVertices;
 	}
 
+	get activeMarker() {
+		return this._activeMarker;
+	}
+	set activeMarker( value ) {
+		this._activeMarker = value;
+		if( this.manager !== undefined ) {
+			this.manager.activeMarker = value;
+		}
+	}
 
 	get showLabels() {
 		return this._showLabels;
@@ -281,12 +293,12 @@ export default class Route {
 			// stop animation
 			this.drawCount = 0;
 			this.line.geometry.setDrawRange( 0, this._vertices );
-			if( this.active !== null ) {
-				this.active.active = false;
+			if( this.activeMarker !== null ) {
+				this.activeMarker.active = false;
 			}
 		} else {
-			if(this.active === null) {
-				this.active = this._cityMarkers[0];
+			if(this.activeMarker === null) {
+				this.activeMarker = this._cityMarkers[0];
 			}
 		}
 

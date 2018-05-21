@@ -70,10 +70,10 @@ export default class Marker {
             // this._audio.close.play();
         }
         // only one active
-        if( this._activeHandler.active !== null ) {
-            const otherMarker = this._activeHandler.active;
+        if( this._activeHandler.activeMarker !== null ) {
+            const otherMarker = this._activeHandler.activeMarker;
             // clear handle to prevent recursion
-            this._activeHandler.active = null;
+            this._activeHandler.activeMarker = null;
             otherMarker.active = false;
         }
 
@@ -81,7 +81,7 @@ export default class Marker {
         
         if( value ) {
             // this._audio.open.play();
-            this._activeHandler.active = this;
+            this._activeHandler.activeMarker = this;
             // on Hit something trigger hit effect emitter
             // this.particles.setNormal( target.face.normal );
             // this.particles.particleGroup.mesh.position.copy( target.point );
