@@ -25,6 +25,7 @@ export default class Route {
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
 		this._cityMarkers = [];
+		this._currentCoordinate = null;
 		this._routeLine;
 		this.line = null;
 
@@ -47,6 +48,7 @@ export default class Route {
 		this._animate = false;
 		this._currentInfoBox = 0;
 
+		this._controls = controls;
 		const markergeo = new THREE.SphereGeometry(1, 8, 6);
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
@@ -110,12 +112,6 @@ export default class Route {
 
 		this._routeLine = new RouteLine( Config.routes.lineSegments );
 
-		let quickdirty = [];
-		routeData.forEach((currentCoordinate, index) => {
-			if ( ! currentCoordinate.adresse ) { return; }
-			quickdirty.push ( currentCoordinate );
-		});
-
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			if(index > 0) {
@@ -133,6 +129,8 @@ export default class Route {
 			this.marker.push(marker);
 			// this.meshGroup.add( marker.mesh );
 			scene.add( marker.mesh );
+
+			currentCoordinate.marker = marker;
 
 			// function createLight (positionVec3, color, intensity) {
 			// 	var light = new THREE.PointLight(color, intensity, 8);
@@ -233,40 +231,25 @@ export default class Route {
 
 		this._animate = value;
 		this.showLabels = !value;
+		this._drawCount = 0;
 
 		if( value === false ) {
 			// stop animation
 
-			this.drawCount = 0;
+			this._drawCount = 0;
 			// thick line
 			this._routeLine.drawFull();
 
 			if( this.activeMarker !== null ) {
 				this.activeMarker.active = false;
 			}
-		} else {
-			if(this.activeMarker === null) {
-				this.activeMarker = this._cityMarkers[0];
-			}
 		}
 
 	}
 
-	// startAnimate() {
-	// 	this._animation = true;
-	// 	this.showLabels = false;
-	// 	for ( var i = 0; i < this.meshGroup.children.length; i ++ ) {
-	// 		if ( this._currentInfoBox > i ) {
-	// 			this.meshGroup.children[ i ].visible = true;
-	// 		}
-	// 		else {
-	// 			this.meshGroup.children[ i ].visible = false;
-	// 		}
-	// 	}
-	// }
-
 	set pauseAnimation( value ) {
 		this._animate = !value;
+		console.log("routeData", this._routeData, "segments", this._routeLine.segments, "vertices", this._routeLine.numberVertices);
 	}
 
 	reset() {
@@ -286,19 +269,44 @@ export default class Route {
 	
 	animate() {
 
+		// var activeMarkerIndex = this.pois.findIndex(poi => { return this._activeCityMarker === poi } )
+		// const drawCallCityIndex = this._routeData.indexOf( this.pois[ this._activeMarker ] ) * this._routeLine.segments;
+		// const drawCallCityIndex = this._routeData.findIndex(currentCoordinate => { return currentCoordinate === this._activeCityMarker }) * this._routeLine.segments;
+		// var drawCallCityIndexBefore = this._routeData.indexOf( this.pois[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
+		// var drawCallCityIndexBefore = this._routeData.findIndex( currentCoordinate => { this._activeCityMarker - 1 } ) * this._routeLine.segments;
+		// var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore
+
+		console.log("routeline drawcount", this._routeLine._drawCount, "route drawcount", this._drawCount);;
+
+		// const index = ( this._drawCount / this._routeLine.segments );
+
+		// const currentCoordinate = this._routeData[index-1];
+
+		// if( currentCoordinate !== undefined && this._currentCoordinate !== currentCoordinate ) {
+
+		// 	this._currentCoordinate = currentCoordinate;
+
+		// 	this._controls.moveIntoCenter( currentCoordinate.lat, currentCoordinate.lng, 500);
+			
+		// 	if(currentCoordinate.marker !== undefined) {
+		// 		currentCoordinate.marker.active = true;
+		// 	}
+
+		// 	var activeMarkerIndex = this.pois.findIndex(poi => { return this._activeMarker === poi.marker } );
+		// 	// console.log( "activeMarkerIndex", activeMarkerIndex);
+
+		// 	const currentMarkerIndex = this._routeData.findIndex( currCo => { return this.pois[activeMarkerIndex] === currCo } )
+		// 	if( currentMarkerIndex + 5 < index ) {
+		// 		// console.log("hiding");
+		// 		if(this.activeMarker !== null) {
+		// 			this.activeMarker.active = false;
+		// 		}
+		// 	}
+		// }
+		
+		this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
+
 		/*
-		var drawCallCityIndex = this._routeData.indexOf( this.pois[ this._currentInfoBox ] ) * this._routeLine.segments;
-		var drawCallCityIndexBefore = this._routeData.indexOf( this.pois[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
-		var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore;
-
-			if ( this.drawCount === drawCallCityIndex )
-			{
-				// this.meshGroup.children[ this._currentInfoBox ].visible = true;
-				this.pois[this._currentInfoBox].active = true;
-				// this.active.active = true;
-				this._currentInfoBox = ( this._currentInfoBox + 1 ) % ( this._cityMarkers.length );
-			}
-
 			if ( this.drawCount >= drawCallCityIndex ) {
 
 				if ( this.meshGroup.children[ this._currentInfoBox - 1 ] !== undefined ) {

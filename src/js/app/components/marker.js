@@ -124,7 +124,7 @@ export default class Marker {
             // this.particles.particleGroup.mesh.position.copy( target.point );
             this._particles.setColor(this._color, new THREE.Color("black"));
             
-            this._particles.particleGroup.mesh.position.copy( this._mesh.position );
+            // this._particles.particleGroup.mesh.position.copy( this._mesh.position );
             this._particles.triggerPoolEmitter( 1 );
 
             this._controls.moveIntoCenter( this._poi.lat, this._poi.lng, 1000 );
@@ -149,10 +149,6 @@ export default class Marker {
 
     get mesh() {
         return this._mesh;
-    }
-
-    get sprite() {
-        return this._sprite;
     }
 
     get label() {

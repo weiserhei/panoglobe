@@ -14,7 +14,7 @@ import { createSphereArc } from "../../utils/panoutils";
 export default class RouteLine {
     constructor( lineSegments ) {
 
-		this.segments = lineSegments; // how many line segments
+		this._segments = lineSegments; // how many line segments
 
 		this._lineMergeGeometry = new THREE.Geometry();
 		this._line;
@@ -26,6 +26,10 @@ export default class RouteLine {
 
 		this._drawCount = 0;
 
+	}
+
+	get segments() {
+		return this._segments;
 	}
 
 	get line() {
@@ -156,7 +160,7 @@ export default class RouteLine {
 
 		const curve = createSphereArc( from, to );
 		const lineGeometry = new THREE.Geometry();
-		lineGeometry.vertices = curve.getPoints( this.segments ); // how many vertices do we want on this guy? this is for *each* side
+		lineGeometry.vertices = curve.getPoints( this._segments ); // how many vertices do we want on this guy? this is for *each* side
 		// lineGeometry.computeLineDistances();
 		this._lineMergeGeometry.merge( lineGeometry );
 
