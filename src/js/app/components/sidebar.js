@@ -135,8 +135,8 @@ export default class Sidebar {
         // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
         const className = "far fa-moon";
         const classNameActive = "far fa-moon text-warning";
-        const linkName = '<span class="svg-icon"><i class="'+className+'"></i></span> Lights Out';
-        const linkNameActive = '<span class="svg-icon"><i class="'+classNameActive+'"></i></span> Lights Out';
+        const linkName = '<span class="svg-icon"><i class="'+className+'"></i></span> Night Mode';
+        const linkNameActive = '<span class="svg-icon"><i class="'+classNameActive+'"></i></span> Night Mode';
         a.innerHTML = linkName;
         li2.appendChild(a);
         

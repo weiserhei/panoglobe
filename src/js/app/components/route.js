@@ -46,15 +46,12 @@ export default class Route {
 
 		this._animate = false;
 		this._currentInfoBox = 0;
-		this.drawCount = 0;
-		this._vertices = 0;
 
 		const markergeo = new THREE.SphereGeometry(1, 8, 6);
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
         this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls, particles, audio );
-		this._vertices = this._routeLine.numberVertices;
 
 	}
 
@@ -88,11 +85,6 @@ export default class Route {
 	}
 
     update( delta, camera ) {
-
-		// resolution set not in loop necessary 
-		// 	if( this.line.material.resolution !== undefined ) {
-		// 		this.line.material.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
-		// 	}
 		
 		// hide occluded, scale on zoom
 		let i = this.marker.length - 1;
@@ -101,7 +93,8 @@ export default class Route {
 		}
 
 		if ( this._animate === true ) {
-			this.animate();		
+			this.animate();	
+			this._routeLine.update();
 		}
 	}
 	
@@ -243,8 +236,11 @@ export default class Route {
 
 		if( value === false ) {
 			// stop animation
+
 			this.drawCount = 0;
-			this.line.geometry.setDrawRange( 0, this._vertices );
+			// thick line
+			this._routeLine.drawFull();
+
 			if( this.activeMarker !== null ) {
 				this.activeMarker.active = false;
 			}
@@ -329,11 +325,6 @@ export default class Route {
 				this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
 			}
 			*/
-			// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
-			// this.line.geometry.setDrawRange( 1, this._vertices / 2 );
-			this.line.geometry.setDrawRange( 0, this.drawCount );
-			// drawCount must be all vertices
-			this.drawCount = ( this.drawCount + 1 ) % ( this._vertices );
 
 		
 			// if( controls.rotateToCoordinate instanceof Function ){

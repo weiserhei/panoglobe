@@ -17,17 +17,47 @@ export default class RouteLine {
 		this.segments = lineSegments; // how many line segments
 
 		this._lineMergeGeometry = new THREE.Geometry();
-		this.line;
+		this._line;
 
 		this.positions;
 		this.colors;
 
 		this._numberVertices = 0;
 
+		this._drawCount = 0;
+
+	}
+
+	get line() {
+		return this._line;
 	}
 
 	get numberVertices() {
 		return this._numberVertices;
+	}
+
+	update() {
+		// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
+		if( this._line.geometry instanceof THREE.BufferGeometry) {
+			this._line.geometry.setDrawRange( 0, this._drawCount );
+		} else if ( this._line.geometry instanceof LineGeometry ) {
+			// Thick Line
+			this._line.geometry.maxInstancedCount = this._drawCount -1;
+		}
+
+		// drawCount must be all vertices
+		this._drawCount = ( this._drawCount + 1 ) % ( this._numberVertices );	
+	}
+
+	drawFull() {
+
+		if( this._line.geometry instanceof LineGeometry ) {
+			// thick line
+			this._line.geometry.maxInstancedCount = this._numberVertices - 1;
+		} else if( this.line.geometry instanceof THREE.BufferGeometry ) {
+			this.line.geometry.setDrawRange( 0, this._numberVertices );
+		}
+
 	}
 
 	_build( steps, phase ) {
@@ -83,10 +113,10 @@ export default class RouteLine {
             vertexColors: THREE.VertexColors,
             resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
             //resolution:  // to be set by renderer, eventually
-            dashed: true
+            dashed: false
 		} );
 		
-        this.line = new Line2( geometry, lineMaterial );
+        this._line = new Line2( geometry, lineMaterial );
 		// this.line.computeLineDistances();
 
 		// render "on top"
@@ -96,10 +126,10 @@ export default class RouteLine {
 		// 	renderer.clearDepth(); 
 		// };
 		
-		window.addEventListener('resize', () => { this.line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
+		//window.addEventListener('resize', () => { this.line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
 		// this.line.material.resolution.set( window.innerWidth, window.innerHeight );
 
-        return this.line;
+        return this._line;
     }
 
 	
@@ -116,9 +146,9 @@ export default class RouteLine {
 		const lineMaterial = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
 
 		// line
-		this.line = new THREE.Line( geometry, lineMaterial );
+		this._line = new THREE.Line( geometry, lineMaterial );
 
-		return this.line;
+		return this._line;
 
 	}
 
