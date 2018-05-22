@@ -25,6 +25,11 @@ export default class RouteManager {
         this.sidebar.addRoute( route );
         this.routes.push( route );
 
+        // Onload other route disable last active marker
+        if(this._activeMarker !== null ) {
+            this._activeMarker.active = false;
+        }
+
         // const lat = 48.78232, lng = 9.17702; // stgt
         // const lat = 19.432608, lng = -99.133209; // mexico
         // select last Marker on first route, and first marker on following routes

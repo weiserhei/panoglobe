@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { numberWithCommas } from "../../utils/panoutils";
-import TextSprite from "./textSprite";
 import InfoBox from "./infobox";
 import Label from "./label";
+
+import $ from "jquery";
 
 export default class Marker {
 
@@ -52,6 +53,8 @@ export default class Marker {
         this._audio = audio;
 		
         this._mesh = mesh;
+
+        this._askedGoogle = false;
     }
 
     get last() {
@@ -65,7 +68,39 @@ export default class Marker {
         return this._active;
     }
 
+    askGoogle( lat, lon ) {
+        // Get countryname from POI
+        // via Google-Maps API Lat/Long
+        var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lon + "&sensor=false";
+        $.getJSON(url, (data) => {
+            if (data.results && data.results[0]) {
+                if(!this._askedGoogle) {
+
+                    this._askedGoogle = true;
+                    
+                    for (var i = 0; i < data.results[0].address_components.length; i++) {
+                        // if (data.results[0].address_components[i].types.indexOf ('country') > -1) {
+                            if (data.results[0].address_components[i].types.indexOf ('administrative_area_level_1') > -1) {
+                                var name = data.results[0].address_components[i].long_name;
+                                // this._infoBox.domElement.innerHTML = name;
+                                const div = document.createElement("div");
+                                div.innerHTML = name;
+                                this._infoBox.domElement.children[1].insertBefore(div, this._infoBox.domElement.children[1].firstChild);
+                                
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+    }
+
     set active( value ) {
+
+        if ( false ) {
+        // if ( ! this._askedGoogle ) {
+            this.askGoogle(this._poi.lat, this._poi.lng);            
+        }
         
         // only play sound on close, not when opening another marker
         if( !value && this._activeHandler.active !== null ) {
@@ -157,21 +192,6 @@ export default class Marker {
         }, false);
         return this._label;
 
-    }
-
-    getSprite(text, position, showLabel) {
-
-        const params = {
-            fontsize: 28,
-            borderThickness: 0,
-            borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
-            backgroundColor: { r: 0, g: 0, b: 0, a: 0.4 },
-            fontWeight: "normal"
-        };
-
-        this._sprite = new TextSprite(text, params, position);
-        this._sprite.visible = showLabel;
-        return this._sprite;
     }
 
     getInfoBox(parentDomNode, city) {

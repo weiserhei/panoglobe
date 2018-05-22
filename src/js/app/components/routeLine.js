@@ -81,12 +81,13 @@ export default class RouteLine {
             color: 0xffffff,
             linewidth: linewidth, // in pixels
             vertexColors: THREE.VertexColors,
+            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
             //resolution:  // to be set by renderer, eventually
-            dashed: false
+            dashed: true
 		} );
 		
         this.line = new Line2( geometry, lineMaterial );
-		this.line.computeLineDistances();
+		// this.line.computeLineDistances();
 
 		// render "on top"
 		// interferes with atmosphere material
@@ -94,8 +95,9 @@ export default class RouteLine {
 		// this.line.onBeforeRender = function( renderer ) { 
 		// 	renderer.clearDepth(); 
 		// };
-
-		this.line.material.resolution.set( window.innerWidth, window.innerHeight );
+		
+		window.addEventListener('resize', () => { this.line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
+		// this.line.material.resolution.set( window.innerWidth, window.innerHeight );
 
         return this.line;
     }

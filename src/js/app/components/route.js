@@ -1,7 +1,6 @@
 /**
  * Route Class
- * depends on MarkerFactory and RouteLine
- * Load the JSON routedata
+ * depends on Marker and RouteLine
  * create the Route
  */
 
@@ -40,8 +39,6 @@ export default class Route {
 		this.phase = phase; // which color out of 2xPI
 		this.steps = 1.1; // how fast change the color
 
-		this.meshGroup = new THREE.Object3D();
-		this.lightGroup = new THREE.Object3D();
 		this.marker = [];
 
 		this._isVisible = false;
@@ -52,15 +49,13 @@ export default class Route {
 		this.drawCount = 0;
 		this._vertices = 0;
 
-        this.group	= new THREE.Group();
-		scene.add( this.group );
-
 		const markergeo = new THREE.SphereGeometry(1, 8, 6);
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
-        this._createRoute( this._routeData, this.group, this.phase, this.steps, controls, particles, audio );
+        this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls, particles, audio );
 		this._vertices = this._routeLine.numberVertices;
+
 	}
 
 	get activeMarker() {
@@ -79,7 +74,7 @@ export default class Route {
 
 	set showLabels( value ) {
 		this._showLabels = value;
-		this.marker.forEach(marker => {marker._label.isVisible = value });
+		this.marker.forEach(marker => {marker.label.isVisible = value });
 	}
 
 	get isVisible() {
@@ -87,7 +82,6 @@ export default class Route {
 	}
 	set isVisible( value ) {
 		this.marker.forEach(marker => {marker.isVisible = value });
-		this.lightGroup.visible = value; 
 		this.line.visible = value; 
 		
 		this._isVisible = value;
@@ -115,7 +109,7 @@ export default class Route {
 		return this._cityMarkers;
 	}
 
-    _createRoute( routeData, group, phase, steps, controls, particles, listener ) {
+    _createRoute( routeData, scene, group, phase, steps, controls, particles, listener ) {
 
 		let marker;
 		const color = new THREE.Color();
@@ -144,7 +138,8 @@ export default class Route {
 
 			marker = new Marker(color, currentCoordinate, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls, particles, listener);
 			this.marker.push(marker);
-			this.meshGroup.add( marker.mesh );
+			// this.meshGroup.add( marker.mesh );
+			scene.add( marker.mesh );
 
 			// function createLight (positionVec3, color, intensity) {
 			// 	var light = new THREE.PointLight(color, intensity, 8);
@@ -163,17 +158,10 @@ export default class Route {
 			//MAKE MARKER CLICKABLE
 			marker.linkify( this, currentCoordinate.lat, currentCoordinate.lng );
 
-			
 			// CREATE LABELS FOR MARKER
 			const name = currentCoordinate.countryname || currentCoordinate.adresse;
 			const text = this._cityMarkers.length + " " + name;
 			marker.getLabel( this._container, text, this.showLabels, controls );
-
-			// CREATE LIGHTS FOR BLOBS
-			// when using lights wait for the route to be loaded!
-			// var intensity = 1;
-			// var light = this._markerFactory.createLight( currentCoordinate.displacedPos.clone(), color, intensity );
-			// this.lightGroup.add( light );
 
 		})
 
@@ -200,7 +188,8 @@ export default class Route {
 			} else {
 				this.line = this._routeLine.getColoredBufferLine( steps, phase );
 			}
-			// var coloredLine = routeLine.getColoredLine( steps, phase );
+
+			scene.add( this.line );
 
 			// length of the line
 			// this.vertices = coloredLine.geometry.getAttribute('position').array.length;
@@ -213,15 +202,6 @@ export default class Route {
 			// 	controls.rotateToCoordinate ( routeData[ 0 ].lat, routeData[ 0 ].lng );
 			// }
 
-			// new Guistuff().ellesGui( routeData, controls, this.toggleAnimate, this );
-			
-			// var group = [ coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup ];
-			// var group = new THREE.Group();
-			group.add( this.line, this.meshGroup, this.lightGroup );
-			// group.add( coloredLine, this.meshGroup, this.lightGroup );
-
-
-			return group;
 
 		// }.bind( this ));
 
@@ -252,22 +232,6 @@ export default class Route {
 
 	}
 
-	// toggleAnimate( scope ) {
-
-	// 	var that = scope || this;
-
-	// 	if ( that._animation === false ) {
-
-	// 		that.startAnimate();
-
-	// 	} else {
-
-	// 		that.pauseAnimate();
-
-	// 	}
-
-	// }
-
 	get runAnimation() {
 		return this._animate;
 	}
@@ -293,25 +257,16 @@ export default class Route {
 	}
 
 	// startAnimate() {
-
 	// 	this._animation = true;
 	// 	this.showLabels = false;
-
 	// 	for ( var i = 0; i < this.meshGroup.children.length; i ++ ) {
-
 	// 		if ( this._currentInfoBox > i ) {
-
 	// 			this.meshGroup.children[ i ].visible = true;
-
 	// 		}
 	// 		else {
-
 	// 			this.meshGroup.children[ i ].visible = false;
-
 	// 		}
-			
 	// 	}
-
 	// }
 
 	set pauseAnimation( value ) {
@@ -335,8 +290,9 @@ export default class Route {
 	
 	animate() {
 
+		/*
 		var drawCallCityIndex = this._routeData.indexOf( this.pois[ this._currentInfoBox ] ) * this._routeLine.segments;
-		var drawCallCityIndexBefore = this._routeData.indexOf( this._cityMarkers[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
+		var drawCallCityIndexBefore = this._routeData.indexOf( this.pois[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
 		var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore;
 
 			if ( this.drawCount === drawCallCityIndex )
@@ -372,23 +328,25 @@ export default class Route {
 				// close infoBox
 				this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
 			}
-
+			*/
 			// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
+			// this.line.geometry.setDrawRange( 1, this._vertices / 2 );
 			this.line.geometry.setDrawRange( 0, this.drawCount );
 			// drawCount must be all vertices
-			this.drawCount = ( this.drawCount + 0.5 ) % ( this._vertices );
-		/*
-			if( controls.rotateToCoordinate instanceof Function ){
-				// "camera" follows route
-				var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
-				var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
-				// present the starting point on load to the user
-				controls.rotateToCoordinate ( lat, lng );
-			}
+			this.drawCount = ( this.drawCount + 1 ) % ( this._vertices );
+
+		
+			// if( controls.rotateToCoordinate instanceof Function ){
+			// 	// "camera" follows route
+			// 	var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
+			// 	var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
+			// 	// present the starting point on load to the user
+			// 	controls.rotateToCoordinate ( lat, lng );
+			// }
 			// controls.rotateToCoordinate ( lat, lng );
 			// debug
 			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
-		*/
+		
 
 	}
 
