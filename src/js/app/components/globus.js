@@ -110,7 +110,7 @@ export default class Globus {
             if( this._textures[Config.globus.material.nightmap] === undefined ) {
                 const textureLoader = this._preloader.textureLoader;
                 const url = "./assets/textures/4k/Night-Lights-4k.jpg";
-                this._textures[Config.globus.material.nightmap] = textureLoader.load(url, texture => {
+                this._textures["night"] = textureLoader.load(url, texture => {
                     this.material.map = texture;
                 })
             } else {
@@ -126,8 +126,8 @@ export default class Globus {
         this._textures = textures;
 
         this.material.map = textures[Config.globus.material.map];
-        this.material.specularMap = textures.invertedSpecularmap; 
-        this.material.normalMap = textures.normalmap;
+        this.material.specularMap = textures[Config.globus.material.specularMap]; 
+        this.material.normalMap = textures[Config.globus.material.normalMap];
         this.material.displacementMap = textures[Config.globus.material.displacementMap];
         this.mesh.material.needsUpdate = true;
 
