@@ -7,7 +7,7 @@ import $ from "jquery";
 
 export default class Marker {
 
-    constructor(color, poi, positionVector, protoMesh, activeHandler, controls, particles, audio) {
+    constructor(color, poi, positionVector, protoMesh, activeHandler, controls) {
 
         this._active = false;
         this._infoBox = null;
@@ -15,7 +15,6 @@ export default class Marker {
         this._isVisible = true;
 
         this._controls = controls;
-        this._particles = particles;
 
         this._label = null;
 
@@ -49,11 +48,8 @@ export default class Marker {
         // this.a = document.createElement("div");
         // this.a.className="htmlLabel";
         // this.a.style = "background-color:#ffffff; bottom:0; right:0;";
-
-        this._audio = audio;
 		
         this._mesh = mesh;
-
         this._askedGoogle = false;
     }
 
@@ -97,10 +93,9 @@ export default class Marker {
 
     set active( value ) {
 
-        if ( false ) {
         // if ( ! this._askedGoogle ) {
-            this.askGoogle(this._poi.lat, this._poi.lng);            
-        }
+        //     this.askGoogle(this._poi.lat, this._poi.lng);            
+        // }
         
         // only play sound on close, not when opening another marker
         if( !value && this._activeHandler.active !== null ) {
@@ -122,10 +117,9 @@ export default class Marker {
             // on Hit something trigger hit effect emitter
             // this.particles.setNormal( target.face.normal );
             // this.particles.particleGroup.mesh.position.copy( target.point );
-            this._particles.setColor(this._color, new THREE.Color("black"));
-            
+            // this._particles.setColor(this._color, new THREE.Color("black"));
             // this._particles.particleGroup.mesh.position.copy( this._mesh.position );
-            this._particles.triggerPoolEmitter( 1 );
+            // this._particles.triggerPoolEmitter( 1 );
 
             this._controls.moveIntoCenter( this._poi.lat, this._poi.lng, 1000 );
 

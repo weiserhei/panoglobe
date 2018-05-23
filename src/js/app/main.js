@@ -24,7 +24,7 @@ import Preloader from "./components/preloader";
 import Skybox from "./components/skybox";
 import Route from './components/route';
 import Sidebar from "./components/sidebar";
-import Particles from "./components/particles";
+// import Particles from "./components/particles";
 
 // Managers
 import RouteManager from "./managers/routeManager";
@@ -62,8 +62,6 @@ export default class Main {
     this.scene.add( this.controls.threeControls.object );
     this.light = new Light(this.scene, this.controls.threeControls.object );
 
-    this.particles = new Particles( this.scene );
-
     // Create and place lights in scene
     const lights = ['spot', 'directional', 'hemi', "point"];
     lights.forEach((light) => this.light.place(light));
@@ -95,7 +93,7 @@ export default class Main {
     //   // audio.play();
     //   } );
 
-      let audios = {};
+      // let audios = {};
       // audios.open = audio;
       // audios.close = audio2;
 
@@ -115,7 +113,7 @@ export default class Main {
       // });
     this._domEvents = new DomEvents( this.camera.threeCamera, this.container );
     this.heightData = [];
-    this.routeManager = new RouteManager(this.scene, this.container, this._domEvents, this.heightData, Config.globus.radius, this.controls.threeControls, this.sidebar, this.particles, audios);
+    this.routeManager = new RouteManager(this.scene, this.container, this._domEvents, this.heightData, Config.globus.radius, this.controls.threeControls, this.sidebar);
 
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
     loadHeightData(heightImageUrl).then((heightImage) => {
@@ -136,14 +134,16 @@ export default class Main {
       // });
 
       RouteManager.load(url2, routeData => {
-        const phase = getRandomArbitrary( 0, Math.PI * 2 );
+        // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+        const phase = 0.9;
         const route = this.routeManager.buildRoute( routeData, phase );
         // route.showLabels = false;
 
         // add in callback so first route is on top in sidebar
         this.sidebar.addLink("Asien 2010-2013", () => {
           RouteManager.load(url, routeData => {
-            const phase = getRandomArbitrary( 0, Math.PI * 2 );
+            // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+            const phase = 5;
             const route2 = this.routeManager.buildRoute( routeData, phase );
             // route.showLabels = false;
           });
@@ -231,7 +231,6 @@ export default class Main {
   update( delta ) {
     // Call any vendor or module frame updates here
     TWEEN.update();
-    this.particles.update( delta );
     this.skybox.update( delta );
     this.controls.threeControls.update();
     this.routeManager.update(delta, this.camera.threeCamera, this.clock);

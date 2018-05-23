@@ -15,14 +15,14 @@ import RouteLine from "./routeLine";
 import Marker from "./marker";
 
 export default class Route {
-    constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls, particles, audio ) {
+    constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls ) {
 
 		if( heightData.length === 0 ) {
 			console.warn("No height data for route ", routeData.meta.name );
 		}
 
         this.name = routeData.meta.name || "";
-        this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
+        this._routeData = calc3DPositions( routeData.gps, heightData, radius + 0.3 );
 
 		this._cityMarkers = [];
 		this._routeLine;
@@ -36,7 +36,7 @@ export default class Route {
 
 		this.heightData = [];
 		this.phase = phase; // which color out of 2xPI
-		this.steps = 1.1; // how fast change the color
+		this.steps = 1.2; // how fast change the color (0 = fast)
 
 		this.marker = [];
 
@@ -50,7 +50,7 @@ export default class Route {
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
-        this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls, particles, audio );
+        this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls );
 
 	}
 
@@ -97,7 +97,7 @@ export default class Route {
 		return this._cityMarkers;
 	}
 
-    _createRoute( routeData, scene, group, phase, steps, controls, particles, listener ) {
+    _createRoute( routeData, scene, group, phase, steps, controls ) {
 
 		let marker;
 		const color = new THREE.Color();
@@ -118,7 +118,7 @@ export default class Route {
 			// CREATE MARKER
 			color.set( makeColorGradient( index, frequency, undefined, undefined, phase ) );
 
-			marker = new Marker(color, currentCoordinate, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls, particles, listener);
+			marker = new Marker(color, currentCoordinate, currentCoordinate.displacedPos.clone(), this._markermesh, this, controls);
 			this.marker.push(marker);
 			// this.meshGroup.add( marker.mesh );
 			scene.add( marker.mesh );

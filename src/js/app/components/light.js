@@ -90,9 +90,11 @@ export default class Light {
 
         // this.hemiLight.intensity = Config.hemiLight.night.intensity;
         // this.hemiLight.color.set( Config.hemiLight.night.color );
-        this.hemiLight.color.setHex( Config.hemiLight.night.color );
+        // this.hemiLight.color.setHex( Config.hemiLight.night.color );
+        this.hemiLight.color.set( Config.hemiLight.night.color );
         // this.hemiLight.groundColor.set( Config.hemiLight.night.groundColor );
-        this.hemiLight.groundColor.setHex( Config.hemiLight.night.groundColor );
+        // this.hemiLight.groundColor.setHex( Config.hemiLight.night.groundColor );
+        this.hemiLight.groundColor.set( Config.hemiLight.night.groundColor );
 
       } else {
         

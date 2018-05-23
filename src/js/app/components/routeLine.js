@@ -16,6 +16,9 @@ export default class RouteLine {
 
 		this._segments = lineSegments; // how many line segments
 
+    	// setIndex error fix create new Buffer Geometry
+		const a = new THREE.BufferGeometry();
+	
 		this._lineMergeGeometry = new THREE.Geometry();
 		this._line;
 

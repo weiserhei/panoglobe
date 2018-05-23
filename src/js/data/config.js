@@ -46,7 +46,7 @@ export default {
   },
   globus: {
     radius: 100,
-    detail: 5,
+    detail: 6,
     material: {
       color: 0xffffff,
       shininess: 8,
@@ -56,9 +56,9 @@ export default {
       // normalMap: ,
       // specularMap: ,
       normalScale: -0.4,
-      // displacementMap: "displacemap",
-      displacementMap: "earthColor",
-      displacementScale: 5,
+      displacementMap: "displacemap",
+      // displacementMap: "earthColor",
+      displacementScale: 4,
       // displacementScale: 20,
       // displacementBias: 0.428408,
       displacementBias: 0,
@@ -76,7 +76,7 @@ export default {
       power: 2.0
     },
     clouds: {
-      opacity: 0.1,
+      opacity: 0.3,
       enabled: true,
       // texture: ,
     }
@@ -106,9 +106,9 @@ export default {
   controls: {
     autoRotate: false,
     autoRotateSpeed: -0.5,
-    rotateSpeed: 0.13,
+    rotateSpeed: 0.10,
     enableDamping: true,
-    dampingFactor: 0.2,
+    dampingFactor: 0.15,
     enableZoom: true,
     zoomSpeed: 1.8,
     minDistance: 200,
@@ -181,10 +181,12 @@ export default {
     z: 0,
     night: {
       // color:0xffc600,
-      color: 16754688,
+      // color: 16754688,
+      color: "hsl(41, 95%, 30%)",
       // groundHColor: 0xffc600,
-      groundHColor: 16754688,
-      intensity: 1.3
+      // groundHColor: 16754688,
+      groundHColor: "hsl(41, 95%, 30%)",
+      // intensity: 1.3
     }
   }, 
   directionalLight: {

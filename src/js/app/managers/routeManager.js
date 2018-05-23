@@ -2,7 +2,7 @@
 import Route from "../components/route";
 
 export default class RouteManager {
-    constructor( scene, container, domEvents, heightData, globusradius, controls, sidebar, particles, audios ) {
+    constructor( scene, container, domEvents, heightData, globusradius, controls, sidebar ) {
         this.routes = [];
 
         this.scene = scene;
@@ -12,15 +12,15 @@ export default class RouteManager {
         this.globusradius = globusradius;
         this.controls = controls;
         this.sidebar = sidebar;
-        this.particles = particles;
-        this.audios = audios;
+        // this.particles = particles;
+        // this.audios = audios;
 
         this._activeMarker = null;
     }
 
     buildRoute( routeData, phase ) {
 
-        const route = new Route( this.scene, this.container, this.domEvents, routeData, this.heightData, this.globusradius, phase, this.controls, this.particles, this.audios );
+        const route = new Route( this.scene, this.container, this.domEvents, routeData, this.heightData, this.globusradius, phase, this.controls);
         route.manager = this;
         this.sidebar.addRoute( route );
         this.routes.push( route );
