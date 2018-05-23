@@ -40,6 +40,10 @@ export default class RouteLine {
 		return this._numberVertices;
 	}
 
+	get drawCount() {
+		return this._drawCount;
+	}
+
 	update() {
 		// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
 		if( this._line.geometry instanceof THREE.BufferGeometry) {

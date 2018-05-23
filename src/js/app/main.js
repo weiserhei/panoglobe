@@ -128,6 +128,13 @@ export default class Main {
       const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
       // amerika
       const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+
+      // RouteManager.load(url, routeData => {
+      //   const phase = getRandomArbitrary( 0, Math.PI * 2 );
+      //   const route = this.routeManager.buildRoute( routeData, phase );
+      //   // route.showLabels = false;
+      // });
+
       RouteManager.load(url2, routeData => {
         const phase = getRandomArbitrary( 0, Math.PI * 2 );
         const route = this.routeManager.buildRoute( routeData, phase );

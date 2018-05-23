@@ -25,11 +25,9 @@ export default class Route {
         this._routeData = calc3DPositions( routeData.gps, heightData, radius+Config.globus.material.displacementScale/2 );
 
 		this._cityMarkers = [];
-		this._currentCoordinate = null;
 		this._routeLine;
-		this.line = null;
+		this.line = null; //please remove me
 
-		// this.active = null;
 		this._activeMarker = null;
 		this.manager;
 
@@ -46,9 +44,8 @@ export default class Route {
 		this._showLabels = true;
 
 		this._animate = false;
-		this._currentInfoBox = 0;
-
 		this._controls = controls;
+
 		const markergeo = new THREE.SphereGeometry(1, 8, 6);
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
@@ -88,14 +85,10 @@ export default class Route {
 
     update( delta, camera ) {
 		
-		// hide occluded, scale on zoom
-		let i = this.marker.length - 1;
-		for ( ; i >= 0 ; i -- ) {
-			this.marker[i].update( camera, delta );
-		}
+		this.marker.forEach(marker => { marker.update( camera, delta )});
 
 		if ( this._animate === true ) {
-			this.animate();	
+			this._animateRoute();
 			this._routeLine.update();
 		}
 	}
@@ -171,55 +164,13 @@ export default class Route {
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
 		})
 
-		// $.when.apply(null, promises).done(function(){
-            // All done
-			
-			if(Config.routes.linewidth > 1) {
-				this.line = this._routeLine.getThickLine( steps, phase, Config.routes.linewidth );
-			} else {
-				this.line = this._routeLine.getColoredBufferLine( steps, phase );
-			}
+		if(Config.routes.linewidth > 1) {
+			this.line = this._routeLine.getThickLine( steps, phase, Config.routes.linewidth );
+		} else {
+			this.line = this._routeLine.getColoredBufferLine( steps, phase );
+		}
 
-			scene.add( this.line );
-
-			// length of the line
-			// this.vertices = coloredLine.geometry.getAttribute('position').array.length;
-			// this.vertices = this._routeLine.vertices;
-
-			// callback( coloredLine, this.meshGroup, this.spriteGroup, this.lightGroup );
-
-			// if( controls.rotateToCoordinate instanceof Function ){
-			// 	// present the starting point on load to the user
-			// 	controls.rotateToCoordinate ( routeData[ 0 ].lat, routeData[ 0 ].lng );
-			// }
-
-
-		// }.bind( this ));
-
-		// this._gui = document.createElement( 'div' );
-		// this._gui.id = "debug"; 
-		// container.appendChild( this._gui );
-
-		// this._gui.innerHTML = "Draw count: ";
-		// this.box = document.createElement( 'div' ); 
-		// this.box.className = "box"; 
-		// this._gui.appendChild( this.box );	
-
-		// this.box2 = document.createElement( 'div' );
-		// this.box2.className = "box"; 
-		// this._gui.appendChild( this.box2 );
-
-		// var output = "<ul>";
-
-		// for ( var i = 0; i < this._cityMarkers.length; i ++ ) {
-
-		// 	output += "<li>" + this._routeData.indexOf( this._cityMarkers[ i ] ) * this._routeLine.segments + "</li>";
-
-		// }
-
-		// output += "</ul>";
-		// this.box2.innerHTML = output;
-
+		scene.add( this.line );
 
 	}
 
@@ -229,123 +180,60 @@ export default class Route {
 
 	set runAnimation( value ) {
 
-		this._animate = value;
+		this._animate = false;
 		this.showLabels = !value;
 		this._drawCount = 0;
+		this._routeLine._drawCount = 0;
 
 		if( value === false ) {
 			// stop animation
-
-			this._drawCount = 0;
-			// thick line
 			this._routeLine.drawFull();
 
 			if( this.activeMarker !== null ) {
 				this.activeMarker.active = false;
 			}
+		} else {
+			this._controls.moveIntoCenter( this.pois[0].lat, this.pois[0].lng, 2000, undefined, undefined, () => { this._animate = true } );
 		}
 
 	}
 
 	set pauseAnimation( value ) {
 		this._animate = !value;
-		console.log("routeData", this._routeData, "segments", this._routeLine.segments, "vertices", this._routeLine.numberVertices);
-	}
-
-	reset() {
-
-		this.stopAnimate();
-		if( controls.rotateToCoordinate instanceof Function ){
-			controls.rotateToCoordinate( this._routeData[ 0 ].lat, this._routeData[ 0 ].lng );
-		}
-
-		if ( this._markerFactory.active !== null ) {
-			// close open infoBoxes
-			this._markerFactory.active._3xDomEvent.clickHandlers[ 0 ].callback();
-			
-		}
-
 	}
 	
-	animate() {
-
-		// var activeMarkerIndex = this.pois.findIndex(poi => { return this._activeCityMarker === poi } )
-		// const drawCallCityIndex = this._routeData.indexOf( this.pois[ this._activeMarker ] ) * this._routeLine.segments;
-		// const drawCallCityIndex = this._routeData.findIndex(currentCoordinate => { return currentCoordinate === this._activeCityMarker }) * this._routeLine.segments;
-		// var drawCallCityIndexBefore = this._routeData.indexOf( this.pois[ this._currentInfoBox - 1 ] ) * this._routeLine.segments;
-		// var drawCallCityIndexBefore = this._routeData.findIndex( currentCoordinate => { this._activeCityMarker - 1 } ) * this._routeLine.segments;
-		// var closeDelay = this._routeLine.segments * 5 + drawCallCityIndexBefore
-
-		console.log("routeline drawcount", this._routeLine._drawCount, "route drawcount", this._drawCount);;
-
-		// const index = ( this._drawCount / this._routeLine.segments );
-
-		// const currentCoordinate = this._routeData[index-1];
-
-		// if( currentCoordinate !== undefined && this._currentCoordinate !== currentCoordinate ) {
-
-		// 	this._currentCoordinate = currentCoordinate;
-
-		// 	this._controls.moveIntoCenter( currentCoordinate.lat, currentCoordinate.lng, 500);
-			
-		// 	if(currentCoordinate.marker !== undefined) {
-		// 		currentCoordinate.marker.active = true;
-		// 	}
-
-		// 	var activeMarkerIndex = this.pois.findIndex(poi => { return this._activeMarker === poi.marker } );
-		// 	// console.log( "activeMarkerIndex", activeMarkerIndex);
-
-		// 	const currentMarkerIndex = this._routeData.findIndex( currCo => { return this.pois[activeMarkerIndex] === currCo } )
-		// 	if( currentMarkerIndex + 5 < index ) {
-		// 		// console.log("hiding");
-		// 		if(this.activeMarker !== null) {
-		// 			this.activeMarker.active = false;
-		// 		}
-		// 	}
-		// }
+	_animateRoute() {
 		
-		this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
+		let currentCoordinate = Math.floor( ( this._drawCount / 10 ) );
 
-		/*
-			if ( this.drawCount >= drawCallCityIndex ) {
+		if( this._routeData[ currentCoordinate ].marker !== undefined ) {
 
-				if ( this.meshGroup.children[ this._currentInfoBox - 1 ] !== undefined ) {
-					// show infoBox
+			if(this.activeMarker !== null) {
+				this.activeMarker.active = false;
+			}
+			this._routeData[ currentCoordinate ].marker.active = true;
+			setTimeout(() => { if(this.activeMarker !== null) this.activeMarker.active = false; }, 3000);
 
-					this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
-				} 
-				else if( this.meshGroup.children[ this._currentInfoBox - 1 ] === undefined ) {
-
-					// oh god pls
-					var lastCityDrawCallIndex = this._routeData.indexOf( this._cityMarkers[ this._cityMarkers.length - 1 ] ) * this._routeLine.segments;
-					if ( this._currentInfoBox === 0 && this.drawCount === lastCityDrawCallIndex ) {
-
-						this.meshGroup.children[ this._cityMarkers.length - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
-
-					}
-
+		}
+		
+		const lastMarkerIndex = this._routeData.findIndex( currCo => { return this.activeMarker === currCo.marker } );
+		// set current marker inactive after 12 iterations
+		if( currentCoordinate > lastMarkerIndex + 12 ) {
+			if(this.activeMarker !== null) {
+				if( this.activeMarker.next !== undefined ) {
+					// move camera to next marker in advance
+					this._controls.moveIntoCenter( this.activeMarker.next._poi.lat, this.activeMarker.next._poi.lng, 1000 );
 				}
-
+				// this.activeMarker.active = false;
 			}
-			// meh because float drawCount
-			else if ( this.drawCount >= closeDelay && this.drawCount <= closeDelay ) {
-				// close infoBox
-				this.meshGroup.children[ this._currentInfoBox - 1 ]._3xDomEvent.clickHandlers[ 0 ].callback();
-			}
-			*/
-
+		}
 		
-			// if( controls.rotateToCoordinate instanceof Function ){
-			// 	// "camera" follows route
-			// 	var lat = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lat;
-			// 	var lng = this._routeData[ Math.floor( this.drawCount / this._routeLine.segments ) ].lng;
-			// 	// present the starting point on load to the user
-			// 	controls.rotateToCoordinate ( lat, lng );
-			// }
-			// controls.rotateToCoordinate ( lat, lng );
-			// debug
-			// this.box.innerHTML = this.drawCount + "<br>vertices: " + this.vertices + "<br>indexBefore: " + drawCallCityIndexBefore + "<br>drawCallCityIndex: " + drawCallCityIndex;
-		
+		// this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
+		this._drawCount = this._routeLine.drawCount;
+		// dont repeat
+		if( this._drawCount === this._routeLine.numberVertices - 1) {
+			this.runAnimation = false;
+		}
 
 	}
 

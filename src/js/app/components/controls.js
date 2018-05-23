@@ -34,7 +34,7 @@ export default class Controls {
       controls.enableRotate = value;
     }
 
-    controls.moveIntoCenter = function( lat, lng, time, easing, distance ) {
+    controls.moveIntoCenter = function( lat, lng, time, easing, distance, callback ) {
 
       const phi = (90 - lat) * Math.PI / 180;
       const theta = (-lng) * Math.PI / 180;
@@ -66,6 +66,9 @@ export default class Controls {
         })
         .onComplete(function () {
           controls.panoActive( true );
+          if( callback !== undefined ) {
+            callback();
+          }
       }, this).start();
 
       
