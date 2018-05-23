@@ -97,6 +97,12 @@ module.exports = {
   // (does not apply to resolving to loaders)
   resolve: {
 
+    // treeshaking doesnt work :/
+    // alias: {
+    //   '@fortawesome/fontawesome-free-solid$': '@fortawesome/fontawesome-free-solid/shakable.es.js',
+    //   '@fortawesome/fontawesome-free-regular$': '@fortawesome/fontawesome-free-regular/shakable.es.js'
+    // },
+
     // directories where to look for modules,
     modules: [
       'node_modules',

@@ -159,6 +159,10 @@ export default class Sidebar {
 
         // $(".sidebar-settings-menu").hide();
         $(div).hide();
+
+        const icon = document.createElement("i");
+        icon.className = "fas fa-wrench";
+        $(".sidebar-settings-link").prepend(icon)
         
         $(".sidebar-settings-link").click(() => {
             // $(".sidebar-settings-menu").fadeToggle();

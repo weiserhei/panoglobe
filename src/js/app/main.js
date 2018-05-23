@@ -12,7 +12,7 @@ import Globus from './components/globus';
 
 // Helpers
 // import Geometry from './helpers/geometry';
-import Stats from './helpers/stats';
+// import Stats from './helpers/stats';
 import DomEvents from './helpers/domevents';
 
 // Model
@@ -176,7 +176,10 @@ export default class Main {
       new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls);
 
       // Add dat.GUI controls if dev
-      if(Config.isDev) {
+      // if(Config.isDev) {
+      //   new DatGUI(this, this.globus.mesh);
+      // }
+      if(__ENV__ === 'dev') {
         new DatGUI(this, this.globus.mesh);
       }
 
@@ -243,7 +246,7 @@ export default class Main {
     const delta = this.clock.getDelta();
     // Render rStats if Dev
     if(Config.isDev && Config.isShowingStats) {
-      Stats.start();
+      // Stats.start();
     }
 
     // Call render function and pass in created scene and camera
@@ -251,7 +254,7 @@ export default class Main {
 
     // rStats has finished determining render call now
     if(Config.isDev && Config.isShowingStats) {
-      Stats.end();
+      // Stats.end();
     }
 
     this.update( delta );
