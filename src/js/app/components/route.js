@@ -88,8 +88,8 @@ export default class Route {
 		this.marker.forEach(marker => { marker.update( camera, delta )});
 
 		if ( this._animate === true ) {
-			this._animateRoute();
 			this._routeLine.update();
+			this._animateRoute();
 		}
 	}
 	
@@ -183,10 +183,10 @@ export default class Route {
 		this._animate = false;
 		this.showLabels = !value;
 		this._drawCount = 0;
-		this._routeLine._drawCount = 0;
-
+		
 		if( value === false ) {
 			// stop animation
+			this._routeLine._drawCount = 0;
 			this._routeLine.drawFull();
 
 			if( this.activeMarker !== null ) {

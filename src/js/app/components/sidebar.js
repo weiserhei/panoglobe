@@ -293,20 +293,38 @@ export default class Sidebar {
         
 		var playIcon = icon("fas fa-play-circle", "play");
 		var playButton = mediaControlButton(" Play", buttonClass, playIcon);
-        playButton.onclick = () => route.runAnimation = true;
+        // playButton.onclick = () => route.runAnimation = true;
         
 		var pauseIcon = icon("fas fa-pause-circle", "pause");
 		var pauseButton = mediaControlButton("", buttonClass, pauseIcon);
 		pauseButton.onclick = () => route.pauseAnimation = true;
 		// pauseButton.innerText = " Pause";
+        let firstStart = true;
+        playButton.onclick = function() {
+
+            if( route.runAnimation === false && firstStart === true ) {
+                this.innerHTML = pauseIcon.outerHTML + " Pause";
+                route.runAnimation = true;
+                firstStart = false;
+            } else if (route.runAnimation === false && firstStart === false ) {
+                this.innerHTML = pauseIcon.outerHTML + " Pause";
+                route.pauseAnimation = false;
+            } else {
+                this.innerHTML = playIcon.outerHTML + " Continue";
+                route.pauseAnimation = true;
+            }
+        }
         
 		var stopIcon = icon("fas fa-stop-circle", "stop");
 		var stopButton = mediaControlButton("", buttonClass, stopIcon);
 		// stopButton.innerText = " Stop";
-		stopButton.onclick = () => route.runAnimation = false;
+		stopButton.onclick = function() {
+            route.runAnimation = false;
+            playButton.innerHTML = playIcon.outerHTML + " Play";
+        }
 
 		buttonGroup.appendChild( playButton );
-		buttonGroup.appendChild( pauseButton );
+		// buttonGroup.appendChild( pauseButton );
 		buttonGroup.appendChild( stopButton );
 
 		li2.appendChild( buttonGroup );
