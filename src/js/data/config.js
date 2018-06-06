@@ -76,17 +76,8 @@ export default {
     },
     clouds: {
       opacity: 0.3,
-      enabled: true,
+      enabled: false,
       // texture: ,
-    }
-  },
-  mesh: {
-    enableHelper: false,
-    wireframe: false,
-    translucent: false,
-    material: {
-      color: 0xffffff,
-      emissive: 0xffffff
     }
   },
   fog: {
@@ -144,7 +135,7 @@ export default {
     //0xCEECF5 orig //0x44ffaa mystic green 500, 4	
     color: 0xCEECF5,
     // color: 0xffaa00,
-    intensity: 0.8,
+    intensity: 0.4,
     distance: 500,
     angle: Math.PI / 4,
     decay: 2,

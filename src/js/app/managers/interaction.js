@@ -4,7 +4,7 @@ import Config from '../../data/config';
 
 // Manages all input interactions
 export default class Interaction {
-  constructor(renderer, scene, camera, controls) {
+  constructor(renderer, scene, camera, controls, globus) {
     // Properties
     this.renderer = renderer;
     this.scene = scene;
@@ -29,6 +29,8 @@ export default class Interaction {
       if(event.repeat) {
         return;
       }
+
+      // globus.raycast();
 
       if(this.keyboard.eventMatches(event, 'escape')) {
         console.log('Escape pressed');

@@ -173,7 +173,7 @@ export default class Main {
       // };
 
       // Set up interaction manager with the app now that the model is finished loading
-      new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls);
+      new Interaction(this.renderer.threeRenderer, this.scene, this.camera.threeCamera, this.controls.threeControls, this.globus);
 
       // Add dat.GUI controls if dev
       // if(Config.isDev) {

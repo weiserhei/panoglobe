@@ -71,6 +71,7 @@ export default class Globus {
 
         this.material = new THREE.MeshPhongMaterial({
             wireframe: false,
+            side: THREE.DoubleSide,
             color: Config.globus.material.color,
             specular: Config.globus.material.specular,
             shininess: Config.globus.material.shininess,
@@ -82,8 +83,8 @@ export default class Globus {
         this.mesh = new THREE.Mesh ( geometry, this.material );
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
-        this.mesh.matrixAutoUpdate = false;
-        this.mesh.updateMatrix();
+        // this.mesh.matrixAutoUpdate = false;
+        // this.mesh.updateMatrix();
 
         if( Config.globus.innerGlow.enabled === true ) {
             this.mesh.add( getInnerGlow( geometry ) );
@@ -96,6 +97,25 @@ export default class Globus {
             this.mesh.add( this._clouds );
         }
         scene.add(this.mesh);
+
+        this._scene = scene;
+
+    }
+
+    raycast() {
+        var raycaster = new THREE.Raycaster();
+        // raycaster.set( this.mesh.position, new THREE.Vector3(0, 0, 1) );
+        raycaster.set( new THREE.Vector3(0, 10, 0), new THREE.Vector3(0, -1, 0) );
+
+        // calculate objects intersecting the picking ray
+        var intersects = raycaster.intersectObject( this.mesh );
+        // for ( var i = 0; i < intersects.length; i++ ) {
+            console.log("intersects", intersects);
+            let x = new THREE.Mesh(new THREE.BoxBufferGeometry(20, 20, 20), new THREE.MeshNormalMaterial());
+            x.position.copy(intersects[0].point);
+            this._scene.add( x );
+            // intersects[ i ].object.material.color.set( 0xff0000 );
+        // }
 
     }
 

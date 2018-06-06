@@ -124,7 +124,7 @@ export default class Light {
       case 'spot':
         this.scene.add(this.spotlight);
         this.scene.add(this.spotlight.target);
-        // this.scene.add(this.spotLightHelper);
+        this.scene.add(this.spotLightHelper);
         break;
 
       case 'directional':
