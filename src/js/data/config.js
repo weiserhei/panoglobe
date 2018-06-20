@@ -9,7 +9,7 @@ export default {
   isRotating: true,
   isMouseMoving: false,
   isMouseOver: false,
-  maxAnisotropy: 1,
+  maxAnisotropy: 8,
   dpr: 1,
   easing: TWEEN.Easing.Quadratic.InOut,
   duration: 500,
@@ -76,7 +76,7 @@ export default {
     },
     clouds: {
       opacity: 0.3,
-      enabled: false,
+      enabled: true,
       // texture: ,
     }
   },

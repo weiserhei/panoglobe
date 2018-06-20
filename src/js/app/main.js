@@ -26,6 +26,8 @@ import Route from './components/route';
 import Sidebar from "./components/sidebar";
 // import Particles from "./components/particles";
 
+import {RGBELoader, HDRCubeTextureLoader, PMREMGenerator, PMREMCubeUVPacker, EffectComposer, RenderPass, MaskPass, ShaderPass, CopyShader} from 'three-full';
+
 // Managers
 import RouteManager from "./managers/routeManager";
 import Interaction from './managers/interaction';
@@ -152,6 +154,39 @@ export default class Main {
       });
 
     }).catch(() => {console.warn("Error loading height data image")});
+
+
+    var hdrpath = "assets/textures/cube/pisaHDR/";
+    var hdrformat = '.hdr';
+    var hdrurls = [
+      hdrpath + 'px' + hdrformat, hdrpath + 'nx' + hdrformat,
+      hdrpath + 'py' + hdrformat, hdrpath + 'ny' + hdrformat,
+      hdrpath + 'pz' + hdrformat, hdrpath + 'nz' + hdrformat
+    ];
+
+    console.log("ubt", hdrurls);
+
+    var lder = new HDRCubeTextureLoader( this.preloader.manager );
+    console.log("loader", lder.manager);
+
+    // var hdrCubeMap = lder.load( THREE.UnsignedByteType, hdrurls, function ( hdrCubeMap ) {
+      // var pmremGenerator = new PMREMGenerator( hdrCubeMap );
+      // pmremGenerator.update( this.renderer );
+      // var pmremCubeUVPacker = new PMREMCubeUVPacker( pmremGenerator.cubeLods );
+      // pmremCubeUVPacker.update( this.renderer );
+      // standardMaterial.envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
+      // standardMaterial.needsUpdate = true;
+    // } );
+
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
+    composer = new EffectComposer( this.renderer );
+    composer.setSize( window.innerWidth, window.innerHeight );
+    var renderScene = new RenderPass( scene, camera );
+    composer.addPass( renderScene );
+    var copyPass = new ShaderPass( THREE.CopyShader );
+    copyPass.renderToScreen = true;
+    composer.addPass( copyPass );
 
 
     // Start loading the textures and then go on to load the model after the texture Promises have resolved
