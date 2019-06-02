@@ -133,19 +133,19 @@ export default class Sidebar {
         const b = document.createElement("a");
         b.setAttribute("href", "#");
         // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
-        const className2 = "fas fa-globe";
-        const classNameActive2 = "fas fa-globe text-warning";
-        const linkName2 = '<span class="svg-icon"><i class="'+className2+'"></i></span> Borders On';
-        const linkNameActive2 = '<span class="svg-icon"><i class="'+classNameActive2+'"></i></span> Borders Off';
+        const className2 = "fas fa-globe text-warning";
+        const classNameActive2 = "fas fa-globe";
+        const linkName2 = '<span class="svg-icon"><i class="'+className2+'"></i></span> Borders Off';
+        const linkNameActive2 = '<span class="svg-icon"><i class="'+classNameActive2+'"></i></span> Borders On';
         b.innerHTML = linkName2;
         li2.appendChild(b);
         
         b.addEventListener("click", ()=>{
             this._globus.borders = !this._globus.borders;
             if( this._globus.borders ) {
-                b.innerHTML = linkNameActive2;
-            } else {
                 b.innerHTML = linkName2;
+            } else {
+                b.innerHTML = linkNameActive2;
             }
         });
 

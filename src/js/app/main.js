@@ -112,7 +112,7 @@ export default class Main {
         // geometry.applyMatrix( new THREE.Matrix4().makeScale( - 1, 1, - 1 ) );
         borderlines.rotation.set( 0, Math.PI / 2, 0 );
         self.scene.add(borderlines);
-        borderlines.visible = false;
+        // borderlines.visible = false;
         self.globus._borderlines = borderlines;
 
     }).fail(function(x) {
