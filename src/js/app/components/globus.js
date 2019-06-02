@@ -23,6 +23,8 @@ function getClouds( geometry ) {
     cloudSphere.matrixAutoUpdate = false;
     cloudSphere.updateMatrix();
 
+    cloudSphere.renderOrder = 1;
+
     return cloudSphere;
 }
 
@@ -96,6 +98,7 @@ export default class Globus {
             this._clouds = getClouds( geometry );
             this.mesh.add( this._clouds );
         }
+
         scene.add(this.mesh);
 
         this._scene = scene;
@@ -117,6 +120,14 @@ export default class Globus {
             // intersects[ i ].object.material.color.set( 0xff0000 );
         // }
 
+    }
+
+    get borders() {
+        return this._borderlines.visible;
+    }
+
+    set borders(value) {
+        this._borderlines.visible = value;
     }
 
     get night() {

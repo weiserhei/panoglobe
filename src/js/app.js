@@ -1,6 +1,6 @@
 import fontawesome from '@fortawesome/fontawesome';
 import solid from '@fortawesome/fontawesome-free-solid';
-// import regular from '@fortawesome/fontawesome-free-regular';
+import regular from '@fortawesome/fontawesome-free-regular';
 
 // subsetting doesnt work :/
 // import { faTimes, faExternalLinkAlt, faPlus, faCog, faCaretRight, faTachometerAlt, faMapMarker, faWrench, faPlayCircle, faPauseCircle, faStopCircle } from '@fortawesome/fontawesome-free-solid'
@@ -18,10 +18,10 @@ import solid from '@fortawesome/fontawesome-free-solid';
 // fontawesome.library.add(faExternalLinkAlt)
 // fontawesome.library.add(faTimes)
 
-import faMoon from '@fortawesome/fontawesome-free-regular/faMoon'
-fontawesome.library.add(faMoon)
-import faCircle from '@fortawesome/fontawesome-free-regular/faCircle'
-fontawesome.library.add(faCircle)
+// import faMoon from '@fortawesome/fontawesome-free-regular/faMoon'
+// fontawesome.library.add(faMoon)
+// import faCircle from '@fortawesome/fontawesome-free-regular/faCircle'
+// fontawesome.library.add(faCircle)
 
 // fontawesome.config = {
 //   familyPrefix: 'xd',

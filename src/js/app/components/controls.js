@@ -2,7 +2,7 @@
 // import OrbitControls from '../../utils/orbitControls';
 import { OrbitControls } from "three-full";
 import Config from '../../data/config';
-import * as TWEEN from "tween.js";
+import * as TWEEN from "@tweenjs/tween.js";
 import * as THREE from "three";
 
 

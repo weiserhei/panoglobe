@@ -1,4 +1,4 @@
-import TWEEN from 'tween.js';
+import TWEEN from '@tweenjs/tween.js';
 
 // This object contains the state of the app
 export default {
@@ -19,7 +19,7 @@ export default {
   },
   routes: {
     linewidth: 2, // error on 2.0 width wtf lol
-    lineSegments: 9
+    lineSegments: 5
   },
   texture: {
     path: './assets/textures/',
@@ -27,7 +27,8 @@ export default {
       // {name: 'UV', image: 'UV_Grid_Sm.jpg'},
       {name: 'clouds', image: '4k/fair_clouds_4k.jpg'},
       {name: 'stars', image: 'galaxy_starfield.png'},
-      {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
+      // {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
+      {name: 'earthColor', image: '8k/2_no_clouds_8k.jpg'},
       {name: 'invertedSpecularmap', image: '4k/Spec-Mask-inverted_4k.png'},
       {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
       {name: 'normalmap', image: '4k/earth_normalmap_flat_4k.jpg'},
@@ -57,7 +58,7 @@ export default {
       normalScale: -0.4,
       displacementMap: "displacemap",
       // displacementMap: "earthColor",
-      displacementScale: 4,
+      displacementScale: 2,
       // displacementScale: 20,
       // displacementBias: 0.428408,
       displacementBias: 0,

@@ -5,7 +5,7 @@
  */
 
 import * as THREE from "three";
-import {LineGeometry, LineMaterial, Line2} from 'three-full';
+import { LineGeometry, LineMaterial, Line2 } from 'three-full';
 
 import { makeColorGradient } from "../../utils/colors";
 import { createSphereArc } from "../../utils/panoutils";
@@ -96,6 +96,7 @@ export default class RouteLine {
 
 		});
 
+		// hilbert2d and hilbert3D were removed. Please use GeometryUtils.hilbert2D() and GeometryUtils.hilbert3D() instead.
         // var points2 = hilbert3D( new THREE.Vector3( 0, 0, 120 ), 20.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
         // var points = routeData.map(pos => { return new THREE.Vector3(pos.displacedPos.x, pos.displacedPos.y, pos.displacedPos.z) });
 
@@ -128,17 +129,18 @@ export default class RouteLine {
 		} );
 		
         this._line = new Line2( geometry, lineMaterial );
-		// this.line.computeLineDistances();
+		// this._line.computeLineDistances();
+		// this._line.scale.set( 1, 1, 1 );
 
 		// render "on top"
 		// interferes with atmosphere material
-		// this.line.renderOrder = 999;
-		// this.line.onBeforeRender = function( renderer ) { 
+		// this._line.renderOrder = 999;
+		// this._line.onBeforeRender = function( renderer ) { 
 		// 	renderer.clearDepth(); 
 		// };
 		
-		//window.addEventListener('resize', () => { this.line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
-		// this.line.material.resolution.set( window.innerWidth, window.innerHeight );
+		// window.addEventListener('resize', () => { this._line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
+		// this._line.material.resolution.set( window.innerWidth, window.innerHeight );
 
         return this._line;
     }

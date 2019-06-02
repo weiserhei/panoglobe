@@ -130,6 +130,26 @@ export default class Sidebar {
         // span.innerHTML = value;
         // this.a.appendChild(span);
 
+        const b = document.createElement("a");
+        b.setAttribute("href", "#");
+        // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
+        const className2 = "fas fa-globe";
+        const classNameActive2 = "fas fa-globe text-warning";
+        const linkName2 = '<span class="svg-icon"><i class="'+className2+'"></i></span> Borders On';
+        const linkNameActive2 = '<span class="svg-icon"><i class="'+classNameActive2+'"></i></span> Borders Off';
+        b.innerHTML = linkName2;
+        li2.appendChild(b);
+        
+        b.addEventListener("click", ()=>{
+            this._globus.borders = !this._globus.borders;
+            if( this._globus.borders ) {
+                b.innerHTML = linkNameActive2;
+            } else {
+                b.innerHTML = linkName2;
+            }
+        });
+
+
         const a = document.createElement("a");
         a.setAttribute("href", "#");
         // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';

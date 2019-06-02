@@ -1,6 +1,6 @@
 // Global imports -
 import * as THREE from 'three';
-import TWEEN from 'tween.js';
+import TWEEN from '@tweenjs/tween.js';
 
 // Local imports -
 // Components
@@ -34,6 +34,7 @@ import DatGUI from './managers/datGUI';
 // data
 import Config from './../data/config';
 // -- End of imports
+import { drawThreeGeo } from '../utils/threeGeoJSON';
 
 // This class instantiates and ties all of the components together, starts the loading process and renders the main loop
 export default class Main {
@@ -101,6 +102,23 @@ export default class Main {
     this.texture = new Texture(this.preloader.manager);
     this.globus = new Globus( this.scene, this.light.directionalLight );
     this.skybox = new Skybox ( this.scene );
+
+    var self = this;
+    //Draw the GeoJSON
+    // var test_json = $.getJSON("./../data/countries_states.geojson", function(data) {
+    var test_json = $.getJSON("./assets/countries_states.geojson", function(data) {
+        var borderlines = drawThreeGeo(data, Config.globus.radius+0.5, 'sphere');
+        // borderlines.renderOrder = 2; 
+        // geometry.applyMatrix( new THREE.Matrix4().makeScale( - 1, 1, - 1 ) );
+        borderlines.rotation.set( 0, Math.PI / 2, 0 );
+        self.scene.add(borderlines);
+        borderlines.visible = false;
+        self.globus._borderlines = borderlines;
+
+    }).fail(function(x) {
+      console.log( "error",x );
+    });
+
 
     const div = document.getElementById('wrapper');
     this.sidebar = new Sidebar(this.light, this.globus, this.controls.threeControls);

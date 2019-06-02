@@ -18,7 +18,7 @@ const getRandomArbitrary = ( min, max ) => {
 // Math functions from stemkoski
 function greatCircleFunction(P, Q, angleMultiplier){
 
-    var angle = P.angleTo(Q);
+	var angle = P.angleTo(Q);
     angle += angleMultiplier || 0;
     
     return function(t)
