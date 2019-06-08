@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.prod.js",
+    "build": "webpack --progress --color --config webpack.prod.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js"
   },
   "repository": {
@@ -28,6 +28,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.1",
+    "file-loader": "^4.0.0",
     "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
@@ -39,8 +40,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.9.0",
+    "@tweenjs/tween.js": "^17.4.0",
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
+    "malihu-custom-scrollbar-plugin": "^3.1.5",
+    "popper.js": "^1.15.0",
     "three": "^0.105.2"
   }
 }

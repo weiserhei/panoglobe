@@ -21,6 +21,7 @@ export default class Preloader {
         this.manager = new LoadingManager ();
         this.textureLoader = new TextureLoader( this.manager );
         this.zIndex = container.style.zIndex;
+        this._inline = false; // overlay style
 
         const innerContainer = document.createElement("div");
         innerContainer.className = "preloader";

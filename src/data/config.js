@@ -1,4 +1,4 @@
-// import TWEEN from '@tweenjs/tween.js';
+import TWEEN from '@tweenjs/tween.js';
 
 // This object contains the state of the app
 export default {
