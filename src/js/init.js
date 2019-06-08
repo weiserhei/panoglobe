@@ -7,6 +7,7 @@ export default function() {
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
     
     var renderer = new THREE.WebGLRenderer();
+    scene.background = new THREE.Color( 0xff0000 );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
     
