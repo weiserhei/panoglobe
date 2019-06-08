@@ -23,6 +23,11 @@ export default class Preloader {
         this.zIndex = container.style.zIndex;
         this._inline = false; // overlay style
 
+        // const c =  document.getElementsByClassName("preloader");
+        // if(c.length > 0) {
+        //     const progressbar = document.getElementsByClassName("progress-bar2");
+        // }
+            
         const innerContainer = document.createElement("div");
         innerContainer.className = "preloader";
         container.appendChild(innerContainer);

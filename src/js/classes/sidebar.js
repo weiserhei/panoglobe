@@ -5,8 +5,10 @@ import * as cS from "malihu-custom-scrollbar-plugin";
 
 import "malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css";
 import "./../../vendor/pro-sidebar-template-3.0.2/src/css/main.css";
-import "./../../css/sidebar-toggle.css"; // custom toggle button
 import "./../../vendor/pro-sidebar-template-3.0.2/src/css/sidebar-themes.css";
+import "./../../css/sidebar-toggle.css"; // custom toggle button
+
+import "bootstrap";
 
 import Config from './../../data/config';
 
@@ -70,6 +72,56 @@ class SidebarDropdown {
     }
 }
 
+function getFooter(globus) {
+
+    console.log(globus._borderlines.children);
+
+    const div = document.createElement("div");
+    div.className = "sidebar-footer";
+
+    const settings = document.createElement("div");
+    settings.className = "dropdown";
+    div.appendChild(settings);
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.setAttribute('data-toggle', 'dropdown');
+    settings.appendChild(link);
+
+    const icon = document.createElement("i");
+    icon.className = "fas fa-wrench fa-lg";
+    link.appendChild(icon);
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "dropdown-menu";
+    // dropdown.innerHTML = "<a href='#' class='dropdown-item'>Enable Night Mode</a> \
+    // <a href='#' class='dropdown-item'>Disable Borders</a>";
+    settings.appendChild(dropdown);
+
+    if(globus._borderlines) {
+        const linkActive = "Disable Borders";
+        const linkInactive = "Enable Borders";
+        const link2 = document.createElement("a");
+        link2.href = "#";
+        link2.className = "dropdown-item";
+        link2.innerHTML = linkActive;
+        dropdown.appendChild(link2);
+
+        link2.addEventListener("click", ()=>{
+            globus.borders = !globus.borders;
+            if( globus.borders ) {
+                link2.innerHTML = linkActive;
+            } else {
+                link2.innerHTML = linkInactive;
+            }
+        });
+
+    }
+    
+    return div;
+
+}
+
 function liplusa(el) {
     const li = document.createElement("li");
     const svgSpan = document.createElement("span");
@@ -89,16 +141,12 @@ function liplusa(el) {
 }
 
 export default class Sidebar {
-    constructor(lights, globus, controls) {
-
-        // const container = document.getElementById("sidebar").firstElementChild;
-        const pageWrapper = document.createElement("div");
-        pageWrapper.classList.add("page-wrapper", "toggled", "ice-theme");
-        document.body.insertBefore(pageWrapper, document.body.firstChild);
+    constructor(pageWrapper, lights, globus, controls) {
 
         const nav = document.createElement("nav");
         nav.className = "sidebar-wrapper";
         nav.id = "sidebar";
+
         pageWrapper.appendChild(nav);
         this.pageWrapper = pageWrapper;
 
@@ -121,7 +169,8 @@ export default class Sidebar {
         this._globus = globus;
         this._controls = controls;
 
-        this._addSettings( container );
+        // this._addSettings( container );
+        nav.appendChild( getFooter(globus) );
         
         $("#toggle-sidebar2").click(() => {
             $(".page-wrapper").toggleClass("toggled");
@@ -129,14 +178,10 @@ export default class Sidebar {
     
     }
 
-    get container() {
-        return this.pageWrapper;
-    }
-
     _addSettings(container) {
 
         const div = document.createElement("div");
-        div.className = "sidebar-menu";
+        div.className = "sidebar-menu sidebar-item";
         container.appendChild(div);
         const ul = document.createElement("ul");
         div.appendChild(ul);
@@ -239,8 +284,10 @@ export default class Sidebar {
     addLink( headline, callback ) {
 
         const div = document.createElement("div");
-        div.className = "sidebar-menu";
-        this.test.appendChild(div)
+        div.className = "sidebar-menu sidebar-item";
+        this.test.appendChild(div);
+        // this.test.insertBefore(div, this.test.firstChild);
+
         const ul = document.createElement("ul");
         div.appendChild(ul);
 
@@ -296,7 +343,7 @@ export default class Sidebar {
     addRoute( route ) {
 
         const div = document.createElement("div");
-        div.className = "sidebar-menu";
+        div.className = "sidebar-menu sidebar-item";
         this.test.appendChild(div);
         // this.test.insertBefore(div, this.test.firstChild);
         // this.test.insertBefore(div, this.test.children[1]);
@@ -522,6 +569,7 @@ export default class Sidebar {
 
 
     init( el ) {
+
         // slide open onload any active links
         $(".sidebar-dropdown > a").parent(".active").children(".sidebar-submenu").slideDown(200);
 

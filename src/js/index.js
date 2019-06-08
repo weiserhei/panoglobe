@@ -29,7 +29,7 @@ if ( WEBGL.isWebGLAvailable() ) {
         // amerika
         const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
 
-        init();
+        init(preloader);
 
     });
     // .catch(() => {console.warn("Error loading height data image")});
