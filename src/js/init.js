@@ -18,7 +18,7 @@ export default function() {
     
     var controls = new OrbitControls( camera, renderer.domElement );
     
-    camera.position.set( 0, 20, 10 );
+    camera.position.set( 0, 10, 10 );
     controls.update();
     
     var animate = function () {

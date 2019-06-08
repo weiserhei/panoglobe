@@ -67,7 +67,7 @@ export default class Preloader {
             // this.container.style.display = "none";
             // container.onclick = () => { $(container).fadeOut() };
 
-            // $(container).delay(400).fadeOut(800);
+            $(container).delay(400).fadeOut(800);
         };
 
         this.manager.onError = ( url ) => {

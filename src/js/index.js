@@ -13,21 +13,24 @@ import '@fortawesome/fontawesome-free/js/regular'
 
 if ( WEBGL.isWebGLAvailable() ) {
     // preload, then init
-    // init();
+
     const loadContainer = document.createElement("div");
     loadContainer.id = "loadcontainer";
     document.body.appendChild(loadContainer);
     var preloader = new Preloader(loadContainer);
 
-
+    // Preload Demo
     var imageLoader = new ImageLoader (preloader.manager);
-    const imageUrl = "./assets/textures/heightmap_1440.jpg";
+    const imageUrl = "./textures/heightmap_1440.jpg";
     const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
     loadHeightData(imageUrl).then((heightImage) => {
-      // asien
-      const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
-      // amerika
-      const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+        // asien
+        const url = "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist";
+        // amerika
+        const url2 = "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist";
+
+        init();
+
     }).catch(() => {console.warn("Error loading height data image")});
 
 
