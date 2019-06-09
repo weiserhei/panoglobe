@@ -1,0 +1,13 @@
+/* @import '../../node_modules/bootstrap/dist/css/bootstrap.min'; */
+@import '~bootstrap/dist/css/bootstrap.css';
+
+body { 
+    margin:0; 
+    padding:0; 
+    background-color:#000000; 
+    overflow: hidden;
+}
+canvas { 
+    width: 100%; 
+    height: 100% 
+}

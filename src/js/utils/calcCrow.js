@@ -3,7 +3,7 @@
  */
 
  // Converts numeric degrees to radians
-function toRad( Value ) {
+ function toRad( Value ) {
     return Value * Math.PI / 180;
 };
 

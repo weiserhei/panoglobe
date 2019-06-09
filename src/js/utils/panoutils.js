@@ -1,29 +1,29 @@
 /**
  * Panoutils
  */
-import * as THREE from "three";
+import { Vector3, Curve } from "three";
 import calcCrow from "./calcCrow";
 
-const numberWithCommas = (x) => {	
+export const numberWithCommas = (x) => {	
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
  */
-const getRandomArbitrary = ( min, max ) => {
+export const getRandomArbitrary = ( min, max ) => {
 	return Math.random() * (max - min) + min;
 };
 
 // Math functions from stemkoski
 function greatCircleFunction(P, Q, angleMultiplier){
 
-    var angle = P.angleTo(Q);
+	var angle = P.angleTo(Q);
     angle += angleMultiplier || 0;
     
     return function(t)
     {
-        var X = new THREE.Vector3().addVectors(
+        var X = new Vector3().addVectors(
             P.clone().multiplyScalar(Math.sin( (1 - t) * angle )), 
             Q.clone().multiplyScalar(Math.sin(      t  * angle )))
             .divideScalar( Math.sin(angle) );
@@ -36,7 +36,7 @@ function greatCircleFunction(P, Q, angleMultiplier){
 function convertLatLonToVec3(lat,lon) {
     lat =  lat * Math.PI / 180.0;
     lon = -lon * Math.PI / 180.0;
-    return new THREE.Vector3( 
+    return new Vector3( 
         Math.cos(lat) * Math.cos(lon), //rechts links invert
         Math.sin(lat),  // up down invert
         Math.cos(lat) * Math.sin(lon));
@@ -59,7 +59,7 @@ function array2D(x, y)
 	return array2D;
 }
 
-const getHeightData = (img, scale) => {		
+export const getHeightData = (img, scale) => {		
 
 	if (scale == undefined) scale = 10;
 
@@ -88,13 +88,13 @@ const getHeightData = (img, scale) => {
 
 }
 
-const createSphereArc = ( P, Q ) => {
-    var sphereArc = new THREE.Curve();
+export const createSphereArc = ( P, Q ) => {
+    var sphereArc = new Curve();
     sphereArc.getPoint = greatCircleFunction( P, Q );
     return sphereArc;
 };
 
-const calc3DPositions = (data, heightData, radius) => {
+export const calc3DPositions = (data, heightData, radius) => {
     //calculate Position + displaced Position in 3D Space
 	data.distance = 0;
 	for( var i = 0; i < data.length; i ++ ) {
@@ -151,10 +151,12 @@ const calc3DPositions = (data, heightData, radius) => {
 
 }
 
-module.exports = {
+const Panoutils = {
 	numberWithCommas,
 	getRandomArbitrary,
     getHeightData,
 	calc3DPositions,
 	createSphereArc
-};
+}
+
+export default Panoutils;
