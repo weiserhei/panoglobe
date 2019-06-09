@@ -74,14 +74,11 @@ class SidebarDropdown {
 
 function getFooter(globus) {
 
-    console.log(globus._borderlines.children);
-
     const div = document.createElement("div");
     div.className = "sidebar-footer";
 
     const settings = document.createElement("div");
     settings.className = "dropdown";
-    div.appendChild(settings);
 
     const link = document.createElement("a");
     link.href = "#";
@@ -107,6 +104,16 @@ function getFooter(globus) {
         link2.innerHTML = linkActive;
         dropdown.appendChild(link2);
 
+        const x = '<div class="custom-control custom-switch"> \
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1"> \
+                    <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label> \
+                    </div> \
+                    <div class="custom-control custom-switch"> \
+                    <input type="checkbox" class="custom-control-input" disabled id="customSwitch2"> \
+                    <label class="custom-control-label" for="customSwitch2">Disabled switch element</label> \
+                    </div>';
+        // dropdown.innerHTML = x;
+
         link2.addEventListener("click", ()=>{
             globus.borders = !globus.borders;
             if( globus.borders ) {
@@ -116,6 +123,7 @@ function getFooter(globus) {
             }
         });
 
+        div.appendChild(settings);
     }
     
     return div;
