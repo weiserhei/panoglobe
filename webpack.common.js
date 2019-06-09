@@ -42,7 +42,10 @@ module.exports = {
         {
             test: /\.(png|svg|jpg|gif)$/,
             use: [
-                'file-loader'
+                { 
+                    loader: 'file-loader',
+                    options: { outputPath: 'images' } // where to place images referenced in CSS
+                }
             ]
         }
         ]
