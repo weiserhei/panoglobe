@@ -88,7 +88,6 @@ export default class Route {
 		this.marker.forEach(marker => { marker.update( camera, delta )});
 
 		if ( this._animate === true ) {
-			this._routeLine.update();
 			this._animateRoute();
 		}
 	}
@@ -104,7 +103,7 @@ export default class Route {
 		const frequency = 1 /  ( steps * routeData.length );
 
 		this._routeLine = new RouteLine( Config.routes.lineSegments );
-
+        
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			if(index > 0) {
@@ -147,7 +146,7 @@ export default class Route {
 			const text = this._cityMarkers.length + " " + name;
 			marker.getLabel( this._container, text, this.showLabels, controls );
 
-		})
+        })
 
 		this.marker[this.marker.length-1].last = true;
 
@@ -162,15 +161,16 @@ export default class Route {
 
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
-		})
-
+        })
+                
+        // todo refactor this shit
 		if(Config.routes.linewidth > 1) {
 			this.line = this._routeLine.getThickLine( steps, phase, Config.routes.linewidth );
 		} else {
 			this.line = this._routeLine.getColoredBufferLine( steps, phase );
 		}
 
-		scene.add( this.line );
+        scene.add( this.line );
 
 	}
 
@@ -193,28 +193,42 @@ export default class Route {
 				this.activeMarker.active = false;
 			}
 		} else {
-			this._controls.moveIntoCenter( this.pois[0].lat, this.pois[0].lng, 2000, undefined, undefined, () => { this._animate = true } );
+            console.log("move to center");
+            // this._routeLine.drawFull();
+            this._routeLine.drawCount = 0;
+
+			this._controls.moveIntoCenter( 
+                this.pois[0].lat, this.pois[0].lng, 1000, undefined, undefined, () => { 
+
+                    console.log("animation GO");
+                    this._routeData[ 0 ].marker.active = true;
+                    setTimeout(() => { this._animate = true; }, 1000);
+                    // this._animate = true 
+                    } 
+                );
 		}
 
 	}
 
 	set pauseAnimation( value ) {
 		this._animate = !value;
-	}
+    }
 	
 	_animateRoute() {
-		
-		let currentCoordinate = Math.floor( ( this._drawCount / 10 ) );
 
-		if( this._routeData[ currentCoordinate ].marker !== undefined ) {
+        this._routeLine.update();
 
-			if(this.activeMarker !== null) {
-				this.activeMarker.active = false;
-			}
-			this._routeData[ currentCoordinate ].marker.active = true;
-			setTimeout(() => { if(this.activeMarker !== null) this.activeMarker.active = false; }, 3000);
-
-		}
+        // Thicc Line drawCount = routeData.length * (lineSegments+1)
+		let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
+        if(currentCoordinate > 1) {
+            if( this._routeData[ currentCoordinate ].marker !== undefined ) {
+                if(this.activeMarker !== null) {
+                    this.activeMarker.active = false;
+                }
+                this._routeData[ currentCoordinate ].marker.active = true;
+                setTimeout(() => { if(this.activeMarker !== null) this.activeMarker.active = false; }, 2000);
+            }
+        }
 		
 		const lastMarkerIndex = this._routeData.findIndex( currCo => { return this.activeMarker === currCo.marker } );
 		// set current marker inactive after 12 iterations
@@ -226,7 +240,8 @@ export default class Route {
 				}
 				// this.activeMarker.active = false;
 			}
-		}
+        }
+
 		
 		// this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
 		this._drawCount = this._routeLine.drawCount;

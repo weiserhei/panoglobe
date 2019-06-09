@@ -45,7 +45,12 @@ export default class RouteLine {
 
 	get numberVertices() {
 		return this._numberVertices;
-	}
+    }
+    
+    set drawCount( value ) {
+        this._drawCount = value;
+        this.update();
+    }
 
 	get drawCount() {
 		return this._drawCount;
@@ -53,15 +58,17 @@ export default class RouteLine {
 
 	update() {
 		// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
-		if( this._line.geometry instanceof THREE.BufferGeometry) {
-			this._line.geometry.setDrawRange( 0, this._drawCount );
-		} else if ( this._line.geometry instanceof LineGeometry ) {
-			// Thick Line
-			this._line.geometry.maxInstancedCount = this._drawCount -1;
-		}
+		if ( this._line.geometry instanceof LineGeometry ) {
+            // Thick Line
+            this._line.geometry.maxInstancedCount = this._drawCount -1;
+        }
+        else if( this._line.geometry instanceof THREE.BufferGeometry) {
+            this._line.geometry.setDrawRange( 0, this._drawCount );
+		} 
 
 		// drawCount must be all vertices
-		this._drawCount = ( this._drawCount + 1 ) % ( this._numberVertices );	
+        this._drawCount = ( this._drawCount + 1 ) % ( this._numberVertices );	
+
 	}
 
 	drawFull() {
@@ -145,6 +152,11 @@ export default class RouteLine {
 		
 		// window.addEventListener('resize', () => { this._line.material.resolution.set( window.innerWidth, window.innerHeight ); }, false);
 		// this._line.material.resolution.set( window.innerWidth, window.innerHeight );
+        // console.log(this._line.geometry);
+
+        // console.log(this._line.geometry.constructor.name); 
+        // console.log( this._line.geometry instanceof THREE.BufferGeometry );
+        // console.log( this._line.geometry instanceof LineGeometry );
 
         return this._line;
     }

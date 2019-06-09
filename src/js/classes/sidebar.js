@@ -344,7 +344,6 @@ export default class Sidebar {
 		// pauseButton.innerText = " Pause";
         let firstStart = true;
         playButton.onclick = function() {
-
             if( route.runAnimation === false && firstStart === true ) {
                 this.innerHTML = pauseIcon.outerHTML + " Pause";
                 route.runAnimation = true;
@@ -363,6 +362,7 @@ export default class Sidebar {
 		// stopButton.innerText = " Stop";
 		stopButton.onclick = function() {
             route.runAnimation = false;
+            firstStart = true;
             playButton.innerHTML = playIcon.outerHTML + " Play";
         }
 
