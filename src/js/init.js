@@ -73,17 +73,17 @@ export default function(preloader, heightdata) {
     scene.add( cube );
     // controls.threeControls.object.add( cube );
 
-    // cube.onBeforeRender = () => {
-    //     const time = new Date().getTime();
-    //     const r = Config.globus.radius + 3;
-    //     const speed = 0.001;
-    //     const x = Math.cos(time*speed) * r;
-    //     const z = Math.sin(time*speed) * r;
-    //     const y = Math.sin(time*speed / 2) * r - 5;
+    cube.onBeforeRender = () => {
+        const time = new Date().getTime();
+        const r = Config.globus.radius + 3;
+        const speed = 0.001;
+        const x = Math.cos(time*speed) * r;
+        const z = Math.sin(time*speed) * r;
+        const y = Math.sin(time*speed / 2) * r - 5;
 
-    //     cube.position.set(x, y, z);
-    //     cube.lookAt(scene.position);
-    // }
+        cube.position.set(x, y, z);
+        cube.lookAt(scene.position);
+    }
 
     const texture = new Texture(preloader.manager);
     texture.load().then(() => {
