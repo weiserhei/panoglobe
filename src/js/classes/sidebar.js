@@ -1,14 +1,19 @@
 import $ from "jquery";
-// import { numberWithCommas } from "../../utils/panoutils";
+import "bootstrap";
+
+import { numberWithCommas } from "./../utils/panoutils";
 import * as prosidebar from "./../../vendor/pro-sidebar-template-3.0.2/src/js/main";
 import * as cS from "malihu-custom-scrollbar-plugin";
+import { jquerymousewheel } from "jquery-mousewheel";
 
 import "malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css";
 import "./../../vendor/pro-sidebar-template-3.0.2/src/css/main.css";
 import "./../../vendor/pro-sidebar-template-3.0.2/src/css/sidebar-themes.css";
 import "./../../css/sidebar-toggle.css"; // custom toggle button
 
-import "bootstrap";
+import { icon as Icon } from '@fortawesome/fontawesome-svg-core'
+
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import Config from './../../data/config';
 
@@ -19,25 +24,36 @@ class SidebarDropdown {
         li.className = "sidebar-dropdown";
         this.a = document.createElement("a");
         this.a.setAttribute("href", "#");
-        const i = document.createElement("i");
-        i.className = iconClassName;
-        const svgSpan = document.createElement("span");
-        svgSpan.className = "svg-icon";
-        svgSpan.appendChild(i);
-        this.a.appendChild(svgSpan);
-        // this.a.appendChild(i);
-        const span = document.createElement("span");
-        span.innerHTML = name;
-        this.a.appendChild(span);
         li.appendChild(this.a);
 
+        const i = document.createElement("i");
+        i.className = iconClassName;
+        // const svgSpan = document.createElement("span");
+        // svgSpan.className = "svg-icon";
+        // svgSpan.appendChild(i);
+        // this.a.appendChild(svgSpan);
+        this.a.appendChild(i);
+
+        // const camera = icon({ prefix: 'fas', iconName: "camera" })
+        // console.log(camera);
+        // this.a.innerHTML = icon.html;
+
+        // this.a.innerHTML = '<i class="fas fa-check"></i>';
+
+        // this.a.appendChild(i);
+        const span = document.createElement("span");
+        span.className = "menu-text";
+        span.innerHTML = name;
+        this.a.appendChild(span);
+
+
         // icon on right side of dropdown list
-        const svgSpanCaret = document.createElement("span");
-        svgSpanCaret.className = "caret";
-        const bulletpoint = document.createElement("i");
-        bulletpoint.className = "fas fa-caret-right";
-        svgSpanCaret.appendChild(bulletpoint);
-        this.a.appendChild(svgSpanCaret);
+        // const svgSpanCaret = document.createElement("span");
+        // svgSpanCaret.className = "caret";
+        // const bulletpoint = document.createElement("i");
+        // bulletpoint.className = "fas fa-caret-right";
+        // svgSpanCaret.appendChild(bulletpoint);
+        // this.a.appendChild(svgSpanCaret);
 
         this.li = li;
 
@@ -85,9 +101,13 @@ function getFooter(globus) {
     link.setAttribute('data-toggle', 'dropdown');
     settings.appendChild(link);
 
-    const icon = document.createElement("i");
-    icon.className = "fas fa-wrench fa-lg";
-    link.appendChild(icon);
+    // const icon = document.createElement("i");
+    // icon.className = "fas fa-wrench fa-lg";
+    // link.appendChild(icon);
+    
+    const icon = Icon({ prefix: 'fas', iconName: "wrench" });
+    console.log( icon );
+    link.innerHTML = icon.html;
 
     const dropdown = document.createElement("div");
     dropdown.className = "dropdown-menu";
@@ -155,7 +175,9 @@ export default class Sidebar {
         nav.className = "sidebar-wrapper";
         nav.id = "sidebar";
 
-        pageWrapper.appendChild(nav);
+        // pageWrapper.appendChild(nav);
+        pageWrapper.insertBefore(nav, pageWrapper.firstChild);
+
         this.pageWrapper = pageWrapper;
 
         const container = document.createElement("div");
@@ -171,7 +193,7 @@ export default class Sidebar {
             <a href="#">Pano Globe</a> \
         </div>';
 
-        this.test = container;
+        this.container = container;
 
         this._lights = lights;
         this._globus = globus;
@@ -293,7 +315,7 @@ export default class Sidebar {
 
         const div = document.createElement("div");
         div.className = "sidebar-menu sidebar-item";
-        this.test.appendChild(div);
+        this.container.appendChild(div);
         // this.test.insertBefore(div, this.test.firstChild);
 
         const ul = document.createElement("ul");
@@ -352,7 +374,7 @@ export default class Sidebar {
 
         const div = document.createElement("div");
         div.className = "sidebar-menu sidebar-item";
-        this.test.appendChild(div);
+        this.container.appendChild(div);
         // this.test.insertBefore(div, this.test.firstChild);
         // this.test.insertBefore(div, this.test.children[1]);
         const ul = document.createElement("ul");
@@ -372,6 +394,7 @@ export default class Sidebar {
         // // header
 
         // Animation
+        // const sub1 = new SidebarDropdown("Animation", Icon({ prefix: 'fas', iconName: "tachometer-alt" }));
         const sub1 = new SidebarDropdown("Animation", "fa fa-tachometer-alt");
         let links = [];
 
@@ -446,6 +469,7 @@ export default class Sidebar {
         sub1.active = false;
 
         // route settings
+        // const sub3 = new SidebarDropdown("Settings", Icon({ prefix: 'fa', iconName: "cog" })); 
         const sub3 = new SidebarDropdown("Settings", "fa fa-cog"); 
         
         let label2 = document.createElement("label");
@@ -506,10 +530,12 @@ export default class Sidebar {
 
         sub3.submenu([liLabel2, liLabel]);
         
+        // const sub4 = new SidebarDropdown("test", Icon({ prefix: 'fa', iconName: "wrench" }));
         const sub4 = new SidebarDropdown("test", "fa fa-wrench");
         sub4.active = true;
 
         // POIS
+        // const sub2 = new SidebarDropdown("Points of Interest", Icon({ prefix: 'fa', iconName: "map-marker" }));
         const sub2 = new SidebarDropdown("Points of Interest", "fa fa-map-marker");
         // sub2.submenu(["Mexico", "USA", "Kanada", "Zurück nach Unterwegs"].map(x => liplusa(x)));
         
@@ -519,6 +545,8 @@ export default class Sidebar {
             const a = document.createElement("a");
             a.setAttribute("href", "#");
             a.addEventListener("click", ()=>{
+                console.log(this._controls);
+
                 this._controls.moveIntoCenter( poi.lat, poi.lng, 1000 );
             });
 
@@ -530,7 +558,8 @@ export default class Sidebar {
             // bulletpoint.className = "fas fa-circle";
             svgSpan.appendChild(bulletpoint);
 
-            a.innerHTML = svgSpan.outerHTML + poi.adresse + " (" + hopDistance + " km)";
+            // a.innerHTML = svgSpan.outerHTML + poi.adresse + " (" + hopDistance + " km)";
+            a.innerHTML = poi.adresse + " (" + hopDistance + " km)";
             li.appendChild( a );
             return li;
         });

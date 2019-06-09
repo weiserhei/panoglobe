@@ -33,7 +33,7 @@ export default class Controls {
     }
 
     controls.moveIntoCenter = function( lat, lng, time, easing, distance, callback ) {
-
+      console.log("move");
       const phi = (90 - lat) * Math.PI / 180;
       const theta = (-lng) * Math.PI / 180;
 

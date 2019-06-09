@@ -8,14 +8,16 @@ import Skybox from "Classes/skybox";
 import Texture from 'Classes/texture';
 import Globus from 'Classes/globus';
 import LightManager from 'Classes/lightManager';
+import DomEvents from './utils/domevents';
+import RouteManager from 'Classes/routeManager';
 
 import Config from './../data/config';
 
-export default function(preloader) {
+export default function(preloader, heightdata) {
 
     const container = document.createElement("div");
     const toggled = "toggled";
-    container.classList.add("page-wrapper", "ice-theme", "sidebar-bg", "bg1");
+    container.classList.add("page-wrapper", toggled, "ice-theme", "sidebar-bg", "bg1");
     document.body.insertBefore(container, document.body.firstChild);
 
     const scene = new THREE.Scene();
@@ -25,8 +27,9 @@ export default function(preloader) {
     const globus = new Globus( scene, preloader );
 
     const renderer = new Renderer(scene, container);
+
     const camera = new Camera(renderer.threeRenderer);
-    var controls = new Controls(camera.threeCamera, container);
+    var controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
     controls.threeControls.update();
 
     const lightManager = new LightManager(scene, controls.threeControls.object );
@@ -42,11 +45,28 @@ export default function(preloader) {
     const skybox = new Skybox(scene);
 
     const sidebar = new Sidebar(container, lightManager, globus, controls);
-    // add in callback so first route is on top in sidebar
-    sidebar.addLink("Asien 2010-2013", () => {
-        alert("click");
-    });
-    
+
+    //---------------
+    const domEvents = new DomEvents( camera.threeCamera, container );
+    const routeManager = new RouteManager(scene, container, domEvents, heightdata, Config.globus.radius, controls.threeControls, sidebar);
+
+    RouteManager.load(Config.routes.urls.pop(), routeData => {
+        // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+        const phase = 0.9;
+        const route = routeManager.buildRoute( routeData, phase );
+        // route.showLabels = false;
+
+        // add in callback so first route is on top in sidebar
+        sidebar.addLink("Asien 2010-2013", () => {
+          RouteManager.load(Config.routes.urls[0], routeData => {
+            // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+            const phase = 5;
+            const route2 = routeManager.buildRoute( routeData, phase );
+            // route.showLabels = false;
+          });
+        });
+      });
+
     // scene.add( controls.threeControls.object );
     var cube = new THREE.Mesh( new THREE.BoxGeometry( 10, 10, 10 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
     cube.position.set(0,0,120);
@@ -82,6 +102,7 @@ export default function(preloader) {
         controls.threeControls.update();
         TWEEN.update();
         skybox.update( delta );
+        routeManager.update(delta, camera.threeCamera);
 
     }
 

@@ -47,6 +47,12 @@ module.exports = {
                     options: { outputPath: 'images' } // where to place images referenced in CSS
                 }
             ]
+        },
+        {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            use: [
+                'file-loader'
+            ]
         }
         ]
     }
