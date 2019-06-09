@@ -17,7 +17,8 @@ export default function(preloader, heightdata) {
 
     const container = document.createElement("div");
     const toggled = "toggled";
-    container.classList.add("page-wrapper", toggled, "ice-theme", "sidebar-bg", "bg1");
+    // container.classList.add("page-wrapper", toggled, "ice-theme", "sidebar-bg", "bg1");
+    container.classList.add("page-wrapper", toggled, "boder-radius-on", "legacy-theme");
     document.body.insertBefore(container, document.body.firstChild);
 
     const scene = new THREE.Scene();

@@ -183,26 +183,26 @@ export default class Globus {
     get night() {
         return this._night;
     }
-    // set night( value ) {
+    set night( value ) {
 
-    //     this._preloader.inline = true;
-    //     this._night = value;
+        this._preloader.inline = true;
+        this._night = value;
         
-    //     if( value ) {
+        if( value ) {
 
-    //         if( this._textures[Config.globus.material.nightmap] === undefined ) {
-    //             const textureLoader = this._preloader.textureLoader;
-    //             const url = "./assets/textures/4k/Night-Lights-4k.jpg";
-    //             this._textures["night"] = textureLoader.load(url, texture => {
-    //                 this.material.map = texture;
-    //             })
-    //         } else {
-    //             this.material.map = this._textures[Config.globus.material.nightmap]
-    //         }
-    //     } else {
-    //         this.material.map = this._textures[Config.globus.material.map];
-    //     }
-    // }
+            if( this._textures[Config.globus.material.nightmap] === undefined ) {
+                const textureLoader = this._preloader.textureLoader;
+                const url = "./textures/4k/Night-Lights-4k.jpg";
+                this._textures["night"] = textureLoader.load(url, texture => {
+                    this.material.map = texture;
+                })
+            } else {
+                this.material.map = this._textures[Config.globus.material.nightmap]
+            }
+        } else {
+            this.material.map = this._textures[Config.globus.material.map];
+        }
+    }
 
     setTextures( textures ) {
 

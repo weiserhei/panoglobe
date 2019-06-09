@@ -27,6 +27,7 @@ export default class LightManager {
     // Hemisphere light
     // this.hemiLight = new THREE.HemisphereLight( Config.hemiLight.color, Config.hemiLight.groundColor, Config.hemiLight.intensity );
     this.hemiLight = new THREE.HemisphereLight();
+    this.hemiLight.intensity = Config.hemiLight.intensity;
 		this.hemiLight.color.setHSL( Config.hemiLight.hColor, Config.hemiLight.sColor, Config.hemiLight.lColor );
 		this.hemiLight.groundColor.setHSL( Config.hemiLight.groundHColor, Config.hemiLight.groundSColor, Config.hemiLight.groundLColor );
     this.hemiLight.position.set(Config.hemiLight.x, Config.hemiLight.y, Config.hemiLight.z);
@@ -35,6 +36,7 @@ export default class LightManager {
 
     // Directional light
     this.directionalLight = new THREE.DirectionalLight();
+    this.directionalLight.intensity = Config.directionalLight.intensity;
     this.directionalLight.color.setHSL( Config.directionalLight.colorH, Config.directionalLight.colorS, Config.directionalLight.colorL );
 
     this.directionalLight.position.set(Config.directionalLight.x, Config.directionalLight.y, Config.directionalLight.z);
@@ -100,7 +102,7 @@ export default class LightManager {
 
     } else {
       
-      this.directionalLight.intensity = 1;
+      this.directionalLight.intensity = Config.directionalLight.intensity;
       this.directionalLight.color.setHSL( Config.directionalLight.colorH, Config.directionalLight.colorS, Config.directionalLight.colorL );
 
       // this.hemiLight.groundColor.intensity = Config.hemiLight.intensity;

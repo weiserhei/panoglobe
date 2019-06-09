@@ -11,8 +11,7 @@ import "./../../vendor/pro-sidebar-template-3.0.2/src/css/main.css";
 import "./../../vendor/pro-sidebar-template-3.0.2/src/css/sidebar-themes.css";
 import "./../../css/sidebar-toggle.css"; // custom toggle button
 
-import { icon as Icon } from '@fortawesome/fontawesome-svg-core'
-
+// import { icon as Icon } from '@fortawesome/fontawesome-svg-core'
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import Config from './../../data/config';
@@ -88,7 +87,7 @@ class SidebarDropdown {
     }
 }
 
-function getFooter(globus) {
+function getFooter(globus, lightManager) {
 
     const div = document.createElement("div");
     div.className = "sidebar-footer";
@@ -101,17 +100,16 @@ function getFooter(globus) {
     link.setAttribute('data-toggle', 'dropdown');
     settings.appendChild(link);
 
-    // const icon = document.createElement("i");
-    // icon.className = "fas fa-wrench fa-lg";
-    // link.appendChild(icon);
-    
-    const icon = Icon({ prefix: 'fas', iconName: "wrench" });
-    link.innerHTML = icon.html;
+    // cool way of doing icons - using font awesome library 
+    // const icon = Icon({ prefix: 'fas', iconName: "wrench" });
+    // link.innerHTML = icon.html;
 
+    const icon = document.createElement("i");
+    icon.className = "fas fa-wrench";
+    link.appendChild(icon);
+    
     const dropdown = document.createElement("div");
     dropdown.className = "dropdown-menu";
-    // dropdown.innerHTML = "<a href='#' class='dropdown-item'>Enable Night Mode</a> \
-    // <a href='#' class='dropdown-item'>Disable Borders</a>";
     settings.appendChild(dropdown);
 
     if(globus._borderlines) {
@@ -144,6 +142,24 @@ function getFooter(globus) {
 
         div.appendChild(settings);
     }
+
+    const linkActive = "Disable Night Mode";
+    const linkInactive = "Enable Night Mode";
+    const link2 = document.createElement("a");
+    link2.href = "#";
+    link2.className = "dropdown-item";
+    link2.innerHTML = linkInactive;
+    dropdown.appendChild(link2);
+
+    link2.addEventListener("click", ()=>{
+        lightManager.night = !lightManager.night;
+        globus.night = !globus.night;
+        if( globus.night ) {
+            link2.innerHTML = linkActive;
+        } else {
+            link2.innerHTML = linkInactive;
+        }
+    });
     
     return div;
 
@@ -168,7 +184,7 @@ function liplusa(el) {
 }
 
 export default class Sidebar {
-    constructor(pageWrapper, lights, globus, controls) {
+    constructor(pageWrapper, lightManager, globus, controls) {
 
         const nav = document.createElement("nav");
         nav.className = "sidebar-wrapper";
@@ -193,121 +209,14 @@ export default class Sidebar {
         </div>';
 
         this.container = container;
-
-        this._lights = lights;
-        this._globus = globus;
         this._controls = controls;
 
-        // this._addSettings( container );
-        nav.appendChild( getFooter(globus) );
+        nav.appendChild( getFooter(globus, lightManager) );
         
         $("#toggle-sidebar2").click(() => {
             $(".page-wrapper").toggleClass("toggled");
         });
     
-    }
-
-    _addSettings(container) {
-
-        const div = document.createElement("div");
-        div.className = "sidebar-menu sidebar-item";
-        container.appendChild(div);
-        const ul = document.createElement("ul");
-        div.appendChild(ul);
-
-        function getLink(title) {
-            const a = document.createElement("a");
-            a.setAttribute("href", "#");
-            a.setAttribute("title",title);
-            a.setAttribute("data-theme", title+"-theme");
-            a.className="theme "+title+"-theme";
-            return a;
-        }
-
-        var li = document.createElement("li");
-        li.className="header-menu sidebar-settings-menu";
-        li.innerHTML = "<span>Sidebar Settings</span>";
-        ul.appendChild(li);
-        
-        var li2 = document.createElement("li");
-        li2.className = "sidebar-settings-menu";
-
-        // const span = document.createElement("span");
-        // span.className = "badge badge-pill badge-"+className;
-        // span.innerHTML = value;
-        // this.a.appendChild(span);
-
-        const b = document.createElement("a");
-        b.setAttribute("href", "#");
-        // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
-        const className2 = "fas fa-globe text-warning";
-        const classNameActive2 = "fas fa-globe";
-        const linkName2 = '<span class="svg-icon"><i class="'+className2+'"></i></span> Borders Off';
-        const linkNameActive2 = '<span class="svg-icon"><i class="'+classNameActive2+'"></i></span> Borders On';
-        b.innerHTML = linkName2;
-        li2.appendChild(b);
-        
-        b.addEventListener("click", ()=>{
-            this._globus.borders = !this._globus.borders;
-            if( this._globus.borders ) {
-                b.innerHTML = linkName2;
-            } else {
-                b.innerHTML = linkNameActive2;
-            }
-        });
-
-
-        const a = document.createElement("a");
-        a.setAttribute("href", "#");
-        // a.innerHTML = '<i class="far fa-moon"></i> Lights Out<span class="badge badge-pill badge-danger">OFF</span>';
-        const className = "far fa-moon";
-        const classNameActive = "far fa-moon text-warning";
-        const linkName = '<span class="svg-icon"><i class="'+className+'"></i></span> Night Mode';
-        const linkNameActive = '<span class="svg-icon"><i class="'+classNameActive+'"></i></span> Night Mode';
-        a.innerHTML = linkName;
-        li2.appendChild(a);
-        
-        a.addEventListener("click", ()=>{
-            this._lights.night = !this._lights.night;
-            this._globus.night = !this._globus.night;
-            if( this._globus.night ) {
-                a.innerHTML = linkNameActive;
-            } else {
-                a.innerHTML = linkName;
-            }
-        });
-
-        const themes = ["chiller-theme", "ice-theme", "cool-theme", "light-theme","green-theme","spicy-theme","purple-theme"];
-        themes.forEach((theme)=>{
-            li2.appendChild(getLink(theme.slice(0,-6)));
-        });
-        ul.appendChild(li2);
-        
-
-        // $(".sidebar-settings-menu").hide();
-        $(div).hide();
-
-        const icon = document.createElement("i");
-        icon.className = "fas fa-wrench";
-        $(".sidebar-settings-link").prepend(icon)
-        
-        $(".sidebar-settings-link").click(() => {
-            // $(".sidebar-settings-menu").fadeToggle();
-            // $(div).fadeToggle();
-            $(div).slideToggle();
-            // $(".sidebar-settings-menu").slideToggle();
-
-            $(div).promise().done( function() {
-                $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
-            } );
-
-            // $(".sidebar-content").mCustomScrollbar("scrollTo","bottom");
-            // $(".sidebar-content").mCustomScrollbar("scrollTo","top");
-            // $(".sidebar-content").mCustomScrollbar("scrollTo",$(".sidebar-settings-menu"));
-            // $(".sidebar-content").mCustomScrollbar("scrollTo","first");
-
-            $(".badge-sonar").hide();
-        });
     }
 
     addLink( headline, callback ) {
@@ -486,12 +395,12 @@ export default class Sidebar {
         function changeHandler( event ) {
 			if ( event.target.checked === true ) {
                 this.isVisible = true;
-                this.showLabels = checkboxShowLabels.checked;
-                // this.showLabels = this.showLabels;
-                // todo grey out
+                this.showLabels = true;
+                checkboxShowLabels.checked = true;
 			}
 			else {
-				this.isVisible = false;
+                this.isVisible = false;
+                checkboxShowLabels.checked = false;
 			}
 		}
 
@@ -625,6 +534,15 @@ export default class Sidebar {
 
         if( el !== undefined ) {
             $(".sidebar-content").mCustomScrollbar("scrollTo", el );
+        }
+
+        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $(".sidebar-content").mCustomScrollbar({
+                axis: "y",
+                autoHideScrollbar: true,
+                scrollInertia: 300
+            });
+            $(".sidebar-content").addClass("desktop");
         }
 
     }

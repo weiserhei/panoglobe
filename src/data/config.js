@@ -191,7 +191,7 @@ export default {
     colorH: 0.1,
     colorS: 0.1,
     colorL: 0.40,
-    intensity: 0.0,
+    intensity: 0.7,
     x: -1,
     y: 5,
     z: 1,
@@ -199,7 +199,7 @@ export default {
     night: {
       // color: 0x8ebbff,
       color: 7391996,
-      intensity: 0.7
+      intensity: 0.5
     }
   },
 };
