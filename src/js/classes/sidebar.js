@@ -106,7 +106,6 @@ function getFooter(globus) {
     // link.appendChild(icon);
     
     const icon = Icon({ prefix: 'fas', iconName: "wrench" });
-    console.log( icon );
     link.innerHTML = icon.html;
 
     const dropdown = document.createElement("div");
@@ -545,8 +544,6 @@ export default class Sidebar {
             const a = document.createElement("a");
             a.setAttribute("href", "#");
             a.addEventListener("click", ()=>{
-                console.log(this._controls);
-
                 this._controls.moveIntoCenter( poi.lat, poi.lng, 1000 );
             });
 

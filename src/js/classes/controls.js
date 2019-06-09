@@ -15,7 +15,7 @@ function createStepEasing(numSteps, easeFn) {
   return k => { let d = k*numSteps, fd = ~~d; return (easeFn(d - fd) + fd) / numSteps }
 }
 
-var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
+// var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
 
 
 // Controls based on orbit controls
@@ -23,23 +23,24 @@ export default class Controls {
   constructor(camera, container) {
     const controls = new OrbitControls(camera, container);
     this.threeControls = controls;
+    this._camera = camera;
 
     this.init();
 
-    controls.panoActive = function( value ) {
+    this.panoActive = function( value ) {
       controls.enabled = value;
       controls.enableZoom = value;
       controls.enableRotate = value;
     }
 
-    controls.moveIntoCenter = function( lat, lng, time, easing, distance, callback ) {
-      console.log("move");
+    this.moveIntoCenter = function( lat, lng, time, easing, distance, callback ) {
+
       const phi = (90 - lat) * Math.PI / 180;
       const theta = (-lng) * Math.PI / 180;
-
-      let cameraDistance = camera.position.distanceTo(controls.target);
+  
+      let cameraDistance = this._camera.position.distanceTo(this.threeControls.target);
       cameraDistance = cameraDistance < 300 ? 300 : cameraDistance; // Zoom out if distance lower than 300 units
-
+  
       const RandomHeightOfLine = distance ? distance : cameraDistance; // Or greater then your point distance to origin
   
       const position = new Vector3(
@@ -47,29 +48,23 @@ export default class Controls {
                           RandomHeightOfLine * Math.cos(phi), 
                           RandomHeightOfLine * Math.sin(phi) * Math.sin(theta)
                         );
-      
-      // var x = RandomHeightOfLine * Math.sin(phi) * Math.cos(theta);
-      // var y = RandomHeightOfLine * Math.cos(phi);
-      // var z = RandomHeightOfLine * Math.sin(phi) * Math.sin(theta);
-      // controls.target.set( x, y, z );
-      // tweenCamera(camera, position, new THREE.Vector3(0, 0, 0), time || 2000, easing || TWEEN.Easing.Quintic.InOut);
 
-      const t = new TWEEN.Tween( camera.position ).to( {
+      const self = this;
+      const t = new TWEEN.Tween( this._camera.position ).to( {
         x: position.x,
         y: position.y,
         z: position.z}, time || 2000 )
         .easing( easing || TWEEN.Easing.Quintic.InOut )
         .onStart(function() {
-          controls.panoActive( false );
+          self.panoActive( false );
         })
         .onComplete(function () {
-          controls.panoActive( true );
+          self.panoActive( true );
           if( callback !== undefined ) {
             callback();
           }
       }, this).start();
-
-      
+  
     }
 
     // var t;
@@ -153,4 +148,6 @@ export default class Controls {
     this.threeControls.dampingFactor = Config.controls.dampingFactor;
     this.threeControls.enablePan = Config.controls.enablePan;
   }
+
+
 }

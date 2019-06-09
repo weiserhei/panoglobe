@@ -172,10 +172,10 @@ export default class Marker {
         });
         
         function handleMouseUp() {
-            this._controls.enabled = true;
+            this._controls.threeControls.enabled = true;
         }
         this._label.domElement.addEventListener("mousedown", ()=>{
-            this._controls.enabled = false;
+            this._controls.threeControls.enabled = false;
 
             this._label.domElement.addEventListener("mouseup", handleMouseUp.bind(this), false);
             this._label.domElement.addEventListener("mouseout", handleMouseUp.bind(this), false);
@@ -210,16 +210,16 @@ export default class Marker {
         });
 
         function handleMouseUp() {
-            this._controls.enabled = true;
+            this._controls.threeControls.enabled = true;
         }
         box.closeButton.addEventListener("mousedown", ()=>{
-            this._controls.enabled = false;
+            this._controls.threeControls.enabled = false;
 
             box.closeButton.addEventListener("mouseup", handleMouseUp.bind(this), false);
             box.closeButton.addEventListener("mouseout", handleMouseUp.bind(this), false);
         }, false);
         box.domElement.addEventListener("mousedown", ()=>{
-            this._controls.enabled = false;
+            this._controls.threeControlsenabled = false;
 
             box.domElement.addEventListener("mouseup", handleMouseUp.bind(this), false);
             box.domElement.addEventListener("mouseout", handleMouseUp.bind(this), false);

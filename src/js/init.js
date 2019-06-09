@@ -48,7 +48,7 @@ export default function(preloader, heightdata) {
 
     //---------------
     const domEvents = new DomEvents( camera.threeCamera, container );
-    const routeManager = new RouteManager(scene, container, domEvents, heightdata, Config.globus.radius, controls.threeControls, sidebar);
+    const routeManager = new RouteManager(scene, container, domEvents, heightdata, Config.globus.radius, controls, sidebar);
 
     RouteManager.load(Config.routes.urls.pop(), routeData => {
         // const phase = getRandomArbitrary( 0, Math.PI * 2 );
@@ -73,17 +73,17 @@ export default function(preloader, heightdata) {
     scene.add( cube );
     // controls.threeControls.object.add( cube );
 
-    cube.onBeforeRender = () => {
-        const time = new Date().getTime();
-        const r = Config.globus.radius + 3;
-        const speed = 0.001;
-        const x = Math.cos(time*speed) * r;
-        const z = Math.sin(time*speed) * r;
-        const y = Math.sin(time*speed / 2) * r - 5;
+    // cube.onBeforeRender = () => {
+    //     const time = new Date().getTime();
+    //     const r = Config.globus.radius + 3;
+    //     const speed = 0.001;
+    //     const x = Math.cos(time*speed) * r;
+    //     const z = Math.sin(time*speed) * r;
+    //     const y = Math.sin(time*speed / 2) * r - 5;
 
-        cube.position.set(x, y, z);
-        cube.lookAt(scene.position);
-    }
+    //     cube.position.set(x, y, z);
+    //     cube.lookAt(scene.position);
+    // }
 
     const texture = new Texture(preloader.manager);
     texture.load().then(() => {
@@ -98,12 +98,11 @@ export default function(preloader, heightdata) {
     let delta = 0;
 
     function update( delta ) {
-
-        controls.threeControls.update();
+        // update TWEEN before controls!! jaggy rotation
         TWEEN.update();
         skybox.update( delta );
+        controls.threeControls.update();
         routeManager.update(delta, camera.threeCamera);
-
     }
 
     var animate = function () {
