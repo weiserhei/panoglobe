@@ -88,7 +88,7 @@ export default class Route {
 		this.marker.forEach(marker => { marker.update( camera, delta )});
 
 		if ( this._animate === true ) {
-			this._animateRoute();
+			this._animateRoute(delta);
 		}
 	}
 	
@@ -193,16 +193,13 @@ export default class Route {
 				this.activeMarker.active = false;
 			}
 		} else {
-            console.log("move to center");
             // this._routeLine.drawFull();
             this._routeLine.drawCount = 0;
 
 			this._controls.moveIntoCenter( 
                 this.pois[0].lat, this.pois[0].lng, 1000, undefined, undefined, () => { 
-
-                    console.log("animation GO");
                     this._routeData[ 0 ].marker.active = true;
-                    setTimeout(() => { this._animate = true; }, 1000);
+                    setTimeout(() => { this._animate = true; }, 500);
                     // this._animate = true 
                     } 
                 );
@@ -214,25 +211,24 @@ export default class Route {
 		this._animate = !value;
     }
 	
-	_animateRoute() {
+	_animateRoute(delta) {
+        const speed = delta * 30;
 
-        this._routeLine.update();
+        this._routeLine.update(speed);
 
         // Thicc Line drawCount = routeData.length * (lineSegments+1)
 		let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
-        if(currentCoordinate > 1) {
-            if( this._routeData[ currentCoordinate ].marker !== undefined ) {
-                if(this.activeMarker !== null) {
-                    this.activeMarker.active = false;
-                }
-                this._routeData[ currentCoordinate ].marker.active = true;
-                setTimeout(() => { if(this.activeMarker !== null) this.activeMarker.active = false; }, 2000);
+        if( currentCoordinate > 1 && this._routeData[ currentCoordinate ].marker !== undefined ) {
+            if(this.activeMarker !== null) {
+                this.activeMarker.active = false;
             }
+            this._routeData[ currentCoordinate ].marker.active = true;
+            setTimeout(() => { if(this.activeMarker !== null) this.activeMarker.active = false; }, 2000);
         }
 		
 		const lastMarkerIndex = this._routeData.findIndex( currCo => { return this.activeMarker === currCo.marker } );
 		// set current marker inactive after 12 iterations
-		if( currentCoordinate > lastMarkerIndex + 12 ) {
+		if( currentCoordinate > lastMarkerIndex + 3 ) {
 			if(this.activeMarker !== null) {
 				if( this.activeMarker.next !== undefined ) {
 					// move camera to next marker in advance

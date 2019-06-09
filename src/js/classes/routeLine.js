@@ -56,7 +56,7 @@ export default class RouteLine {
 		return this._drawCount;
 	}
 
-	update() {
+	update(speed = 1) {
 		// http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
 		if ( this._line.geometry instanceof LineGeometry ) {
             // Thick Line
@@ -66,8 +66,8 @@ export default class RouteLine {
             this._line.geometry.setDrawRange( 0, this._drawCount );
 		} 
 
-		// drawCount must be all vertices
-        this._drawCount = ( this._drawCount + 1 ) % ( this._numberVertices );	
+        // drawCount must be all vertices
+        this._drawCount = ( this._drawCount + speed ) % ( this._numberVertices );	
 
 	}
 
