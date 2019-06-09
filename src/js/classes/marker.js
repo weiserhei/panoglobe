@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { Vector3, Mesh, MeshBasicMaterial, BackSide } from "three";
 import { numberWithCommas } from "./../utils/panoutils";
 import InfoBox from "./infobox";
 import Label from "./label";
@@ -39,8 +39,8 @@ export default class Marker {
         // ohgodwhy.y += markermesh.geometry.parameters.height / 10; // pyramid geometry
         mesh.position.copy(positionVector); // place mesh
         // mesh.lookAt( globe.mesh.position );
-        const outlineMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide });
-        this._outlineMesh = new THREE.Mesh(mesh.geometry, outlineMaterial);
+        const outlineMaterial = new MeshBasicMaterial({ color: 0x00ff00, side: BackSide });
+        this._outlineMesh = new Mesh(mesh.geometry, outlineMaterial);
         this._outlineMesh.scale.multiplyScalar(1.3);
         this._outlineMesh.visible = false;
         mesh.add(this._outlineMesh);
@@ -121,7 +121,8 @@ export default class Marker {
             // this._particles.particleGroup.mesh.position.copy( this._mesh.position );
             // this._particles.triggerPoolEmitter( 1 );
 
-            this._controls.moveIntoCenter( this._poi.lat, this._poi.lng, 1000 );
+            // dont "auto move" when marker is activated
+            // this._controls.moveIntoCenter( this._poi.lat, this._poi.lng, 1000 );
 
             // sadly broken
             // const impactPosition = new THREE.Vector3();
@@ -276,9 +277,9 @@ export default class Marker {
 
 Marker.prototype.update = (function() {
 
-    let meshVector = new THREE.Vector3();
-    let eye = new THREE.Vector3();
-    let dot = new THREE.Vector3();
+    let meshVector = new Vector3();
+    let eye = new Vector3();
+    let dot = new Vector3();
     let ocluded = false;
 
     return function update( camera, delta ) {
