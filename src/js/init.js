@@ -69,22 +69,21 @@ export default function(preloader, heightdata) {
       });
 
     // scene.add( controls.threeControls.object );
-    var cube = new THREE.Mesh( new THREE.BoxGeometry( 10, 10, 10 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
-    cube.position.set(0,0,120);
-    scene.add( cube );
-    // controls.threeControls.object.add( cube );
+    // var cube = new THREE.Mesh( new THREE.BoxGeometry( 10, 10, 10 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
+    // cube.position.set(0,0,120);
+    // scene.add( cube );
 
-    cube.onBeforeRender = () => {
-        const time = new Date().getTime();
-        const r = Config.globus.radius + 3;
-        const speed = 0.001;
-        const x = Math.cos(time*speed) * r;
-        const z = Math.sin(time*speed) * r;
-        const y = Math.sin(time*speed / 2) * r - 5;
+    // cube.onBeforeRender = () => {
+    //     const time = new Date().getTime();
+    //     const r = Config.globus.radius + 3;
+    //     const speed = 0.001;
+    //     const x = Math.cos(time*speed) * r;
+    //     const z = Math.sin(time*speed) * r;
+    //     const y = Math.sin(time*speed / 2) * r - 5;
 
-        cube.position.set(x, y, z);
-        cube.lookAt(scene.position);
-    }
+    //     cube.position.set(x, y, z);
+    //     cube.lookAt(scene.position);
+    // }
 
     const texture = new Texture(preloader.manager);
     texture.load().then(() => {

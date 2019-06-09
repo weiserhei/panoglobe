@@ -15,10 +15,9 @@ export default {
   duration: 500,
   data: {
     geojsonPath: './data/countries_states.geojson',
-    scale: 20
   },
   routes: {
-    linewidth: 2, // error on 2.0 width wtf lol
+    linewidth: 3, // error on 2.0 width wtf lol
     lineSegments: 5,
     urls: [
       "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist",
@@ -32,10 +31,10 @@ export default {
       {name: 'clouds', image: '4k/fair_clouds_4k.jpg'},
       {name: 'stars', image: 'galaxy_starfield.png'},
       {name: 'uvtest', image: 'UV_Grid_Sm.jpg'},
-      // {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
-      {name: 'earthColor', image: '8k/2_no_clouds_8k.jpg'},
+      {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
+      // {name: 'earthColor', image: '8k/2_no_clouds_8k.jpg'},
       {name: 'invertedSpecularmap', image: '4k/Spec-Mask-inverted_4k.png'},
-      {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
+      // {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
       {name: 'normalmap', image: '4k/earth_normalmap_flat_4k.jpg'},
       {name: 'displacemap', image: '4k/Bump_4k.jpg'},
       // {name: 'night', image: '4k/Night-Lights-4k.jpg'},
@@ -191,7 +190,7 @@ export default {
     colorH: 0.1,
     colorS: 0.1,
     colorL: 0.40,
-    intensity: 0.7,
+    intensity: 0.9,
     x: -1,
     y: 5,
     z: 1,

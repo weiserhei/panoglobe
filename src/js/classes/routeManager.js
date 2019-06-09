@@ -65,7 +65,7 @@ export default class RouteManager {
 				format: "json"
 			})
 			.done(data => {
-                console.log( "Route has been loaded", data );
+                console.log( "Route has been loaded" );
                 callback( data );
 			})
 			.fail(function() {

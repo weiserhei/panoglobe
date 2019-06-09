@@ -19,7 +19,9 @@ export default class Route {
 
 		if( heightData.length === 0 ) {
 			console.warn("No height data for route ", routeData.meta.name );
-		}
+        }
+        
+        this._controls = controls;
 
         this.name = routeData.meta.name || "";
         this._routeData = calc3DPositions( routeData.gps, heightData, radius + 0.3 );
@@ -43,19 +45,14 @@ export default class Route {
 		this._isVisible = false;
 		this._showLabels = true;
 
-		this._animate = false;
-		this._controls = controls;
+        this._animate = false;
+        this._currentInAnimation;
 
 		const markergeo = new THREE.SphereBufferGeometry(1, 8, 6);
 		const markerMaterial = new THREE.MeshLambertMaterial();
 		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
 
         this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls );
-
-        this._currentInAnimation;
-        //////
-        console.log( this._routeData, this.pois );
-        console.log()
 
 	}
 

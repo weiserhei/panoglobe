@@ -1,4 +1,4 @@
-// import * as cS from "malihu-custom-scrollbar-plugin";
+import * as cS from "malihu-custom-scrollbar-plugin";
 
 jQuery(function ($) {
 
