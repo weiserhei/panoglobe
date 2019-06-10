@@ -8,11 +8,12 @@ import * as THREE from "three";
 
 import Config from './../../data/config';
 
-import { calc3DPositions } from "./../utils/panoutils";
+import { calc3DPositions, createSphereArc } from "./../utils/panoutils";
 import { makeColorGradient } from "./../utils/colors";
 
 import RouteLine from "./routeLine.js";
 import Marker from "./marker";
+import { Vector3 } from "three";
 
 export default class Route {
     constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls ) {
@@ -20,7 +21,7 @@ export default class Route {
 		if( heightData.length === 0 ) {
 			console.warn("No height data for route ", routeData.meta.name );
         }
-        
+
         this._controls = controls;
 
         this.name = routeData.meta.name || "";
@@ -87,7 +88,10 @@ export default class Route {
 
     update( delta, camera ) {
 		
-		this.marker.forEach(marker => { marker.update( camera, delta )});
+        this.marker.forEach(marker => { marker.update( camera, delta )});
+        
+        // test
+        // this._routeLine.updateColors( delta );
 
 		if ( this._animate === true ) {
 			this._animateRoute(delta);
@@ -102,15 +106,18 @@ export default class Route {
 
 		let marker;
 		const color = new THREE.Color();
-		const frequency = 1 /  ( steps * routeData.length );
+        const frequency = 1 /  ( steps * routeData.length );
+        let vertices = [];
 
-		this._routeLine = new RouteLine( Config.routes.lineSegments );
-        
+        this._routeLine = new RouteLine();
+                
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			if(index > 0) {
-				this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos);
-			}
+				// this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos, Config.routes.lineSegments);
+                const curve = createSphereArc( routeData[index-1].displacedPos, currentCoordinate.displacedPos );
+                vertices.push(curve.getPoints( Config.routes.lineSegments ));
+            }
 			// DONT DRAW MARKER WHEN THEY HAVE NO NAME
 			if ( ! currentCoordinate.adresse ) { return; }
 			
@@ -152,6 +159,36 @@ export default class Route {
 
         })
 
+        // todo refactor this shit
+        if(Config.routes.linewidth > 1) {
+            // this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth );            
+        } else {
+            // this.line = this._routeLine.getColoredBufferLine( vertices, steps, phase );
+        }
+
+        //Create a closed wavey loop
+        // let x = this._routeData.map(a => a.displacedPos);
+        // var curve = new THREE.CatmullRomCurve3(x);
+        // var points = curve.getPoints( this._routeData.length * 10 );
+        // var geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+        // var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+        // Create the final object to add to the scene
+        // var curveObject = new THREE.Line( geometry, material );
+        // scene.add(curveObject);
+
+        // vertices = [
+        //     new Vector3(70, 77, -9),
+        //     new Vector3(70, 77, 0),
+        //     new Vector3(80, 77, 10),
+        //     new Vector3(70, 80, 20),
+        //     new Vector3(70, 75, 25),
+        // ];
+
+        this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth, true );  
+
+        scene.add( this.line );
+
 		this.marker[this.marker.length-1].last = true;
 
 		this.marker.forEach( (marker, index) => {
@@ -166,15 +203,6 @@ export default class Route {
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
         })
-                
-        // todo refactor this shit
-		if(Config.routes.linewidth > 1) {
-			this.line = this._routeLine.getThickLine( steps, phase, Config.routes.linewidth );
-		} else {
-			this.line = this._routeLine.getColoredBufferLine( steps, phase );
-		}
-
-        scene.add( this.line );
 
 	}
 
@@ -216,12 +244,13 @@ export default class Route {
     }
 	
 	_animateRoute(delta) {
-        let speed = delta * 30;
-
-        // this._controls.moveIntoCenter( this.activeMarker.next._poi.lat, this.activeMarker.next._poi.lng, 1000 );
+        let speed = delta * 60;
 
         // Thicc Line drawCount = routeData.length * (lineSegments+1)
-		let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
+        // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
+        // divider must be same as points in routeLine.getPoints
+        const divider = this._drawCount / (2*(Config.routes.lineSegments+1));
+        let currentCoordinate = Math.floor( divider );
         // if( currentCoordinate > 1 && this._routeData[ currentCoordinate ].marker !== undefined ) {
         if( this._routeData[ currentCoordinate ].marker !== undefined ) {
 
@@ -242,7 +271,7 @@ export default class Route {
 
             }
             // fake slow down on marker
-            speed = delta * 2;
+            speed = delta * 10;
         }
 
 
@@ -264,8 +293,11 @@ export default class Route {
 		// this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
 		this._drawCount = this._routeLine.drawCount;
         // dont repeat
-		if( this._drawCount >= this._routeLine.numberVertices - 1) {
-			this.runAnimation = false;
+        // console.log( this._drawCount, this._routeLine.numberVertices );
+		if( this._drawCount >= this._routeLine.numberVertices - Config.routes.lineSegments) {
+            this.runAnimation = false;
+            const lastMarker = this.pois[this.pois.length-1];
+            this._controls.moveIntoCenter( lastMarker.lat, lastMarker.lng, 1000, Config.easing, 400 );
 		}
 
 	}

@@ -10,6 +10,7 @@ import Globus from 'Classes/globus';
 import LightManager from 'Classes/lightManager';
 import DomEvents from './utils/domevents';
 import RouteManager from 'Classes/routeManager';
+import * as sfc from 'Classes/splineFollowCamera';
 
 import Config from './../data/config';
 
@@ -33,15 +34,11 @@ export default function(preloader, heightdata) {
     var controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
     controls.threeControls.update();
 
+
     const lightManager = new LightManager(scene, controls.threeControls.object );
     // Create and place lights in scene
     const lights = ['spot', 'directional', 'hemi'];
     lights.forEach((light) => lightManager.place(light));
-    
-    var geometry = new THREE.BoxGeometry( 10, 10, 10 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
 
     const skybox = new Skybox(scene);
 
@@ -67,6 +64,26 @@ export default function(preloader, heightdata) {
           });
         });
       });
+
+    var curve = new THREE.CatmullRomCurve3( [
+      new THREE.Vector3( -10, 0, 10 ),
+      new THREE.Vector3( -5, 5, 5 ),
+      new THREE.Vector3( 0, 0, 0 ),
+      new THREE.Vector3( 5, -5, 5 ),
+      new THREE.Vector3( 10, 0, 10 )
+    ] );
+
+    var parent = new THREE.Object3D();
+    scene.add( parent );
+    var splineCamera = new THREE.PerspectiveCamera( 84, window.innerWidth / window.innerHeight, 0.01, 1000 );
+    parent.add( splineCamera );
+    
+    // sfc.addTube();
+
+    // var geometry = new THREE.BoxGeometry( 10, 10, 10 );
+    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    // var cube = new THREE.Mesh( geometry, material );
+    // scene.add( cube );
 
     // scene.add( controls.threeControls.object );
     // var cube = new THREE.Mesh( new THREE.BoxGeometry( 10, 10, 10 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
@@ -112,6 +129,10 @@ export default function(preloader, heightdata) {
         update(delta);
     
         renderer.render( scene, camera.threeCamera );
+
+        // sfc.renderFollowCamera();
+        // sfc.render();
+
     };
     
 }
