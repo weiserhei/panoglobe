@@ -28,7 +28,7 @@ export default class Route {
         this._routeData = calc3DPositions( routeData.gps, heightData, radius + 0.3 );
 
 		this._cityMarkers = [];
-		this._routeLine;
+        this._routeLine = new RouteLine();
 		this.line = null; //please remove me
 
 		this._activeMarker = null;
@@ -108,15 +108,14 @@ export default class Route {
 		const color = new THREE.Color();
         const frequency = 1 /  ( steps * routeData.length );
         let vertices = [];
-
-        this._routeLine = new RouteLine();
                 
 		routeData.forEach((currentCoordinate, index) => {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
+			// vertices.push(currentCoordinate.displacedPos);
 			if(index > 0) {
 				// this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos, Config.routes.lineSegments);
-                const curve = createSphereArc( routeData[index-1].displacedPos, currentCoordinate.displacedPos );
-                vertices.push(curve.getPoints( Config.routes.lineSegments ));
+				const curve = createSphereArc( routeData[index-1].displacedPos, currentCoordinate.displacedPos );
+				vertices.push(curve.getPoints( Config.routes.lineSegments ));
             }
 			// DONT DRAW MARKER WHEN THEY HAVE NO NAME
 			if ( ! currentCoordinate.adresse ) { return; }
@@ -186,7 +185,6 @@ export default class Route {
         // ];
 
         this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth, true );  
-
         scene.add( this.line );
 
 		this.marker[this.marker.length-1].last = true;
@@ -202,7 +200,9 @@ export default class Route {
 
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
-        })
+		})
+		
+		console.log( this._cityMarkers, this.marker);
 
 	}
 
@@ -249,7 +249,7 @@ export default class Route {
         // Thicc Line drawCount = routeData.length * (lineSegments+1)
         // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
         // divider must be same as points in routeLine.getPoints
-        const divider = this._drawCount / (2*(Config.routes.lineSegments+1));
+		const divider = this._drawCount /  ( this._routeLine._numberVertices / this._routeData.length );
         let currentCoordinate = Math.floor( divider );
         // if( currentCoordinate > 1 && this._routeData[ currentCoordinate ].marker !== undefined ) {
         if( this._routeData[ currentCoordinate ].marker !== undefined ) {

@@ -79,7 +79,7 @@ export default class RouteLine {
 		} 
 
         // drawCount must be all vertices
-        this._drawCount = ( this._drawCount + speed ) % ( this._numberVertices );	
+        this._drawCount = ( this._drawCount + speed ) % ( this._numberVertices );
 
     }
 
@@ -223,16 +223,17 @@ export default class RouteLine {
 	}
     
     getThickLine( vertices, steps, phase, linewidth, CMR ) {
-        if( CMR ) {
-            // const curve = new CatmullRomCurve3(vertices);
-            const curve = new CatmullRomCurve3(vertices, false, "catmullrom", 1);
+        if( !CMR ) {
+            const curve = new CatmullRomCurve3(vertices);
+            // const curve = new CatmullRomCurve3(vertices, false, "catmullrom", 0.5);
             var points = curve.getPoints( (vertices.length-1) * 2 );
             // remove NaN points
             points = points.filter( el => !isNaN(el.x) );
         } else {
             var points = vertices;
         }
-
+        console.log( points );
+        
 		this._build( points, steps, phase );
         const geometry = new LineGeometry();
         geometry.setPositions( this.positions );
