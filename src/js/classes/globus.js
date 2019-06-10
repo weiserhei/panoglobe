@@ -13,7 +13,10 @@ import {
     Vector3,
     Matrix4,
     Raycaster,
-    Group
+    Group,
+    MeshPhysicalMaterial,
+    MeshStandardMaterial,
+    CubeTextureLoader
 } from 'three';
 
 
@@ -140,7 +143,6 @@ export default class Globus {
             console.error(err)
         });
 
-        // // var test_json = $.getJSON("./../data/countries_states.geojson", function(data) {
         //  $.getJSON("./data/countries_states.geojson", function(data) {
         //     const materialOptions = { transparent: true, opacity: 0.5, color: 'white' };
         //     drawThreeGeo(data, Config.globus.radius+0.5, 'sphere', materialOptions, borderlines);
@@ -227,22 +229,42 @@ export default class Globus {
             this._clouds.material.needsUpdate = true;
         }
 
-        // this.material = new THREE.MeshPhysicalMaterial( {
+        // var loader = new CubeTextureLoader();
+        // loader.setPath( './textures/cube/MilkyWay/' );
+        // loader.setPath( './textures/cube/skyboxsun25deg/' );
+        // const ext = ".jpg";
+        // const prefix = "dark-s_";
+        
+        // loader.setPath( './textures/cube/pisa/' );
+        // const ext = ".png";
+        // const prefix = "";
+        // const sides = [ "px", "nx", "py", "ny", "pz", "nz" ];
+
+        // const imageNames = sides.map( side => prefix + side + ext );
+        // var textureCube = loader.load( imageNames );
+
+        // this.material = new MeshStandardMaterial( {
+        // // this.material = new MeshPhysicalMaterial( {
         //     color: Config.globus.material.color,
         //     metalness: 0.0,
-        //     roughness: 0.8,
-        //     roughnessMap: textures.specmap,
+        //     roughness: 0.3,
+        //     roughnessMap: textures.invertedSpecularmap,
+        //     // roughnessMap: textures.specmap,
+        //     // metalnessMap: textures.invertedSpecularmap,
         //     // clearCoat:  0.5,
         //     // clearCoatRoughness: 1.0,
-        //     reflectivity: 0.5,
-        //     // envMap:
+        //     reflectivity: 1,
+        //     envMapIntensity: 1,
+        //     envMap: textureCube,
         //     map: textures[Config.globus.material.map],
         //     normalMap: textures.normalmap,
-        //     normalScale: new THREE.Vector2( Config.globus.material.normalScale, Config.globus.material.normalScale ),
+        //     normalScale: new Vector2( Config.globus.material.normalScale, Config.globus.material.normalScale ),
         //     displacementMap: textures[Config.globus.material.displacementMap],
         //     displacementScale: Config.globus.material.displacementScale,
         //     displacementBias: Config.globus.material.displacementBias,
         // });
+
+        // this.mesh.material = this.material;
 
     }
 

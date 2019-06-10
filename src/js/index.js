@@ -36,8 +36,8 @@ if ( WEBGL.isWebGLAvailable() ) {
 
         init(preloader, heightData);
 
-    });
-    // .catch(() => {console.warn("Error loading height data image")});
+    })
+    .catch(() => {console.warn("Error loading height data image")});
 
 
 } else {

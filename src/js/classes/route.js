@@ -4,7 +4,7 @@
  * create the Route
  */
 
-import * as THREE from "three";
+import { SphereBufferGeometry, MeshLambertMaterial, Mesh, Color } from "three";
 
 import Config from './../../data/config';
 
@@ -49,9 +49,9 @@ export default class Route {
         this._animate = false;
         this._currentInAnimation;
 
-		const markergeo = new THREE.SphereBufferGeometry(1, 8, 6);
-		const markerMaterial = new THREE.MeshLambertMaterial();
-		this._markermesh = new THREE.Mesh(markergeo, markerMaterial);
+		const markergeo = new SphereBufferGeometry(1, 8, 6);
+		const markerMaterial = new MeshLambertMaterial();
+		this._markermesh = new Mesh(markergeo, markerMaterial);
 
         this._createRoute( this._routeData, scene, this.group, this.phase, this.steps, controls );
 
@@ -105,7 +105,7 @@ export default class Route {
     _createRoute( routeData, scene, group, phase, steps, controls ) {
 
 		let marker;
-		const color = new THREE.Color();
+		const color = new Color();
         const frequency = 1 /  ( steps * routeData.length );
         let vertices = [];
                 
@@ -160,11 +160,12 @@ export default class Route {
 
         // todo refactor this shit
         if(Config.routes.linewidth > 1) {
-            // this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth );            
+			this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth, true );            
         } else {
-            // this.line = this._routeLine.getColoredBufferLine( vertices, steps, phase );
+            this.line = this._routeLine.getColoredBufferLine( vertices, steps, phase );
         }
-
+		scene.add( this.line );
+		
         //Create a closed wavey loop
         // let x = this._routeData.map(a => a.displacedPos);
         // var curve = new THREE.CatmullRomCurve3(x);
@@ -184,9 +185,6 @@ export default class Route {
         //     new Vector3(70, 75, 25),
         // ];
 
-        this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth, true );  
-        scene.add( this.line );
-
 		this.marker[this.marker.length-1].last = true;
 
 		this.marker.forEach( (marker, index) => {
@@ -201,8 +199,6 @@ export default class Route {
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
 		})
-		
-		console.log( this._cityMarkers, this.marker);
 
 	}
 
@@ -244,12 +240,11 @@ export default class Route {
     }
 	
 	_animateRoute(delta) {
-        let speed = delta * 60;
-
-        // Thicc Line drawCount = routeData.length * (lineSegments+1)
+		let speed = delta * 60;
+		
         // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
-        // divider must be same as points in routeLine.getPoints
-		const divider = this._drawCount /  ( this._routeLine._numberVertices / this._routeData.length );
+        // divider must be in the range of routeData.length
+		const divider = this._drawCount /  ( this._routeLine.numberVertices / this._routeData.length );
         let currentCoordinate = Math.floor( divider );
         // if( currentCoordinate > 1 && this._routeData[ currentCoordinate ].marker !== undefined ) {
         if( this._routeData[ currentCoordinate ].marker !== undefined ) {
