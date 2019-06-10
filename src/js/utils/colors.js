@@ -1,4 +1,5 @@
 /* COLORS */	
+// https://krazydad.com/tutorials/makecolors.php
 
 const byte2Hex = (n) => {
     var nybHexString = "0123456789ABCDEF";
@@ -26,6 +27,7 @@ const randomColorRoute = () => {
     }
 }
 
+
 const makeColorGradient = (i, redFrequency , grnFrequency, bluFrequency, phase1, phase2, phase3 ) => {
 
     var center = 128;
@@ -47,7 +49,31 @@ const makeColorGradient = (i, redFrequency , grnFrequency, bluFrequency, phase1,
 
 }
 
+const makeColorGradient2 = (i, redFrequency , grnFrequency, bluFrequency, phase1, phase2, phase3 ) => {
+
+    var center = 250;
+    var width = 255;
+    
+    if ( redFrequency === undefined ) redFrequency = 0.3;
+    if ( grnFrequency === undefined ) grnFrequency = redFrequency; 
+    if ( bluFrequency === undefined ) bluFrequency = redFrequency;
+    
+    if ( phase1 === undefined ) phase1 = 0;
+    if ( phase2 === undefined ) phase2 = phase1+2;
+    if ( phase3 === undefined ) phase3 = phase1+4;
+        
+    var red   = Math.sin( redFrequency * i + phase1 ) * width + center;
+    var green = Math.sin( grnFrequency * i + phase2 ) * width + center;
+    var blue  = Math.sin( bluFrequency * i + phase3 ) * width + center;
+    
+    // return parseInt( '0x' + byte2Hex( red ) + byte2Hex( green ) + byte2Hex( blue ) );
+    // return parseInt( '0x' + byte2Hex( red ) + byte2Hex( green ) + "00" );
+    return parseInt( '0x' + byte2Hex( red )  + "0000" );
+
+}
+
 module.exports = {
     makeColorGradient,
+    makeColorGradient2,
     randomColorRoute
 };
