@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { Vector3 } from "three";
 import { numberWithCommas } from "./../utils/panoutils";
 
 export default class InfoBox {
@@ -45,7 +45,7 @@ export default class InfoBox {
         this._closeButton.innerHTML = '<i class="fas fa-times"></i>';
         this._box.appendChild(this._closeButton);
 
-        const screenVector = new THREE.Vector3();
+        const screenVector = new Vector3();
 
         this._box.updatePosition = function( camera, followMesh ) {
             // overlay is visible

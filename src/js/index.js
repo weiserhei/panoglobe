@@ -4,6 +4,7 @@ import init from "./init";
 import { ImageLoader } from "three";
 import Preloader from "Classes/preloader";
 import { WEBGL } from './utils/WebGL'; // because <three/examples/js/WebGL.js> is not a module
+
 import { getHeightData } from "./utils/panoutils";
 
 // https://stackoverflow.com/questions/52376720/how-to-make-font-awesome-5-work-with-webpack
@@ -37,7 +38,7 @@ if ( WEBGL.isWebGLAvailable() ) {
         init(preloader, heightData);
 
     })
-    .catch(() => {console.warn("Error loading height data image")});
+    // .catch(() => {console.warn("Error loading height data image")});
 
 
 } else {

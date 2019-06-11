@@ -4,7 +4,7 @@
  */
 
 
-export var WEBGL = {
+export const WEBGL = {
 
 	isWebGLAvailable: function () {
 

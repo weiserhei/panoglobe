@@ -150,6 +150,7 @@ export default class RouteLine {
     getThickLine( vertices, steps, phase, linewidth, CMR ) {
         if( CMR ) {
             const curve = new CatmullRomCurve3(vertices);
+            this._curve = curve;
             // const curve = new CatmullRomCurve3(vertices, false, "catmullrom", 1);
             vertices = curve.getPoints( vertices.length * Config.routes.segmentMultiplicator );
         }

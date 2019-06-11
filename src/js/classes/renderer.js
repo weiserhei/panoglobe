@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { WebGLRenderer, PCFSoftShadowMap } from 'three';
 import Config from './../../data/config';
 
 // Main webGL renderer class
@@ -9,7 +9,7 @@ export default class Renderer {
     this.container = container;
 
     // Create WebGL renderer and set its antialias
-    this.threeRenderer = new THREE.WebGLRenderer({antialias: true});
+    this.threeRenderer = new WebGLRenderer({antialias: true});
 
     // Set clear color to fog to enable fog or to hex color for no fog
     this.threeRenderer.setClearColor("#000000"); // scene.fog.color
@@ -20,7 +20,7 @@ export default class Renderer {
 
     // Shadow map options
     this.threeRenderer.shadowMap.enabled = false;
-    this.threeRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.threeRenderer.shadowMap.type = PCFSoftShadowMap;
 
     // Get anisotropy for textures
     Config.maxAnisotropy = this.threeRenderer.capabilities.getMaxAnisotropy();

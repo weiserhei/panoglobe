@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { HemisphereLight, DirectionalLight, CameraHelper, SpotLight, SpotLightHelper } from 'three';
 
 import Config from '../../data/config';
 
@@ -26,7 +26,7 @@ export default class LightManager {
 
     // Hemisphere light
     // this.hemiLight = new THREE.HemisphereLight( Config.hemiLight.color, Config.hemiLight.groundColor, Config.hemiLight.intensity );
-    this.hemiLight = new THREE.HemisphereLight();
+    this.hemiLight = new HemisphereLight();
     this.hemiLight.intensity = Config.hemiLight.intensity;
 		this.hemiLight.color.setHSL( Config.hemiLight.hColor, Config.hemiLight.sColor, Config.hemiLight.lColor );
 		this.hemiLight.groundColor.setHSL( Config.hemiLight.groundHColor, Config.hemiLight.groundSColor, Config.hemiLight.groundLColor );
@@ -35,7 +35,7 @@ export default class LightManager {
 
 
     // Directional light
-    this.directionalLight = new THREE.DirectionalLight();
+    this.directionalLight = new DirectionalLight();
     this.directionalLight.intensity = Config.directionalLight.intensity;
     this.directionalLight.color.setHSL( Config.directionalLight.colorH, Config.directionalLight.colorS, Config.directionalLight.colorL );
 
@@ -56,12 +56,12 @@ export default class LightManager {
     this.directionalLight.shadow.mapSize.height = Config.shadow.mapHeight;
     
     // Shadow camera helper
-    this.directionalLightHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera);
+    this.directionalLightHelper = new CameraHelper(this.directionalLight.shadow.camera);
     // this.directionalLightHelper.visible = Config.shadow.helperEnabled;
     this.directionalLightHelper.visible = true;
     
     //MOONLIGHT 
-		this.spotlight = new THREE.SpotLight( 
+		this.spotlight = new SpotLight( 
     Config.spotlight.color, 
     Config.spotlight.intensity, 
     Config.spotlight.distance,
@@ -70,7 +70,7 @@ export default class LightManager {
     this.spotlight.position.set(Config.spotlight.x, Config.spotlight.y, Config.spotlight.z);
     this.spotlight.target.position.set( Config.spotlight.targetx, Config.spotlight.targety, Config.spotlight.targetz );
     
-    this.spotLightHelper = new THREE.SpotLightHelper( this.spotlight );
+    this.spotLightHelper = new SpotLightHelper( this.spotlight );
     
     // move light wih camera
     // this.camera.add(this.directionalLight);

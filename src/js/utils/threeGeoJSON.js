@@ -4,7 +4,7 @@ Iterates through the latitude and longitude values, converts the values to XYZ c
 and draws the geoJSON geometries.
 
 */
-import * as THREE from 'three';
+import { Vector3, Line, LineBasicMaterial, Geometry, ParticleSystem, ParticleSystemMaterial } from 'three';
 
 export function drawThreeGeo(json, radius, shape, materalOptions, container) {
     container = container || window.scene;
@@ -207,23 +207,23 @@ export function drawThreeGeo(json, radius, shape, materalOptions, container) {
     }
 
     function drawParticle(y, z, x, options) {
-        var particle_geom = new THREE.Geometry();
-        particle_geom.vertices.push(new THREE.Vector3(y, z, x));
+        var particle_geom = new Geometry();
+        particle_geom.vertices.push(new Vector3(y, z, x));
 
-        var particle_material = new THREE.ParticleSystemMaterial(options);
+        var particle_material = new ParticleSystemMaterial(options);
 
-        var particle = new THREE.ParticleSystem(particle_geom, particle_material);
+        var particle = new ParticleSystem(particle_geom, particle_material);
         container.add(particle);
 
         clearArrays();
     }
 
     function drawLine(y_values, z_values, x_values, options) {
-        var line_geom = new THREE.Geometry();
+        var line_geom = new Geometry();
         createVertexForEachPoint(line_geom, y_values, z_values, x_values);
 
-        var line_material = new THREE.LineBasicMaterial(options);
-        var line = new THREE.Line(line_geom, line_material);
+        var line_material = new LineBasicMaterial(options);
+        var line = new Line(line_geom, line_material);
         container.add(line);
 
         clearArrays();
@@ -231,7 +231,7 @@ export function drawThreeGeo(json, radius, shape, materalOptions, container) {
 
     function createVertexForEachPoint(object_geometry, values_axis1, values_axis2, values_axis3) {
         for (var i = 0; i < values_axis1.length; i++) {
-            object_geometry.vertices.push(new THREE.Vector3(values_axis1[i],
+            object_geometry.vertices.push(new Vector3(values_axis1[i],
                 values_axis2[i], values_axis3[i]));
         }
     }
