@@ -71,14 +71,14 @@ export default class Route {
 
 	set showLabels( value ) {
 		this._showLabels = value;
-		this.marker.forEach(marker => {marker.label.isVisible = value });
+		this.marker.forEach(marker => { marker.label.isVisible = value; });
 	}
 
 	get isVisible() {
 		return this._isVisible;
 	}
 	set isVisible( value ) {
-		this.marker.forEach(marker => {marker.isVisible = value });
+		this.marker.forEach(marker => { marker.isVisible = value; });
 		this.line.visible = value; 
 		
 		this._isVisible = value;
@@ -141,7 +141,7 @@ export default class Route {
 			// 	// scene.add( helper );
 			// 	return light;
 			// }
-			        
+
 			// const light = createLight(marker.mesh.position.clone(), color, 2);
 			// this.lightGroup.add( light );
 
@@ -153,7 +153,7 @@ export default class Route {
 			const text = this._cityMarkers.length + " " + name;
 			marker.getLabel( this._container, text, this.showLabels, controls );
 
-        })
+        });
 
         // todo refactor this shit
         if(Config.routes.linewidth > 1) {
@@ -187,7 +187,7 @@ export default class Route {
 		this.marker.forEach( (marker, index) => {
 
 			if( index !== 0 ) {
-				marker.previous = this.marker[index-1]
+				marker.previous = this.marker[index-1];
 			}
 			if ( index !== this.marker.length-1 ) {
 				marker.next = this.marker[index+1];
@@ -195,7 +195,7 @@ export default class Route {
 
 			// CREATE HUDLABELS FOR MARKER
 			marker.getInfoBox( this._container, this._cityMarkers[ index ], this );
-		})
+		});
 
 	}
 
@@ -268,7 +268,7 @@ export default class Route {
 
 
         // follow endpoint when last active POI is 50 units behind
-        const lastMarkerIndex = this._routeData.findIndex( currCo => { return this._currentInAnimation === currCo.marker } );
+        const lastMarkerIndex = this._routeData.findIndex( currCo => { return this._currentInAnimation === currCo.marker; } );
 		if( currentCoordinate > lastMarkerIndex + 50 ) {
 			// if(this.activeMarker !== null) {
 			// 	if( this.activeMarker.next !== undefined ) {

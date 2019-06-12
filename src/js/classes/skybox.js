@@ -1,4 +1,4 @@
-import { IcosahedronBufferGeometry, SphereBufferGeometry, MeshBasicMaterial, Mesh, BackSide, RepeatWrapping } from 'three';
+import { IcosahedronBufferGeometry, MeshBasicMaterial, Mesh, BackSide, RepeatWrapping } from 'three';
 // import * as THREE from 'three'
 import Config from '../../data/config';
 

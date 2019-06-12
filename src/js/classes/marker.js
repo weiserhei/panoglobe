@@ -1,5 +1,4 @@
 import { Vector3, Mesh, MeshBasicMaterial, BackSide } from "three";
-import { numberWithCommas } from "./../utils/panoutils";
 import InfoBox from "./infobox";
 import Label from "./label";
 
@@ -294,7 +293,7 @@ Marker.prototype.update = (function() {
             this.mesh.getWorldPosition( meshVector );
             eye = camera.position.clone().sub( meshVector );
             dot = eye.clone().normalize().dot( meshVector.normalize() );
-            ocluded = true ? (dot < 0.0) : false; //IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
+            ocluded = (dot < 0.0); //IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
 
             // alternative from like Sketchfab
             // const meshDistance = camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
@@ -332,6 +331,6 @@ Marker.prototype.update = (function() {
                 this.mesh.scale.set( x, x, x ).multiplyScalar( 0.2 + ( eye.length() / 600 ) ); // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
             }
 
-        }
+        };
 
 })();

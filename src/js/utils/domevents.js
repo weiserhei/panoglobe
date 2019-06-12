@@ -331,8 +331,8 @@ DomEvents.prototype._onEvent	= function(eventName, mouseX, mouseY, origDomEvent)
 
 	while ( typeof(objectCtx) == 'undefined' && objectParent )
 	{
-	    objectCtx = this._objectCtxGet(objectParent);
-	    objectParent = objectParent.parent;
+		objectCtx = this._objectCtxGet(objectParent);
+		objectParent = objectParent.parent;
 	}
 	if( !objectCtx )	return;
 
@@ -355,7 +355,6 @@ DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, inters
 	}
 	
 	// notify all handlers
-	var handlers	= objectCtx[eventName+'Handlers'];
 	for(var i = 0; i < handlers.length; i++){
 		var handler	= handlers[i];
 		var toPropagate	= true;

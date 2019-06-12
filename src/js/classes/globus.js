@@ -133,14 +133,14 @@ export default class Globus {
 
         fetch(Config.data.geojsonPath, { mode: "cors" }).then(function(resp) {
             if (resp.ok)
-                return resp.json()
-            console.error('fetch failed')
+                return resp.json();
+            console.error('fetch failed');
         }).then(function(data) {
             const materialOptions = { transparent: true, opacity: 0.5, color: 'white' };
             drawThreeGeo(data, Config.globus.radius+0.5, 'sphere', materialOptions, borderlines);
             borderlines.rotation.set( 0, Math.PI / 2, 0 );
         }).catch(function(err) {
-            console.error(err)
+            console.error(err);
         });
 
         //  $.getJSON("./data/countries_states.geojson", function(data) {
@@ -197,9 +197,9 @@ export default class Globus {
                 const url = "./textures/4k/Night-Lights-4k.jpg";
                 this._textures["night"] = textureLoader.load(url, texture => {
                     this.material.map = texture;
-                })
+                });
             } else {
-                this.material.map = this._textures[Config.globus.material.nightmap]
+                this.material.map = this._textures[Config.globus.material.nightmap];
             }
         } else {
             this.material.map = this._textures[Config.globus.material.map];

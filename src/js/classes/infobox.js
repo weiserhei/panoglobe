@@ -61,7 +61,7 @@ export default class InfoBox {
             this.style.transform = 'translate(' + Math.floor( (posx - boundingRect.width - 28) ) + 'px, ' + Math.floor( (posy - 23 ) ) + 'px)';
             // this.style.left = (posx - boundingRect.width - 28) + 'px';
             // this.style.top = (posy - 23) + 'px';
-        }
+        };
     }
 
     update( camera, followMesh, ocluded, active ) {

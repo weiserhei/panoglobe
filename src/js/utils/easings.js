@@ -9,13 +9,13 @@ function threeStepEasing(k) {
 }
 
 function createStepFunction(numSteps) {
-  return k => ~~(k * numSteps) / numSteps
+  return k => ~~(k * numSteps) / numSteps;
 }
 function createStepEasing(numSteps, easeFn) {
-  return k => { let d = k*numSteps, fd = ~~d; return (easeFn(d - fd) + fd) / numSteps }
+  return k => { let d = k*numSteps, fd = ~~d; return (easeFn(d - fd) + fd) / numSteps; };
 }
 function createNoisyEasing (randomProportion, easingFunction) {
-  let normalProportion = 1.0 - randomProportion
+  let normalProportion = 1.0 - randomProportion;
   return k => randomProportion * Math.random() + normalProportion * easingFunction(k)
 }
 

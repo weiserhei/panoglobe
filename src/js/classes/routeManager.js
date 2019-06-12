@@ -1,5 +1,6 @@
 
 import Route from "./route";
+import $ from "jquery";
 
 export default class RouteManager {
     constructor( scene, container, domEvents, heightData, globusradius, controls, sidebar ) {

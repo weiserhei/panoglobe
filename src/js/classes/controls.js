@@ -58,7 +58,7 @@ export default class Controls {
             callback();
         }).start();
   
-    }
+    };
 
     function handleMouseMove() {
       document.body.style.cursor = 'grabbing';

@@ -15,7 +15,7 @@ export default class AtmosphereMaterial {
             '	// set gl_Position',
             '	gl_Position	= projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
             '}',
-        ].join('\n')
+        ].join('\n');
         var fragmentShader	= [
             'uniform float coeficient;',
             'uniform float power;',
@@ -27,7 +27,7 @@ export default class AtmosphereMaterial {
             '	float intensity	= pow( coeficient - dot(vNormal, vec3(0.0, 0.0, 1.0)), power );',
             '	gl_FragColor	= vec4( glowColor * intensity, 1.0 );',
             '}',
-        ].join('\n')
+        ].join('\n');
 
         // create custom material from the shader code above
         //   that is within specially labeled script tags

@@ -4,7 +4,7 @@
 const byte2Hex = (n) => {
     var nybHexString = "0123456789ABCDEF";
     return String( nybHexString.substr( ( n >> 4 ) & 0x0F, 1 ) ) + nybHexString.substr( n & 0x0F, 1 );
-}
+};
 
 const randomColorRoute = () => {	
     var Rrand;
@@ -17,15 +17,7 @@ const randomColorRoute = () => {
         Brand = Math.random();
     }	while((Rrand+Brand+Grand)<1.5); //ONLY ALLOW BRIGHT RANDOM COLORS
     //while((Rrand,Grand,Brand)<0.5); //ONLY PASTELL RANDOMS
-
-    //GENERATE RANDOM COLORED BLOBS, LIGHTS, LINES - ALL THE SAME RANDOM COLOR
-    for (var i = meshGroup.children.length - 1; i >= 0 ; i -- ) {
-            meshGroup.children[ i ].material.color.setRGB(Rrand, Grand, Brand);
-            meshGroup.children[ i ].material.emissive.setRGB(Rrand, Grand, Brand);
-            lightGroup.children [ i ].color.setRGB(Rrand, Grand, Brand);
-            if(lineGroup.children[ i ]) { lineGroup.children[ i ].material.color.setRGB(Rrand, Grand, Brand); }
-    }
-}
+};
 
 
 const makeColorGradient = (i, redFrequency , grnFrequency, bluFrequency, phase1, phase2, phase3 ) => {
@@ -47,7 +39,7 @@ const makeColorGradient = (i, redFrequency , grnFrequency, bluFrequency, phase1,
     
     return parseInt( '0x' + byte2Hex( red ) + byte2Hex( green ) + byte2Hex( blue ) );
 
-}
+};
 
 const makeColorGradient2 = (i, redFrequency , grnFrequency, bluFrequency, phase1, phase2, phase3 ) => {
 
@@ -70,9 +62,9 @@ const makeColorGradient2 = (i, redFrequency , grnFrequency, bluFrequency, phase1
     // return parseInt( '0x' + byte2Hex( red ) + byte2Hex( green ) + "00" );
     return parseInt( '0x' + byte2Hex( red )  + "0000" );
 
-}
+};
 
-module.exports = {
+export {
     makeColorGradient,
     makeColorGradient2,
     randomColorRoute

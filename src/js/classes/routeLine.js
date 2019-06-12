@@ -7,7 +7,6 @@
 import { 
     Vector2, 
     VertexColors, 
-    Geometry, 
     BufferGeometry, 
     BufferAttribute, 
     Color, 
@@ -134,9 +133,9 @@ export default class RouteLine {
 		this.colors = new Float32Array( numberVertices * 3 );
 
 		vertices.forEach((vertice, i) => {
-		    this.positions[ i * 3 ] = vertice.x;
-		    this.positions[ i * 3 + 1 ] = vertice.y;
-		    this.positions[ i * 3 + 2 ] = vertice.z;
+            this.positions[ i * 3 ] = vertice.x;
+            this.positions[ i * 3 + 1 ] = vertice.y;
+            this.positions[ i * 3 + 2 ] = vertice.z;
 
 			color.set ( makeColorGradient( i, frequency, undefined, undefined, phase ) );
 

@@ -112,12 +112,11 @@ export default class LightManager {
     }
   }
   
-  update( camera ) {
+  // update( camera ) {
     // this.pointLight.position.x = 110 * Math.cos( performance.now() / 1000 /1.5 ) + 0;
     // this.pointLight.position.y = 110 * Math.sin( performance.now() / 1000 /1.5 ) + 0;
     // this.spotlight.position.set(camera.position.x, camera.position.y, camera.position.z);
-
-  }
+  // }
 
   place(lightName) {
     switch(lightName) {

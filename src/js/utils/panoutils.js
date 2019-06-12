@@ -31,7 +31,7 @@ function greatCircleFunction(P, Q, angleMultiplier){
     };
     
 
-};
+}
 
 function convertLatLonToVec3(lat,lon) {
     lat =  lat * Math.PI / 180.0;
@@ -40,7 +40,7 @@ function convertLatLonToVec3(lat,lon) {
         Math.cos(lat) * Math.cos(lon), //rechts links invert
         Math.sin(lat),  // up down invert
         Math.cos(lat) * Math.sin(lon));
-};
+}
 
 /**
  * get Height Data
@@ -86,7 +86,7 @@ export const getHeightData = (img, scale) => {
 
 	return data;
 
-}
+};
 
 export const createSphereArc = ( P, Q ) => {
     var sphereArc = new Curve();
@@ -149,7 +149,7 @@ export const calc3DPositions = (data, heightData, radius) => {
 
 	return data;
 
-}
+};
 
 const Panoutils = {
 	numberWithCommas,
@@ -157,6 +157,6 @@ const Panoutils = {
     getHeightData,
 	calc3DPositions,
 	createSphereArc
-}
+};
 
 export default Panoutils;
