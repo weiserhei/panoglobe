@@ -10,10 +10,8 @@ import Config from './../../data/config';
 
 import { calc3DPositions, createSphereArc } from "./../utils/panoutils";
 import { makeColorGradient } from "./../utils/colors";
-
 import RouteLine from "./routeLine.js";
 import Marker from "./marker";
-import { Vector3 } from "three";
 
 export default class Route {
     constructor( scene, container, domEvents, routeData, heightData, radius, phase, controls ) {
@@ -115,7 +113,7 @@ export default class Route {
 			if(index > 0) {
 				// this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos, Config.routes.lineSegments);
 				const curve = createSphereArc( routeData[index-1].displacedPos, currentCoordinate.displacedPos );
-				vertices.push(curve.getPoints( Config.routes.lineSegments ));
+				vertices.push(...curve.getPoints( Config.routes.lineSegments ));
             }
 			// DONT DRAW MARKER WHEN THEY HAVE NO NAME
 			if ( ! currentCoordinate.adresse ) { return; }
@@ -160,7 +158,7 @@ export default class Route {
 
         // todo refactor this shit
         if(Config.routes.linewidth > 1) {
-			this.line = this._routeLine.getThickLine( vertices.flat(1), steps, phase, Config.routes.linewidth, true );            
+			this.line = this._routeLine.getThickLine( vertices, steps, phase, Config.routes.linewidth, true );            
         } else {
             this.line = this._routeLine.getColoredBufferLine( vertices, steps, phase );
         }
