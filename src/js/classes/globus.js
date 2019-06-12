@@ -153,11 +153,7 @@ export default class Globus {
     this.borderlines.visible = value;
   }
 
-  get night() {
-    return this.night;
-  }
-
-  set night(value) {
+  setNight(value) {
     this.preloader.inline = true;
     this.night = value;
 

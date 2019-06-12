@@ -151,8 +151,8 @@ function getFooter(globus, lightManager) {
   dropdown.appendChild(link2);
 
   link2.addEventListener('click', ()=>{
-    lightManager.night = !lightManager.night;
-    globus.night = !globus.night;
+    lightManager.setNight(!lightManager.night);
+    globus.setNight(!globus.night);
     if (globus.night) {
       link2.innerHTML = linkActive;
     } else {
