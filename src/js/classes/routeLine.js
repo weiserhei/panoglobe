@@ -32,11 +32,6 @@ export default class RouteLine {
     return this.vertices.length;
   }
 
-//   setDrawCount(value) {
-//     this.drawCount = value;
-//     this.update();
-//   }
-
   update(speed = 1) {
     // http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
     if (this.line !== undefined && this.line.geometry instanceof LineGeometry) {

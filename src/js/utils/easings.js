@@ -1,6 +1,6 @@
 /*
 * https://codepen.io/milesmanners/pen/EXGByv?page=49&q=Noisy
-* example: 
+* example:
 * var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
 */
 

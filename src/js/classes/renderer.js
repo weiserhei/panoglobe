@@ -9,10 +9,10 @@ export default class Renderer {
     this.container = container;
 
     // Create WebGL renderer and set its antialias
-    this.threeRenderer = new WebGLRenderer({antialias: true});
+    this.threeRenderer = new WebGLRenderer({ antialias: true });
 
     // Set clear color to fog to enable fog or to hex color for no fog
-    this.threeRenderer.setClearColor("#000000"); // scene.fog.color
+    this.threeRenderer.setClearColor('#000000'); // scene.fog.color
     this.threeRenderer.setPixelRatio(window.devicePixelRatio); // For retina
 
     // Appends canvas
