@@ -10,10 +10,10 @@ import Label from './label';
 import $ from 'jquery';
 
 export default class Marker {
-  constructor(color, poi, positionVector, protoMesh, routeManager, controls) {
+  constructor(color, poi, positionVector, protoMesh, route, controls) {
     this.color = color;
     this.poi = poi;
-    this.activeHandler = routeManager;
+    this.activeHandler = route;
     this.controls = controls;
     this.active = false;
     this.infoBox = null;
@@ -58,10 +58,6 @@ export default class Marker {
     this.last = value;
   }
 
-  get isActive() {
-    return this.active;
-  }
-
   askGoogle(lat, lon) {
     // Get countryname from POI
     // via Google-Maps API Lat/Long
@@ -89,6 +85,10 @@ export default class Marker {
     });
   }
 
+  get isActive() {
+    return this.active;
+  }
+
   set isActive(value) {
     // if ( ! this._askedGoogle ) {
     //     this.askGoogle(this._poi.lat, this._poi.lng);
@@ -102,15 +102,14 @@ export default class Marker {
     if (this.activeHandler.activeMarker !== null) {
       const otherMarker = this.activeHandler.activeMarker;
       // clear handle to prevent recursion
-      this.activeHandler.activeMarker = null;
-      otherMarker.active = false;
+      this.activeHandler.setActiveMarker(null);
+      otherMarker.isActive = false;
     }
-
     this.active = value;
 
     if (value) {
       // this._audio.open.play();
-      this.activeHandler.activeMarker = this;
+      this.activeHandler.setActiveMarker(this);
       // on Hit something trigger hit effect emitter
       // this.particles.setNormal( target.face.normal );
       // this.particles.particleGroup.mesh.position.copy( target.point );
@@ -127,9 +126,7 @@ export default class Marker {
     //     1, (impactPosition.set(target.point.x, target.point.y, target.point.z))
     //   );
     }
-
-    // if (this.infoBox !== null) {
-    if (this.infoBox !== undefined) {
+    if (this.infoBox !== null) {
       this.infoBox.isVisible = value;
     }
     // respect route setting on showing labels or not
@@ -155,11 +152,10 @@ export default class Marker {
 
   getLabel(parentDomNode, text, showLabel) {
     // parentDomNode.appendChild(this.a);
-
     this.label = new Label(parentDomNode, text);
     this.label.isVisible = showLabel;
     this.label.domElement.addEventListener('click', ()=>{
-      this.active = true;
+      this.isActive = true;
     });
 
     function handleMouseUp() {
@@ -177,7 +173,6 @@ export default class Marker {
   getInfoBox(parentDomNode, city) {
     const box = new InfoBox(parentDomNode, city);
     this.infoBox = box;
-
     // close label on X click
     box.closeButton.addEventListener('click', ()=>{
       this.isActive = false;
@@ -221,12 +216,12 @@ export default class Marker {
 
     function handleClick() {
       // Hide the infoBox when itself is clicked again
-      if (route.active === this) {
-        this.active = false;
-        route.active = null;
+      if (route.activeMarker === this) {
+        this.isActive = false;
+        route.setActiveMarker(null);
         return;
       }
-      this.active = true;
+      this.isActive = true;
 
       if (this.controls.moveIntoCenter instanceof Function) {
         // this._controls.moveIntoCenter( lat, lng, 1000 );
@@ -250,7 +245,7 @@ export default class Marker {
       this.outlineMesh.visible = true;
     }, false);
     route.domEvents.bind(eventTarget, 'mouseout', () => {
-      if (this.active !== true) {
+      if (this.isActive !== true) {
         this.outlineMesh.visible = false;
       }
       document.body.style.cursor = 'default';
@@ -291,7 +286,7 @@ Marker.prototype.update = (function () {
       // hide marker when overlay is active
       this.sprite.update(ocluded, eye, dot);
     }
-    if (this.infoBox !== undefined) {
+    if (this.infoBox !== null) {
       // if ( this._infoBox !== undefined && this.active === true ) {
       this.infoBox.update(camera, this.mesh, ocluded, this.active);
     }

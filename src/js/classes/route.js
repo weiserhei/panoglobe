@@ -65,14 +65,10 @@ export default class Route {
     this.marker.forEach(marker => { marker.label.isVisible = value; });
   }
 
-  get getActiveMarker() {
-    return this.activeMarker;
-  }
-
-  set setActiveMarker(value) {
+  setActiveMarker(value) {
     this.activeMarker = value;
     if (this.manager !== undefined) {
-      this.manager.activeMarker = value;
+      this.manager.setActiveMarker(value);
     }
   }
 
@@ -201,16 +197,16 @@ export default class Route {
 
     this.marker[this.marker.length - 1].isLast = true;
 
-    this.marker.forEach((marker, index) => {
+    this.marker.forEach((m, index) => {
       if (index !== 0) {
-        marker.previous = this.marker[index - 1];
+        m.previous = this.marker[index - 1];
       }
       if (index !== this.marker.length - 1) {
-        marker.next = this.marker[index + 1];
+        m.next = this.marker[index + 1];
       }
 
       // CREATE HUDLABELS FOR MARKER
-      marker.getInfoBox(this.container, this.cityMarkers[index]);
+      m.getInfoBox(this.container, this.cityMarkers[index]);
     });
   }
 
@@ -249,7 +245,7 @@ export default class Route {
     this.animate = !value;
   }
 
-  _animateRoute(delta) {
+  animateRoute(delta) {
     let speed = delta * 60;
 
     // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
@@ -263,14 +259,19 @@ export default class Route {
         if (this.activeMarker !== null) {
           this.activeMarker.active = false;
         }
-        this.routeData[currentCoordinate].marker.active = true;
-        setTimeout(() => { if (this.activeMarker !== null) this.activeMarker.active = false; }, 2000);
+        this.routeData[currentCoordinate].marker.isActive = true;
+        setTimeout(() => {
+          if (this.activeMarker !== null) {
+            this.activeMarker.isActive = false;
+          }
+        }, 2000);
         const index = this.routeData[currentCoordinate].marker.index;
         if (this.routeData[currentCoordinate].marker.next !== undefined) {
           const nextIndex = this.routeData[currentCoordinate].marker.next.index;
           const diff = nextIndex - index;
+          const poi = this.activeMarker.next.poi;
           // todo: kill slow tween when buttons are pressed
-          this.controls.moveIntoCenter(this.activeMarker.next.poi.lat, this.activeMarker.next.poi.lng, 200 * diff, Config.easing, 250);
+          this.controls.moveIntoCenter(poi.lat, poi.lng, 200 * diff, Config.easing, 250);
         }
       }
       // fake slow down on marker
@@ -279,13 +280,25 @@ export default class Route {
 
 
     // follow endpoint when last active POI is 50 units behind
-    const lastMarkerIndex = this.routeData.findIndex(currCo => { return this.currentInAnimation === currCo.marker; });
+    const lastMarkerIndex = this.routeData.findIndex(currCo => {
+      return this.currentInAnimation === currCo.marker;
+    });
     if (currentCoordinate > lastMarkerIndex + 50) {
       // if(this.activeMarker !== null) {
       // if( this.activeMarker.next !== undefined ) {
       // // move camera to next marker in advance
-      // this._controls.moveIntoCenter( this.activeMarker.next._poi.lat, this.activeMarker.next._poi.lng, 1000 );
-      this.controls.moveIntoCenter(this.routeData[currentCoordinate].lat, this.routeData[currentCoordinate].lng, 200, Config.easing, 300);
+      // this._controls.moveIntoCenter(
+      // this.activeMarker.next._poi.lat,
+      // this.activeMarker.next._poi.lng,
+      // 1000
+      // );
+      this.controls.moveIntoCenter(
+        this.routeData[currentCoordinate].lat,
+        this.routeData[currentCoordinate].lng,
+        200,
+        Config.easing,
+        300
+      );
       // }
       // // this.activeMarker.active = false;
       // }

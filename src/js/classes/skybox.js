@@ -5,7 +5,6 @@ import Config from '../../data/config';
 // Class that creates and updates the main camera
 export default class Skybox {
   constructor(scene) {
-
     // SKYBOX
     // const geometry = new SphereBufferGeometry( Config.galaxy.radius, Config.galaxy.widthSegments, Config.galaxy.heightSegments );
     const geometry = new IcosahedronBufferGeometry( Config.galaxy.radius, 1 );
