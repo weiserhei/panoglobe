@@ -86,7 +86,7 @@ export default class Route {
 
     update( delta, camera ) {
 		
-        this.marker.forEach(marker => { marker.update( camera, delta )});
+        this.marker.forEach(marker => { marker.update( camera, delta ); });
         
         // test
         // this._routeLine.updateColors( delta );
@@ -111,7 +111,6 @@ export default class Route {
 			// the json looks like this: {"adresse":"Iran","externerlink":"http:\/\/panoreisen.de\/156-0-Iran.html","lng":"51.42306","lat":"35.69611"}
 			// vertices.push(currentCoordinate.displacedPos);
 			if(index > 0) {
-				// this._routeLine.connectGeometry( routeData[index-1].displacedPos, currentCoordinate.displacedPos, Config.routes.lineSegments);
 				const curve = createSphereArc( routeData[index-1].displacedPos, currentCoordinate.displacedPos );
 				vertices.push(...curve.getPoints( Config.routes.lineSegments ));
             }
@@ -226,7 +225,7 @@ export default class Route {
                 this.pois[0].lat, this.pois[0].lng, 1000, undefined, undefined, () => { 
                     // this._routeData[ 0 ].marker.active = true;
                     // setTimeout(() => { this._animate = true; }, 500);
-                    this._animate = true 
+                    this._animate = true;
                     } 
                 );
 		}
