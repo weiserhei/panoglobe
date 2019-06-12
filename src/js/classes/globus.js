@@ -26,9 +26,6 @@ import Config from './../../data/config';
 import { drawThreeGeo } from './../utils/threeGeoJSON';
 import AtmosphereMaterial from "./../utils/atmosphereMaterial";
 
-import Preloader from "Classes/preloader";
-
-
 function getClouds( geometry ) {
 
     const cloudMaterial	= new MeshBasicMaterial( { 

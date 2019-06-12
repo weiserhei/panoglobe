@@ -16,7 +16,7 @@ function createStepEasing(numSteps, easeFn) {
 }
 function createNoisyEasing (randomProportion, easingFunction) {
   let normalProportion = 1.0 - randomProportion;
-  return k => randomProportion * Math.random() + normalProportion * easingFunction(k)
+  return k => randomProportion * Math.random() + normalProportion * easingFunction(k);
 }
 
 export { createNoisyEasing, createStepEasing };

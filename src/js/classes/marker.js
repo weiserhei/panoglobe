@@ -229,7 +229,7 @@ export default class Marker {
 
     }
     
-    linkify(activeHandler, lat, lng) {
+    linkify(activeHandler) {
         var eventTarget = this.mesh;
 
         function handleClick(event) {
