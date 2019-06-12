@@ -59,7 +59,7 @@ var parent, tubeGeometry, mesh;
 
 var params = {
     spline: 'GrannyKnot',
-    scale: 4,
+    scale: 1,
     extrusionSegments: 100,
     radiusSegments: 3,
     closed: true,
@@ -69,27 +69,12 @@ var params = {
 };
 
 var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+var splineCamera = new THREE.PerspectiveCamera( 24, window.innerWidth / window.innerHeight, 0.01, 1000 );
+splineCamera.up.set( 0, 1, 0 );
 
 var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.3, wireframe: true, transparent: true } );
 
-function initFollowCamera(sceneVar, offsetVar, lookAheadVar) {
-	scene = sceneVar;
-
-	parent = new THREE.Object3D();
-	parent.position.y = 100;
-	scene.add( parent );
-
-	splineCamera = new THREE.PerspectiveCamera( 84, window.innerWidth / window.innerHeight, 0.01, 1000 );
-	parent.add( splineCamera );
-
-	var offset = offsetVar || 0;
-	var lookAhead = lookAheadVar || false;
-
-	return splineCamera;
-}
-
-
-function addTube() {
+function addTube( curve ) {
 
     // if ( mesh !== undefined ) {
 
@@ -98,8 +83,8 @@ function addTube() {
 
     // }
 
-    var extrudePath = splines[ sampleClosedSpline ];
-
+    // var extrudePath = splines.SampleClosedSpline;
+    var extrudePath = curve;
     tubeGeometry = new THREE.TubeBufferGeometry( extrudePath, params.extrusionSegments, 2, params.radiusSegments, params.closed );
 
     addGeometry( tubeGeometry );
@@ -123,7 +108,7 @@ function addGeometry( geometry ) {
     var wireframe = new THREE.Mesh( geometry, wireframeMaterial );
     mesh.add( wireframe );
 
-    parent.add( mesh );
+    // parent.add( mesh );
 
 }
 
@@ -136,7 +121,7 @@ function addGeometry( geometry ) {
     // addTube();
 
 
-function render() {
+function render( renderer, scene ) {
 
     // animate camera along spline
 
@@ -158,7 +143,7 @@ function render() {
     binormal.multiplyScalar( pickt - pick ).add( tubeGeometry.binormals[ pick ] );
 
     var dir = tubeGeometry.parameters.path.getTangentAt( t );
-    var offset = 15;
+    var offset = -50;
 
     normal.copy( binormal ).cross( dir );
 
@@ -167,67 +152,26 @@ function render() {
     pos.add( normal.clone().multiplyScalar( offset ) );
 
     splineCamera.position.copy( pos );
-    cameraEye.position.copy( pos );
+    // cameraEye.position.copy( pos );
 
     // using arclength for stablization in look ahead
 
+    // var lookAt = tubeGeometry.parameters.path.getPointAt( ( t + 30 / tubeGeometry.parameters.path.getLength() ) % 1 ).multiplyScalar( params.scale );
     var lookAt = tubeGeometry.parameters.path.getPointAt( ( t + 30 / tubeGeometry.parameters.path.getLength() ) % 1 ).multiplyScalar( params.scale );
 
     // camera orientation 2 - up orientation via normal
+    params.lookAhead = true;
 
     if ( ! params.lookAhead ) lookAt.copy( pos ).add( dir );
     splineCamera.matrix.lookAt( splineCamera.position, lookAt, normal );
     splineCamera.rotation.setFromRotationMatrix( splineCamera.matrix, splineCamera.rotation.order );
 
-    cameraHelper.update();
+    // cameraHelper.update();
 
-    renderer.render( scene, params.animationView === true ? splineCamera : camera );
+    // renderer.render( scene, params.animationView === true ? splineCamera : camera );
+
+    renderer.render( scene, splineCamera );
 
 }
 
-
-
-// Animate the camera along the spline
-function renderFollowCamera() {
-	var time = Date.now();
-	var looptime = 20 * 1000;
-	var t = ( time % looptime ) / looptime;
-
-	var pos = tube.parameters.path.getPointAt( t );
-	pos.multiplyScalar( scale );
-
-	// interpolation
-	var segments = tube.tangents.length;
-	var pickt = t * segments;
-	var pick = Math.floor( pickt );
-	var pickNext = ( pick + 1 ) % segments;
-
-	binormal.subVectors( tube.binormals[ pickNext ], tube.binormals[ pick ] );
-	binormal.multiplyScalar( pickt - pick ).add( tube.binormals[ pick ] );
-
-
-	var dir = tube.parameters.path.getTangentAt( t );
-
-	normal.copy( binormal ).cross( dir );
-
-	// We move on a offset on its binormal
-	// pos.add( normal.clone().multiplyScalar( offset ) );
-	pos.add( normal.clone().multiplyScalar( 10 ) );
-
-	splineCamera.position.copy( pos );
-
-	// Using arclength for stablization in look ahead.
-	var lookAt = tube.parameters.path.getPointAt( ( t + 30 / tube.parameters.path.getLength() ) % 1 ).multiplyScalar( scale );
-
-	// Camera Orientation 2 - up orientation via normal
-	if ( ! params.lookAhead )
-		lookAt.copy( pos ).add( dir );
-	splineCamera.matrix.lookAt(splineCamera.position, lookAt, normal);
-	splineCamera.rotation.setFromRotationMatrix( splineCamera.matrix, splineCamera.rotation.order );
-
-	parent.rotation.y += ( targetRotation - parent.rotation.y ) * 0.05;
-}
-
-
-
-export { addTube, initFollowCamera, renderFollowCamera, render };
+export { addTube, render };

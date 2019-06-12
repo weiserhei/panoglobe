@@ -18,7 +18,8 @@ export default {
   },
   routes: {
     linewidth: 3, // error on 2.0 width wtf lol
-    lineSegments: 9,
+    lineSegments: 7,
+    segmentMultiplicator: 2,
     urls: [
       "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist",
       "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist"
@@ -34,7 +35,7 @@ export default {
       {name: 'earthColor', image: '4k/2_no_clouds_4k.jpg'},
       // {name: 'earthColor', image: '8k/2_no_clouds_8k.jpg'},
       {name: 'invertedSpecularmap', image: '4k/Spec-Mask-inverted_4k.png'},
-      // {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
+      {name: 'specmap', image: '4k/Spec-Mask_4k.png'},
       {name: 'normalmap', image: '4k/earth_normalmap_flat_4k.jpg'},
       {name: 'displacemap', image: '4k/Bump_4k.jpg'},
       // {name: 'night', image: '4k/Night-Lights-4k.jpg'},

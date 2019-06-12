@@ -114,7 +114,7 @@ DomEvents.prototype.destroy	= function()
 	this._domElement.removeEventListener( 'touchstart'	, this._$onTouchStart	, false );
 	this._domElement.removeEventListener( 'touchend'	, this._$onTouchEnd	, false );
 	this._domElement.removeEventListener( 'contextmenu'	, this._$onContextmenu	, false );
-}
+};
 
 DomEvents.eventNames	= [
 	"click",
@@ -171,16 +171,16 @@ DomEvents.prototype._getRelativeMouseXY	= function(domEvent){
 
 DomEvents.prototype._objectCtxInit	= function(object3d){
 	object3d._3xDomEvent = {};
-}
+};
 DomEvents.prototype._objectCtxDeinit	= function(object3d){
 	delete object3d._3xDomEvent;
-}
+};
 DomEvents.prototype._objectCtxIsInit	= function(object3d){
 	return object3d._3xDomEvent ? true : false;
-}
+};
 DomEvents.prototype._objectCtxGet		= function(object3d){
 	return object3d._3xDomEvent;
-}
+};
 
 /********************************************************************************/
 /*										*/
@@ -193,7 +193,7 @@ DomEvents.prototype.camera	= function(value)
 {
 	if( value )	this._camera	= value;
 	return this._camera;
-}
+};
 
 DomEvents.prototype.bind	= function(object3d, eventName, callback, useCapture)
 {
@@ -213,8 +213,8 @@ DomEvents.prototype.bind	= function(object3d, eventName, callback, useCapture)
 		this._boundObjs[eventName]	= [];	
 	}
 	this._boundObjs[eventName].push(object3d);
-}
-DomEvents.prototype.addEventListener	= DomEvents.prototype.bind
+};
+DomEvents.prototype.addEventListener	= DomEvents.prototype.bind;
 
 DomEvents.prototype.unbind	= function(object3d, eventName, callback, useCapture)
 {
@@ -230,22 +230,22 @@ DomEvents.prototype.unbind	= function(object3d, eventName, callback, useCapture)
 		var handler	= handlers[i];
 		if( callback != handler.callback )	continue;
 		if( useCapture != handler.useCapture )	continue;
-		handlers.splice(i, 1)
+		handlers.splice(i, 1);
 		break;
 	}
 	// from this object from this._boundObjs
 	var index	= this._boundObjs[eventName].indexOf(object3d);
 	console.assert( index !== -1 );
 	this._boundObjs[eventName].splice(index, 1);
-}
-DomEvents.prototype.removeEventListener	= DomEvents.prototype.unbind
+};
+DomEvents.prototype.removeEventListener	= DomEvents.prototype.unbind;
 
 DomEvents.prototype._bound	= function(eventName, object3d)
 {
 	var objectCtx	= this._objectCtxGet(object3d);
 	if( !objectCtx )	return false;
 	return objectCtx[eventName+'Handlers'] ? true : false;
-}
+};
 
 /********************************************************************************/
 /*		onMove								*/
@@ -297,7 +297,7 @@ DomEvents.prototype._onMove	= function(eventName, mouseX, mouseY, origDomEvent)
 	notifyOver && this._notify('mouseover', newSelected, origDomEvent, intersect);
 	// notify mouseLeave - done at the end with a copy of the list to allow callback to remove handlers
 	notifyOut  && this._notify('mouseout' , oldSelected, origDomEvent, intersect);
-}
+};
 
 
 /********************************************************************************/
@@ -331,14 +331,14 @@ DomEvents.prototype._onEvent	= function(eventName, mouseX, mouseY, origDomEvent)
 
 	while ( typeof(objectCtx) == 'undefined' && objectParent )
 	{
-	    objectCtx = this._objectCtxGet(objectParent);
-	    objectParent = objectParent.parent;
+		objectCtx = this._objectCtxGet(objectParent);
+		objectParent = objectParent.parent;
 	}
 	if( !objectCtx )	return;
 
 	// notify handlers
 	this._notify(eventName, object3d, origDomEvent, intersect);
-}
+};
 
 DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, intersect)
 {
@@ -346,7 +346,7 @@ DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, inters
 	var handlers	= objectCtx ? objectCtx[eventName+'Handlers'] : null;
 	
 	// parameter check
-	console.assert(arguments.length === 4)
+	console.assert(arguments.length === 4);
 
 	// do bubbling
 	if( !objectCtx || !handlers || handlers.length === 0 ){
@@ -355,7 +355,6 @@ DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, inters
 	}
 	
 	// notify all handlers
-	var handlers	= objectCtx[eventName+'Handlers'];
 	for(var i = 0; i < handlers.length; i++){
 		var handler	= handlers[i];
 		var toPropagate	= true;
@@ -374,22 +373,22 @@ DomEvents.prototype._notify	= function(eventName, object3d, origDomEvent, inters
 			object3d.parent && this._notify(eventName, object3d.parent, origDomEvent, intersect);
 		}
 	}
-}
+};
 
 /********************************************************************************/
 /*		handle mouse events						*/
 /********************************************************************************/
 // # handle mouse events
 
-DomEvents.prototype._onMouseDown	= function(event){ return this._onMouseEvent('mousedown', event);	}
-DomEvents.prototype._onMouseUp	= function(event){ return this._onMouseEvent('mouseup'	, event);	}
+DomEvents.prototype._onMouseDown	= function(event){ return this._onMouseEvent('mousedown', event);	};
+DomEvents.prototype._onMouseUp	= function(event){ return this._onMouseEvent('mouseup'	, event);	};
 
 
 DomEvents.prototype._onMouseEvent	= function(eventName, domEvent)
 {
 	var mouseCoords = this._getRelativeMouseXY(domEvent);
 	this._onEvent(eventName, mouseCoords.x, mouseCoords.y, domEvent);
-}
+};
 
 DomEvents.prototype._onMouseMove	= function(domEvent)
 {
@@ -397,24 +396,24 @@ DomEvents.prototype._onMouseMove	= function(domEvent)
 	this._onMove('mousemove', mouseCoords.x, mouseCoords.y, domEvent);
 	this._onMove('mouseover', mouseCoords.x, mouseCoords.y, domEvent);
 	this._onMove('mouseout' , mouseCoords.x, mouseCoords.y, domEvent);
-}
+};
 
 DomEvents.prototype._onClick		= function(event)
 {
 	// TODO handle touch ?
 	this._onMouseEvent('click'	, event);
-}
+};
 DomEvents.prototype._onDblClick		= function(event)
 {
 	// TODO handle touch ?
 	this._onMouseEvent('dblclick'	, event);
-}
+};
 
 DomEvents.prototype._onContextmenu	= function(event)
 {
 	//TODO don't have a clue about how this should work with touch..
 	this._onMouseEvent('contextmenu'	, event);
-}
+};
 
 /********************************************************************************/
 /*		handle touch events						*/
@@ -422,8 +421,8 @@ DomEvents.prototype._onContextmenu	= function(event)
 // # handle touch events
 
 
-DomEvents.prototype._onTouchStart	= function(event){ return this._onTouchEvent('mousedown', event);	}
-DomEvents.prototype._onTouchEnd	= function(event){ return this._onTouchEvent('mouseup'	, event);	}
+DomEvents.prototype._onTouchStart	= function(event){ return this._onTouchEvent('mousedown', event);	};
+DomEvents.prototype._onTouchEnd	= function(event){ return this._onTouchEvent('mouseup'	, event);	};
 
 DomEvents.prototype._onTouchMove	= function(domEvent)
 {
@@ -436,7 +435,7 @@ DomEvents.prototype._onTouchMove	= function(domEvent)
 	this._onMove('mousemove', mouseX, mouseY, domEvent);
 	this._onMove('mouseover', mouseX, mouseY, domEvent);
 	this._onMove('mouseout' , mouseX, mouseY, domEvent);
-}
+};
 
 DomEvents.prototype._onTouchEvent	= function(eventName, domEvent)
 {
@@ -447,4 +446,4 @@ DomEvents.prototype._onTouchEvent	= function(eventName, domEvent)
 	var mouseX	= +(domEvent.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
 	var mouseY	= -(domEvent.touches[ 0 ].pageY / window.innerHeight) * 2 + 1;
 	this._onEvent(eventName, mouseX, mouseY, domEvent);	
-}
+};

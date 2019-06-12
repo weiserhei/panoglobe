@@ -13,6 +13,7 @@ import RouteManager from 'Classes/routeManager';
 import * as sfc from 'Classes/splineFollowCamera';
 
 import Config from './../data/config';
+import { CatmullRomCurve3 } from 'three';
 
 export default function(preloader, heightdata) {
 
@@ -54,6 +55,26 @@ export default function(preloader, heightdata) {
         const route = routeManager.buildRoute( routeData, phase );
         // route.showLabels = false;
 
+        // let pois = route.pois.map(poi => poi.displacedPos);
+        // sfc.addTube( route._routeLine._curve );
+        // const curve = new CatmullRomCurve3(pois, false, "catmullrom", 0.5); 
+        // let vertices = curve.getPoints( pois.length * 1 );
+        // vertices = vertices.filter( el => !isNaN(el.x) );
+
+        // const geometry = new THREE.Geometry();
+        // geometry.vertices = vertices;
+        // const lineMaterial = new THREE.LineBasicMaterial( {
+        // color: 0xffffff,
+        // linewidth: 1, // in pixels
+        // // resolution: new Vector2(window.innerWidth, window.innerHeight),
+        // //resolution:  // to be set by renderer, eventually
+        // dashed: false
+        // } );
+
+        // let line = new THREE.Line( geometry, lineMaterial );
+        // scene.add( line );
+        // // sfc.addTube( curve );
+
         // add in callback so first route is on top in sidebar
         sidebar.addLink("Asien 2010-2013", () => {
           RouteManager.load(Config.routes.urls[0], routeData => {
@@ -65,20 +86,14 @@ export default function(preloader, heightdata) {
         });
       });
 
-    var curve = new THREE.CatmullRomCurve3( [
-      new THREE.Vector3( -10, 0, 10 ),
-      new THREE.Vector3( -5, 5, 5 ),
-      new THREE.Vector3( 0, 0, 0 ),
-      new THREE.Vector3( 5, -5, 5 ),
-      new THREE.Vector3( 10, 0, 10 )
-    ] );
+    // var curve = new THREE.CatmullRomCurve3( [
+    //   new THREE.Vector3( -10, 0, 10 ),
+    //   new THREE.Vector3( -5, 5, 5 ),
+    //   new THREE.Vector3( 0, 0, 0 ),
+    //   new THREE.Vector3( 5, -5, 5 ),
+    //   new THREE.Vector3( 10, 0, 10 )
+    // ] );
 
-    var parent = new THREE.Object3D();
-    scene.add( parent );
-    var splineCamera = new THREE.PerspectiveCamera( 84, window.innerWidth / window.innerHeight, 0.01, 1000 );
-    parent.add( splineCamera );
-    
-    // sfc.addTube();
 
     // var geometry = new THREE.BoxGeometry( 10, 10, 10 );
     // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -129,9 +144,7 @@ export default function(preloader, heightdata) {
         update(delta);
     
         renderer.render( scene, camera.threeCamera );
-
-        // sfc.renderFollowCamera();
-        // sfc.render();
+        // sfc.render( renderer, scene );
 
     };
     

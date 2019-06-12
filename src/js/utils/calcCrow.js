@@ -2,24 +2,24 @@
  * Panoutils
  */
 
- // Converts numeric degrees to radians
- function toRad( Value ) {
-    return Value * Math.PI / 180;
-};
+// Converts numeric degrees to radians
+function toRad(value) {
+  return value * Math.PI / 180;
+}
 
-export default function(a, b) {
-    var lat1 = a.lat;
-    var lon1 = a.lng;
-    var lat2 = b.lat;
-    var lon2 = b.lng;
-    var R = 6371; // km
-    var dLat = toRad(lat2 - lat1);
-    var dLon = toRad(lon2 - lon1);
-    var lat1 = toRad(lat1);
-    var lat2 = toRad(lat2);
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d;
+export default function (a, b) {
+  const lat1 = a.lat;
+  const lon1 = a.lng;
+  const lat2 = b.lat;
+  const lon2 = b.lng;
+  const R = 6371; // km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const c = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+          + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+          * Math.cos(toRad(lat1)) * Math.cos(toRad(lat2));
+  const d = 2 * Math.atan2(Math.sqrt(c), Math.sqrt(1 - c));
+  const e = R * d;
+  return e;
 }

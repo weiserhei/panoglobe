@@ -547,4 +547,4 @@ export default class Sidebar {
 
     }
 
-};
+}
