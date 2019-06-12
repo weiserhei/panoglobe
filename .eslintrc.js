@@ -15,6 +15,9 @@ module.exports = {
     },
     "rules": {
         "comma-dangle": ["error", "always-multiline"],
+        "linebreak-style": ["off", "unix"],
+        "max-len": [2, 80, 4, { "ignoreComments": true, "ignoreStrings": true, "ignoreRegExpLiterals": true }],
+        "no-multi-str": ["warn"]
         // "semi": ["warn", "always"],
         // "no-console": ["off", "always"],
     },
