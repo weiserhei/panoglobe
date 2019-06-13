@@ -115,7 +115,7 @@ export default class Globus {
 
     // borderlines.renderOrder = 2;
     const borderlines = new Group();
-    scene.add(borderlines);
+    this.mesh.add(borderlines);
     // borderlines.visible = false;
     this.borderlines = borderlines;
 

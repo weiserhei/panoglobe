@@ -10,6 +10,7 @@ import Globus from 'Classes/globus';
 import LightManager from 'Classes/lightManager';
 import DomEvents from './utils/domevents';
 import RouteManager from 'Classes/routeManager';
+import Impact from 'Classes/impact';
 import * as sfc from 'Classes/splineFollowCamera';
 
 import Config from './../data/config';
@@ -33,7 +34,6 @@ export default function (preloader, heightdata) {
   const camera = new Camera(renderer.threeRenderer);
   const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
   controls.threeControls.update();
-
 
   const lightManager = new LightManager(scene, controls.threeControls.object);
   // Create and place lights in scene
@@ -61,6 +61,8 @@ export default function (preloader, heightdata) {
     const phase = 0.9;
     const route = routeManager.buildRoute(routeData, phase);
     // route.showLabels = false;
+
+    const impacts = new Impact(globus, route);
 
     // let pois = route.pois.map(poi => poi.displacedPos);
     // sfc.addTube( route._routeLine._curve );
