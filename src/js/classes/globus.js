@@ -83,8 +83,8 @@ export default class Globus {
 
     this.material = new MeshPhongMaterial({
       // wireframe: true,
-      transparent: true,
-      opacity: 0,
+      // transparent: true,
+      // opacity: 0,
       // side: DoubleSide,
       // side: DoubleSide,
       color: Config.globus.material.color,

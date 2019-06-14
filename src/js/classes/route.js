@@ -49,6 +49,8 @@ export default class Route {
 
     this.animate = false;
 
+    this.speed = 0;
+
     const markergeo = new SphereBufferGeometry(1, 8, 6);
     const markerMaterial = new MeshLambertMaterial();
     this.markermesh = new Mesh(markergeo, markerMaterial);
@@ -246,7 +248,7 @@ export default class Route {
   }
 
   animateRoute(delta) {
-    let speed = delta * 60;
+    let speed = delta * 30;
 
     // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
     // divider must be in the range of routeData.length
@@ -305,9 +307,11 @@ export default class Route {
     }
 
     this.routeLine.update(speed);
-
+    this.speed = speed;
     // this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
     this.drawCount = this.routeLine.drawCount;
+    // console.log( this.routeLine.drawCount / this.routeLine.numberVertices );
+
     // dont repeat
     // console.log( this._drawCount, this._routeLine.numberVertices );
     if (this.drawCount >= this.routeLine.numberVertices - Config.routes.lineSegments) {

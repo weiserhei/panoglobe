@@ -65,7 +65,7 @@ export default function (preloader, heightdata) {
     const route = routeManager.buildRoute(routeData, phase);
     // route.showLabels = false;
     mover.setPath(route.routeLine.curve);
-
+    mover.setRoute(route);
     const impacts = new Impact(globus, route);
 
     // let pois = route.pois.map(poi => poi.displacedPos);
