@@ -46,6 +46,7 @@
     "jquery": "^3.4.1",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "popper.js": "^1.15.0",
+    "startbootstrap-sb-admin-2": "^4.0.6",
     "three": "^0.105.2"
   }
 }

@@ -64,9 +64,10 @@ export default function (preloader, heightdata) {
     const phase = 0.9;
     const route = routeManager.buildRoute(routeData, phase);
     // route.showLabels = false;
+    const impacts = new Impact(globus, route);
+    
     mover.setPath(route.routeLine.curve);
     mover.setRoute(route);
-    const impacts = new Impact(globus, route);
 
     // let pois = route.pois.map(poi => poi.displacedPos);
     // sfc.addTube( route._routeLine._curve );

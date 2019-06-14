@@ -163,7 +163,7 @@ export default class Mover {
     if (this.path !== undefined && this.route.runAnimation) {
       this.move(delta);
     }
-    if( this.route !== undefined && !this.route.runAnimation ) {
+    if( this.mesh !== undefined && this.route !== undefined && !this.route.runAnimation ) {
       const point = this.route.routeLine.vertices[this.route.routeLine.numberVertices-2];
 
       var dir = new Vector3(); // create once an reuse it
