@@ -11,6 +11,7 @@ import LightManager from 'Classes/lightManager';
 import DomEvents from './utils/domevents';
 import RouteManager from 'Classes/routeManager';
 import Impact from 'Classes/impact';
+import Mover from 'Classes/mover';
 import * as sfc from 'Classes/splineFollowCamera';
 
 import Config from './../data/config';
@@ -56,11 +57,14 @@ export default function (preloader, heightdata) {
     sidebar
   );
 
+  const mover = new Mover(scene);
+
   RouteManager.load(Config.routes.urls.pop(), routeData => {
     // const phase = getRandomArbitrary( 0, Math.PI * 2 );
     const phase = 0.9;
     const route = routeManager.buildRoute(routeData, phase);
     // route.showLabels = false;
+    mover.setPath(route.routeLine.curve);
 
     const impacts = new Impact(globus, route);
 
@@ -131,11 +135,13 @@ export default function (preloader, heightdata) {
 
   function update(delta) {
     // update TWEEN before controls!! jaggy rotation
+    mover.update(delta);
     TWEEN.update();
     skybox.update(delta);
     controls.threeControls.update();
     routeManager.update(delta, camera.threeCamera);
   }
+
 
   const animate = function animate() {
     requestAnimationFrame(animate);

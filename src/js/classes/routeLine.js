@@ -24,6 +24,7 @@ export default class RouteLine {
   constructor() {
     this.colorWheel = 0;
     this.line = undefined;
+    this.curve = undefined;
     this.vertices = [];
     this.drawCount = 0;
   }

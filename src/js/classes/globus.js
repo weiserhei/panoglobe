@@ -82,8 +82,11 @@ export default class Globus {
     const normalScale = Config.globus.material.normalScale;
 
     this.material = new MeshPhongMaterial({
-      wireframe: false,
-      side: DoubleSide,
+      // wireframe: true,
+      transparent: true,
+      opacity: 0,
+      // side: DoubleSide,
+      // side: DoubleSide,
       color: Config.globus.material.color,
       specular: Config.globus.material.specular,
       shininess: Config.globus.material.shininess,
