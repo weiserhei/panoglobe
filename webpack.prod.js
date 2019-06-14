@@ -8,6 +8,7 @@ module.exports = merge(common, {
     new CopyPlugin([
       { from: 'src/data', to: 'data' },
       { from: 'src/textures', to: 'textures' },
+      { from: 'src/models', to: 'models' },
     ]),
   ],
   performance: { 
