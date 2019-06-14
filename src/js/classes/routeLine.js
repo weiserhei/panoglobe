@@ -13,6 +13,7 @@ import {
   LineBasicMaterial,
   Line,
   CatmullRomCurve3,
+  Vector3,
 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
@@ -24,8 +25,11 @@ export default class RouteLine {
   constructor() {
     this.colorWheel = 0;
     this.line = undefined;
+    this.curve = undefined;
     this.vertices = [];
     this.drawCount = 0;
+    this.currentPositionVec = new Vector3();
+    this.nextPositionVec = new Vector3();
   }
 
   get numberVertices() {
@@ -33,6 +37,13 @@ export default class RouteLine {
   }
 
   update(speed = 1) {
+        // console.log( this.line.geometry.attributes.instanceStart.data.array )
+    // console.log( this.vertices[Math.floor(this.drawCount)] )
+    this.currentPositionVec = this.vertices[Math.floor(this.drawCount)];
+    this.nextPositionVec = this.vertices[Math.floor(this.drawCount)+3 % this.vertices.length];
+    // drawCount must be all vertices
+    this.drawCount = (this.drawCount + speed) % (this.numberVertices);
+
     // http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
     if (this.line !== undefined && this.line.geometry instanceof LineGeometry) {
       // Thick Line
@@ -42,8 +53,6 @@ export default class RouteLine {
       this.line.geometry.setDrawRange(0, this.drawCount);
     }
 
-    // drawCount must be all vertices
-    this.drawCount = (this.drawCount + speed) % (this.numberVertices);
   }
 
 

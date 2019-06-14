@@ -82,8 +82,11 @@ export default class Globus {
     const normalScale = Config.globus.material.normalScale;
 
     this.material = new MeshPhongMaterial({
-      wireframe: false,
-      side: DoubleSide,
+      // wireframe: true,
+      // transparent: true,
+      // opacity: 0,
+      // side: DoubleSide,
+      // side: DoubleSide,
       color: Config.globus.material.color,
       specular: Config.globus.material.specular,
       shininess: Config.globus.material.shininess,
@@ -115,7 +118,7 @@ export default class Globus {
 
     // borderlines.renderOrder = 2;
     const borderlines = new Group();
-    scene.add(borderlines);
+    this.mesh.add(borderlines);
     // borderlines.visible = false;
     this.borderlines = borderlines;
 
@@ -153,11 +156,7 @@ export default class Globus {
     this.borderlines.visible = value;
   }
 
-  get night() {
-    return this.night;
-  }
-
-  set night(value) {
+  setNight(value) {
     this.preloader.inline = true;
     this.night = value;
 

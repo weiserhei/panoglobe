@@ -13,6 +13,7 @@ export default class LightManager {
   constructor(scene, camera) {
     this.scene = scene;
     this.camera = camera;
+    this.night = false;
     this.init();
   }
 
