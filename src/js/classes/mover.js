@@ -60,7 +60,6 @@ export default class Mover {
         .load( 'Van.obj', ( object ) => {
           object.position.y = - 95;
           // object.scale.set(0.02, 0.02, 0.02);
-          console.log(object);
           object.children.forEach((child)=>{ 
             child.geometry.applyMatrix( new Matrix4().makeScale( 0.01, 0.01, 0.01 ) ); 
             child.geometry.applyMatrix( new Matrix4().makeRotationX( Math.PI ) ); 
@@ -93,7 +92,6 @@ export default class Mover {
 
     this.previousAngle = this.getAngle(this.path, this.position);
     this.previousPoint = path.getPointAt(this.position);
-    console.log(this.path.getLength());
   }
 
   setRoute(route) {

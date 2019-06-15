@@ -13,7 +13,8 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             title: 'Panoglobe',
-            meta: {"viewport": 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'}
+            meta: {"viewport": 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'},
+            // template: 'src/test.html'
         })
     ],
     output: {
@@ -31,14 +32,36 @@ module.exports = {
             test: /\.css$/,
             use: ['style-loader', 'css-loader']
         },
+        // {
+        //     test: /\.scss$/,
+        //     use: [
+        //         "style-loader", // creates style nodes from JS strings
+        //         "css-loader", // translates CSS into CommonJS
+        //         "sass-loader" // compiles Sass to CSS, using Node Sass by default
+        //     ]
+        // },
+
         {
-            test: /\.scss$/,
-            use: [
-                "style-loader", // creates style nodes from JS strings
-                "css-loader", // translates CSS into CommonJS
-                "sass-loader" // compiles Sass to CSS, using Node Sass by default
-            ]
-        },
+            test: /\.(scss)$/,
+            use: [{
+              loader: 'style-loader', // inject CSS to page
+            }, {
+              loader: 'css-loader', // translates CSS into CommonJS modules
+            }, {
+              loader: 'postcss-loader', // Run postcss actions
+              options: {
+                plugins: function () { // postcss plugins, can be exported to postcss.config.js
+                  return [
+                    // require('precss'),
+                    require('autoprefixer')
+                  ];
+                }
+              }
+            }, {
+              loader: 'sass-loader' // compiles Sass to CSS
+            }]
+          },
+
         {
             test: /\.(png|svg|jpg|gif)$/,
             use: [

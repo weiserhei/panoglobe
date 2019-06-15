@@ -52,6 +52,8 @@ export default class IconLabel {
 
       const posx = Math.round((this.screenVector.x + 1) * this.parentDomNode.offsetWidth / 2);
       const posy = Math.round((1 - this.screenVector.y) * this.parentDomNode.offsetHeight / 2);
+      // const posx = Math.round((this.screenVector.x + 1) * this.parentDomNode.clientWidth / 2);
+      // const posy = Math.round((1 - this.screenVector.y) * this.parentDomNode.clientHeight / 2);
 
       const boundingRect = this.box.getBoundingClientRect();
       const left = (posx - boundingRect.width + boundingRect.width / 2);
