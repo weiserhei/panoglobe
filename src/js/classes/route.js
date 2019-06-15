@@ -311,6 +311,8 @@ export default class Route {
     this.speed = speed;
     // this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
     this.drawCount = this.routeLine.drawCount;
+    this.normalizedProgress = this.routeLine.drawCount / (this.routeLine.numberVertices-3);
+    this.progressBar.style.width = `${ this.normalizedProgress * 100 }0%`;
     // console.log( this.routeLine.drawCount / this.routeLine.numberVertices );
 
     // dont repeat

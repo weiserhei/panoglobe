@@ -21,7 +21,7 @@ import { CatmullRomCurve3 } from 'three';
 export default function (preloader, heightdata) {
   const container = document.createElement('div');
   container.id = 'wrapper';
-  // container.className = "position-relative";
+  // container.className = "o-hidden";
   document.body.insertBefore(container, document.body.firstChild);
 
   // const sidebar = new Sidebar(container, lightManager, globus, controls);
