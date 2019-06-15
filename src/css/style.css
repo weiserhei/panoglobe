@@ -19,14 +19,19 @@ canvas {
 
 }
 #accordionSidebar {
-    z-index:1;
+    z-index: 1;
+}
+
+.sticky-footer {
+    z-index: 1;
 }
 
 .navbar {
-    z-index:1;
+    z-index: 1;
 }
 
 #wrapper #content-wrapper {
     /* z-index:1; */
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
+    /* overflow:hidden; set with bootstrap-class */
 }
