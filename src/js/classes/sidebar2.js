@@ -60,7 +60,7 @@ export default class Sidebar {
         if(text !== "") {
           const textSpan = document.createElement("span");
           // textSpan.classList.add("text", "d-sm-none", "hidden");
-          textSpan.classList.add("text", "d-none", "d-md-inline");
+          textSpan.classList.add("text", "d-sm-block", "test", "d-none");
           textSpan.innerHTML = text;
           button.appendChild(textSpan);
         }
@@ -334,7 +334,7 @@ export default class Sidebar {
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">\
             <i class="fas fa-globe-americas"></i>\
             <span class="mr-2 ml-2 d-none d-lg-inline text-gray-600 small">Options</span>\
-              <img class="img-profile rounded-circle d-none" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">\
+              <!-- <img class="img-profile rounded-circle d-none" src="https://source.unsplash.com/QAB-WJcbgJk/60x60"> -->\
             </a>\
             <!-- Dropdown - User Information -->\
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">\
