@@ -19,7 +19,6 @@ export default class Renderer {
     // Appends canvas
     this.threeRenderer.domElement.classList.add("position-absolute");
     container.appendChild(this.threeRenderer.domElement);
-    console.log("size", this.container.clientWidth, this.container.offsetHeight);
     // Shadow map options
     this.threeRenderer.shadowMap.enabled = false;
     this.threeRenderer.shadowMap.type = PCFSoftShadowMap;

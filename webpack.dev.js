@@ -7,6 +7,9 @@ module.exports = merge(common, {
     devtool: 'source-map',
     devServer: {
         contentBase: './src/',
-        open: true
+        open: true,
+        port: 8080,
+        public: 'http://localhost:' + 8080,
+        host: "0.0.0.0"
     }
 });

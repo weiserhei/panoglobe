@@ -5,9 +5,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 // import 'startbootstrap-sb-admin-2/css/sb-admin-2.min.css';
 // <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-import 'malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css';
-import * as cS from 'malihu-custom-scrollbar-plugin';
-import { jquerymousewheel } from 'jquery-mousewheel';
+// import 'malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css';
+// import * as cS from 'malihu-custom-scrollbar-plugin';
+// import { jquerymousewheel } from 'jquery-mousewheel';
 
 // require after html is injected
 // import 'startbootstrap-sb-admin-2/js/sb-admin-2';
@@ -196,6 +196,7 @@ export default class Sidebar {
       </a>\
 
         <!-- Topbar Search -->\
+        <!--
         <form class="invisible d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">\
           <div class="input-group">\
             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">\
@@ -205,7 +206,7 @@ export default class Sidebar {
               </button>\
             </div>\
           </div>\
-        </form>\
+        </form>\ -->
       \
         <!-- Topbar Navbar -->\
         <ul class="navbar-nav ml-auto">\
@@ -280,10 +281,10 @@ export default class Sidebar {
 
       const containerFluid = document.createElement("div");
       containerFluid.className = "container-fluid";
-    //   containerFluid.style.width = "100%";
-    //   containerFluid.style.height = "100%";
+      containerFluid.style.width = "100%";
+      containerFluid.style.height = "100%";
 
-    //   content.appendChild(containerFluid);
+      content.appendChild(containerFluid);
 
       containerFluid.innerHTML = '\
         <!-- Page Heading -->\
@@ -311,7 +312,7 @@ export default class Sidebar {
           </div>\
         </div>';
 
-        // containerFluid.innerHTML = "";
+        containerFluid.innerHTML = "";
 
         this.container2 = containerFluid;
         this.container = pageWrapper;
