@@ -1,4 +1,5 @@
 import './../css/style.css';
+import "./../scss/main.scss";
 
 import init from './init';
 import { ImageLoader } from 'three';

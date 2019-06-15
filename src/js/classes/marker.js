@@ -6,6 +6,7 @@ import {
 } from 'three';
 import InfoBox from './infobox';
 import Label from './label';
+import IconLabel from './iconLabel';
 
 import $ from 'jquery';
 
@@ -19,6 +20,7 @@ export default class Marker {
     this.infoBox = null;
     this.visible = true;
     this.label = null;
+    this.iconLabel = null;
     // last marker in route
     this.last = false;
 
@@ -169,6 +171,16 @@ export default class Marker {
     }, false);
     return this.label;
   }
+  
+  getIconLabel(parentDomNode) {
+    this.iconLabel = new IconLabel(parentDomNode);
+    this.iconLabel.isVisible = true;
+    this.iconLabel.domElement.addEventListener('click', ()=>{
+      this.isActive = true;
+    });
+
+    return this.iconLabel;
+  }
 
   getInfoBox(parentDomNode, city) {
     const box = new InfoBox(parentDomNode, city);
@@ -282,6 +294,9 @@ Marker.prototype.update = (function () {
     if (this.label !== null) {
       this.label.update(camera, this.mesh, ocluded, dot);
     }
+    if (this.iconLabel !== null) {
+      this.iconLabel.update(camera, this.mesh, ocluded, dot);
+    }
     if (this.sprite !== undefined) {
       // hide marker when overlay is active
       this.sprite.update(ocluded, eye, dot);
@@ -295,7 +310,9 @@ Marker.prototype.update = (function () {
       // IF BLOBS VISIBLE: SCALE ACCORDING TO ZOOM LEVEL
       // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
       // this.mesh.scale.set( 1, 1, 1 ).multiplyScalar( 0.2 + ( eye.length() / 600 ) );
+      
       let x = 1;
+      /*
       if (this.last) {
         const freq = 0.5;
         const amp = 3;
@@ -313,6 +330,7 @@ Marker.prototype.update = (function () {
           x = 2.4;
         }
       }
+      */
       // SCALE SIZE OF BLOBS WHILE ZOOMING IN AND OUT // 0.25 * (eye.length()/60
       this.mesh.scale.set(x, x, x).multiplyScalar(0.2 + (eye.length() / 600));
     }

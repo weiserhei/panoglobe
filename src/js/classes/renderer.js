@@ -3,10 +3,11 @@ import Config from './../../data/config';
 
 // Main webGL renderer class
 export default class Renderer {
-  constructor(scene, container) {
+  constructor(scene, container, container2) {
     // Properties
     // this.scene = scene;
     this.container = container;
+    this.container2 = container2;
 
     // Create WebGL renderer and set its antialias
     this.threeRenderer = new WebGLRenderer({ antialias: true });
@@ -16,8 +17,9 @@ export default class Renderer {
     this.threeRenderer.setPixelRatio(window.devicePixelRatio); // For retina
 
     // Appends canvas
+    this.threeRenderer.domElement.classList.add("position-absolute");
     container.appendChild(this.threeRenderer.domElement);
-
+    console.log("size", this.container.clientWidth, this.container.offsetHeight);
     // Shadow map options
     this.threeRenderer.shadowMap.enabled = false;
     this.threeRenderer.shadowMap.type = PCFSoftShadowMap;
@@ -31,6 +33,12 @@ export default class Renderer {
     // Listeners
     document.addEventListener('DOMContentLoaded', () => this.updateSize(), false);
     window.addEventListener('resize', () => this.updateSize(), false);
+  }
+
+  setContainer(container) {
+    container.appendChild(this.threeRenderer.domElement);
+    this.container = container;
+    this.updateSize();
   }
 
   updateSize() {

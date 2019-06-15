@@ -116,7 +116,7 @@ export default {
     enablePan: false,
     target: {
       x: 0,
-      y: 0,
+      y: 8,
       z: 0,
     },
   },

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 import Controls from 'Classes/controls';
-import Sidebar from 'Classes/sidebar';
+// import Sidebar from 'Classes/sidebar';
+import Sidebar from 'Classes/sidebar2';
 import Renderer from 'Classes/renderer';
 import Camera from 'Classes/camera';
 import Skybox from 'Classes/skybox';
@@ -19,18 +20,21 @@ import { CatmullRomCurve3 } from 'three';
 
 export default function (preloader, heightdata) {
   const container = document.createElement('div');
-  const toggled = 'toggled';
-  // container.classList.add("page-wrapper", toggled, "ice-theme", "sidebar-bg", "bg1");
-  container.classList.add('page-wrapper', toggled, 'boder-radius-on', 'legacy-theme');
+  container.id = 'wrapper';
+  // container.className = "position-relative";
   document.body.insertBefore(container, document.body.firstChild);
+
+  // const sidebar = new Sidebar(container, lightManager, globus, controls);
+  const sidebar = new Sidebar(container);
+  // sidebar.container.appendChild(renderer.threeRenderer.domElement);
+  // renderer.setContainer(sidebar.container);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
   scene.fog = new THREE.FogExp2(Config.fog.color, Config.fog.near);
 
   const globus = new Globus(scene, preloader);
-
-  const renderer = new Renderer(scene, container);
+  const renderer = new Renderer(scene, sidebar.container, sidebar.container2);
 
   const camera = new Camera(renderer.threeRenderer);
   const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
@@ -43,13 +47,11 @@ export default function (preloader, heightdata) {
 
   const skybox = new Skybox(scene);
 
-  const sidebar = new Sidebar(container, lightManager, globus, controls);
-
   //---------------
-  const domEvents = new DomEvents(camera.threeCamera, container);
+  const domEvents = new DomEvents(camera.threeCamera, sidebar.container);
   const routeManager = new RouteManager(
     scene,
-    container,
+    sidebar.container,
     domEvents,
     heightdata,
     Config.globus.radius,
@@ -64,9 +66,10 @@ export default function (preloader, heightdata) {
     const phase = 0.9;
     const route = routeManager.buildRoute(routeData, phase);
     // route.showLabels = false;
+    const impacts = new Impact(globus, route);
+    
     mover.setPath(route.routeLine.curve);
     mover.setRoute(route);
-    const impacts = new Impact(globus, route);
 
     // let pois = route.pois.map(poi => poi.displacedPos);
     // sfc.addTube( route._routeLine._curve );
@@ -98,37 +101,6 @@ export default function (preloader, heightdata) {
       });
     });
   });
-
-  // var curve = new THREE.CatmullRomCurve3( [
-  //   new THREE.Vector3( -10, 0, 10 ),
-  //   new THREE.Vector3( -5, 5, 5 ),
-  //   new THREE.Vector3( 0, 0, 0 ),
-  //   new THREE.Vector3( 5, -5, 5 ),
-  //   new THREE.Vector3( 10, 0, 10 )
-  // ] );
-
-
-  // var geometry = new THREE.BoxGeometry( 10, 10, 10 );
-  // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  // var cube = new THREE.Mesh( geometry, material );
-  // scene.add( cube );
-
-  // scene.add( controls.threeControls.object );
-  // var cube = new THREE.Mesh( new THREE.BoxGeometry( 10, 10, 10 ), new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
-  // cube.position.set(0,0,120);
-  // scene.add( cube );
-
-  // cube.onBeforeRender = () => {
-  //     const time = new Date().getTime();
-  //     const r = Config.globus.radius + 3;
-  //     const speed = 0.001;
-  //     const x = Math.cos(time*speed) * r;
-  //     const z = Math.sin(time*speed) * r;
-  //     const y = Math.sin(time*speed / 2) * r - 5;
-
-  //     cube.position.set(x, y, z);
-  //     cube.lookAt(scene.position);
-  // }
 
   const clock = new THREE.Clock();
   let delta = 0;

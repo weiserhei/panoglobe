@@ -140,7 +140,7 @@ export default class Route {
       marker.index = index;
       this.marker.push(marker);
       // this.meshGroup.add( marker.mesh );
-      scene.add(marker.mesh);
+      // scene.add(marker.mesh);
 
       currentCoordinate.marker = marker;
 
@@ -160,12 +160,13 @@ export default class Route {
       // this.lightGroup.add( light );
 
       // MAKE MARKER CLICKABLE
-      marker.linkify(this, currentCoordinate.lat, currentCoordinate.lng);
+      // marker.linkify(this, currentCoordinate.lat, currentCoordinate.lng);
 
       // CREATE LABELS FOR MARKER
       const name = currentCoordinate.countryname || currentCoordinate.adresse;
-      const text = this.cityMarkers.length + ' ' + name;
+      const text = "<small class='font-weight-bold'>" + this.cityMarkers.length + "</small>" + ' ' + name;
       marker.getLabel(this.container, text, this.showLabels, controls);
+      marker.getIconLabel(this.container);
     });
 
     // todo refactor this shit

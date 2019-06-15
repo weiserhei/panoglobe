@@ -12,7 +12,7 @@ export default class Impacts {
     // route.marker
     const maxImpactAmount = route.marker.length;
     let materialShader = undefined;
-    let impactSize = 0.1;
+    let impactSize = 0.03;
     // init uniforms impacts array
     const impacts = [];
     for (let i = 0; i < maxImpactAmount; i += 1) {
@@ -72,6 +72,8 @@ export default class Impacts {
       materialShader = shader;
     };
 
+    globus.mesh.material.needsUpdate = true;
+
     var tweens = [];
 
     for (let i = 0; i < maxImpactAmount; i++) {
@@ -108,8 +110,6 @@ export default class Impacts {
 
     tweens.forEach(t => {t.runTween();})
 
-    // create custom material from the shader code above
-    //   that is within specially labeled script tags
     return;
   }
 }

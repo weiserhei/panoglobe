@@ -60,7 +60,6 @@ export default class Mover {
         .load( 'Van.obj', ( object ) => {
           object.position.y = - 95;
           // object.scale.set(0.02, 0.02, 0.02);
-          console.log(object);
           object.children.forEach((child)=>{ 
             child.geometry.applyMatrix( new Matrix4().makeScale( 0.01, 0.01, 0.01 ) ); 
             child.geometry.applyMatrix( new Matrix4().makeRotationX( Math.PI ) ); 
@@ -93,7 +92,6 @@ export default class Mover {
 
     this.previousAngle = this.getAngle(this.path, this.position);
     this.previousPoint = path.getPointAt(this.position);
-    console.log(this.path.getLength());
   }
 
   setRoute(route) {
@@ -163,7 +161,7 @@ export default class Mover {
     if (this.path !== undefined && this.route.runAnimation) {
       this.move(delta);
     }
-    if( this.route !== undefined && !this.route.runAnimation ) {
+    if( this.mesh !== undefined && this.route !== undefined && !this.route.runAnimation ) {
       const point = this.route.routeLine.vertices[this.route.routeLine.numberVertices-2];
 
       var dir = new Vector3(); // create once an reuse it
