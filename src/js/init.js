@@ -34,9 +34,10 @@ export default function (preloader, heightdata) {
   scene.fog = new THREE.FogExp2(Config.fog.color, Config.fog.near);
 
   const globus = new Globus(scene, preloader);
-  const renderer = new Renderer(scene, sidebar.container, sidebar.container2);
+  const renderer = new Renderer(scene, container, sidebar.container2);
 
   const camera = new Camera(renderer.threeRenderer);
+  // const controls = { threeControls: {}};
   const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
   controls.threeControls.update();
 
@@ -48,7 +49,7 @@ export default function (preloader, heightdata) {
   const skybox = new Skybox(scene);
 
   //---------------
-  const domEvents = new DomEvents(camera.threeCamera, sidebar.container);
+  const domEvents = new DomEvents(camera.threeCamera, sidebar.container2);
   const routeManager = new RouteManager(
     scene,
     sidebar.container,
