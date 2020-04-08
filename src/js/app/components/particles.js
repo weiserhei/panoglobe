@@ -1,12 +1,14 @@
 import * as THREE from "three";
-import * as spe from "../../../../node_modules/shader-particle-engine/build/SPE";
+// import * as spe from "../../../../node_modules/shader-particle-engine/build/SPE";
+import { SPE } from "../../../../node_modules/shader-particle-engine/build/SPE";
 
 export default class Particles {
 
     constructor( scene ) {
         
-        let SPE = spe.default(THREE);
+        // let SPE = spe.default(THREE);
 
+        /*
         var loader = new THREE.TextureLoader();
 
         // Impact Puffs
@@ -120,7 +122,9 @@ export default class Particles {
 
             */
 
-        });
+        // });
+
+        /*
 
         // particleGroup.addEmitter( emitter );
         particleGroup.addPool( 20, emitter, true);
@@ -136,8 +140,58 @@ export default class Particles {
 
         this.particleGroup = particleGroup;
 
-    }
+        */
 
+    var loader = new THREE.TextureLoader().load("assets/textures/smokeparticle.png", (texture) => {
+        let particleGroup = new SPE.Group({
+            texture: {
+                // value: THREE.ImageUtils.loadTexture('./img/cloud.png')
+                value: texture
+            },
+            blending: THREE.NormalBlending,
+            maxParticleCount: 1000,
+            fog: false
+        });
+    
+        let emitter = new SPE.Emitter({
+            particleCount: 1000,
+            maxAge: {
+                value: 3,
+            },
+            position: {
+                value: new THREE.Vector3( 0, 0, 0 ),
+                spread: new THREE.Vector3( 100, 30, 100 )
+            },
+            velocity: {
+                value: new THREE.Vector3( 0, 0, 30 )
+            },
+            wiggle: {
+                spread: 10
+            },
+            size: {
+                value: 20,
+                spread: 50
+            },
+            opacity: {
+                value: [ 0, 1, 0 ]
+            },
+            color: {
+                value: new THREE.Color( 1, 1, 1 ),
+                spread: new THREE.Color( 0.1, 0.1, 0.1 )
+            },
+            angle: {
+                value: [ 0, Math.PI * 0.125 ]
+            }
+        });
+    
+        particleGroup.addEmitter( emitter );
+        scene.add( particleGroup.mesh );
+        particleGroup.mesh.frustumCulled = false;
+        this.particleGroup = particleGroup;
+       });
+
+       this.particleGroup = undefined;
+    }
     setNormal( normal ) {
 
         // set the hit object normal as velocity
@@ -173,7 +227,9 @@ export default class Particles {
     }
 
     update( delta ) {
-        this.particleGroup.tick( delta );
+        if(this.particleGroup ) {
+            this.particleGroup.tick( delta );
+        }
     }
 
 }

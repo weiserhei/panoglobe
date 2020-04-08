@@ -16,10 +16,8 @@ export default class Preloader {
   constructor(container) {
 
     // this.container = document.getElementById("loadcontainer");
-
     this.manager = new LoadingManager ();
     this.textureLoader = new TextureLoader( this.manager );
-
     this.zIndex = container.style.zIndex;
 
     const progressbar = document.getElementsByClassName( "progress-bar2" )[ 0 ];

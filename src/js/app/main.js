@@ -75,6 +75,8 @@ export default class Main {
 
     this.preloader = new Preloader(document.getElementById('loadcontainer'));
 
+    // this.particles = new Particles( this.scene );
+
     // const listener = new THREE.AudioListener();
 		// let audio = new THREE.Audio( listener );
     // let audioLoader = new THREE.AudioLoader(this.preloader.manager);
@@ -254,6 +256,7 @@ export default class Main {
     TWEEN.update();
     this.skybox.update( delta );
     this.controls.threeControls.update();
+    // this.particles.update( delta );
     this.routeManager.update(delta, this.camera.threeCamera, this.clock);
 
   }

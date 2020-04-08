@@ -31,7 +31,8 @@ var plugins = [
   //new webpack.NoErrorsPlugin(),
   new webpack.ProvidePlugin({
     $: "jquery",
-    jQuery: "jquery"
+    jQuery: "jquery",
+    THREE: "three"
   }),
   new webpack.DefinePlugin({
     __ENV__: JSON.stringify(env),
