@@ -19,7 +19,7 @@ import RouteLine from './routeLine.js';
 import Marker from './marker';
 
 export default class Route {
-  constructor(scene, container, domEvents, routeData, heightData, radius, phase, controls) {
+  constructor(scene, container, routeData, heightData, radius, phase, controls) {
     if (heightData.length === 0) {
       console.warn('No height data for route ', routeData.meta.name);
     }
@@ -34,9 +34,7 @@ export default class Route {
     this.line = null; // please remove me
 
     this.activeMarker = null;
-
     this.container = container;
-    this.domEvents = domEvents;
 
     this.heightData = [];
     this.phase = phase; // which color out of 2xPI

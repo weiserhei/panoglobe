@@ -3,16 +3,14 @@ import Route from './route';
 import $ from 'jquery';
 
 export default class RouteManager {
-  constructor(scene, container, domEvents, heightData, globusradius, controls, sidebar) {
+  constructor(scene, container, heightData, globusradius, controls) {
     this.routes = [];
 
     this.scene = scene;
     this.container = container;
-    this.domEvents = domEvents;
     this.heightData = heightData;
     this.globusradius = globusradius;
     this.controls = controls;
-    this.sidebar = sidebar;
     // this.particles = particles;
     // this.audios = audios;
     this.activeMarker = null;
@@ -22,7 +20,6 @@ export default class RouteManager {
     const route = new Route(
       this.scene,
       this.container,
-      this.domEvents,
       routeData,
       this.heightData,
       this.globusradius,
@@ -30,7 +27,6 @@ export default class RouteManager {
       this.controls
     );
     route.manager = this;
-    this.sidebar.addRoute(route);
     this.routes.push(route);
 
     // Onload other route disable last active marker

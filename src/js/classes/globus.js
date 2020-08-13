@@ -78,7 +78,7 @@ export default class Globus {
     this.preloader = preloader;
 
     const geometry = new IcosahedronBufferGeometry(Config.globus.radius, Config.globus.detail);
-    geometry.applyMatrix(new Matrix4().makeScale(-1, 1, -1));
+    geometry.applyMatrix4(new Matrix4().makeScale(-1, 1, -1));
     const normalScale = Config.globus.material.normalScale;
 
     this.material = new MeshPhongMaterial({

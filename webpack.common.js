@@ -7,14 +7,14 @@ module.exports = {
     entry: './src/js/index.js',
     plugins: [
         new CleanWebpackPlugin(),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery'
-        }),
+        // new webpack.ProvidePlugin({
+        //     $: 'jquery',
+        //     jQuery: 'jquery'
+        // }),
         new HtmlWebpackPlugin({
             title: 'Panoglobe',
+            favicon: "favicon.ico",
             meta: {"viewport": 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0'},
-            // template: 'src/test.html'
         })
     ],
     output: {

@@ -11,7 +11,7 @@
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	font-size: 1em;
-	line-height: 4;
+	line-height: 2;
 	/* background-color:#aaff00; */
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#222222+0,000000+100 */
 	background: #222222; /* Old browsers */
@@ -24,12 +24,12 @@
 .preloader {
 	position:relative;
 	top:40%;
-	margin:0 auto;
+	/* margin:0 auto; */
 }
 
-/* #loadcontainer h1 {
+/* .preloader h1 {
  	top:calc(50% - 1em);
- 	left:-1.0%;
+	 left:-1.0%;
 	position:relative;
 } */
 

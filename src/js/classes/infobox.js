@@ -1,5 +1,9 @@
 import { Vector3 } from 'three';
 import { numberWithCommas } from './../utils/panoutils';
+import { library, icon } from "@fortawesome/fontawesome-svg-core";
+import {
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default class InfoBox {
   constructor(parentDomNode, city) {
@@ -38,20 +42,22 @@ export default class InfoBox {
     this.box.appendChild(footer);
 
     this.closeButton = document.createElement('button');
-    this.closeButton.className = 'btn btn-sm btn-danger shadow-none closeButton';
-    this.closeButton.innerHTML = '<i class="fas fa-times"></i>';
+    this.closeButton.className = 'btn btn-sm btn-danger shadow-none closeButton position-absolute';
+    this.closeButton.innerHTML = icon(faTimes, {
+      styles: { filter: "drop-shadow(0px 0px 1px rgba(0,0,0))" },
+      classes: ["fa-lg"],
+    }).html;
     this.box.appendChild(this.closeButton);
+
 
     const screenVector = new Vector3();
 
     this.box.updatePosition = function update(camera, followMesh) {
       // overlay is visible
-      screenVector.set(0, 0, 0);
-      followMesh.localToWorld(screenVector);
-      screenVector.project(camera);
+      screenVector.copy(followMesh.position).project(camera);
 
-      const posx = Math.round((screenVector.x + 1) * parentDomNode.offsetWidth / 2);
-      const posy = Math.round((1 - screenVector.y) * parentDomNode.offsetHeight / 2);
+      const posx = (1 + screenVector.x) * parentDomNode.offsetWidth / 2;
+      const posy = (1 - screenVector.y) * parentDomNode.offsetHeight / 2;
       const boundingRect = this.getBoundingClientRect();
 
       // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/

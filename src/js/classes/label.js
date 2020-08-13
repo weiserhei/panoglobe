@@ -9,8 +9,8 @@ export default class Label {
     this.box = document.createElement('button');
     // this._box.className = "htmlLabel btn btn-sm btn-dark";
     // google maps style labels
-    this.box.className = 'htmlLabel btn btn-link btn-sm text-white font-weight-bold';
-    this.box.style.textShadow = '0 0 3px #000';
+    this.box.className = 'htmlLabel btn btn-link btn text-white font-weight-bold';
+    this.box.style.textShadow = '0 0 6px #000';
     // this._box.style.textDecoration = "none";
     this.box.innerHTML = text;
 
@@ -41,16 +41,14 @@ export default class Label {
   update(camera, followMesh, ocluded, dot) {
     // overlay is visible
     if (this.isVisible) {
-      this.screenVector.set(0, 0, 0);
-      followMesh.localToWorld(this.screenVector);
-      this.screenVector.project(camera);
+      this.screenVector.copy(followMesh.position).project(camera);
 
-      const posx = Math.round((this.screenVector.x + 1) * this.parentDomNode.offsetWidth / 2);
-      const posy = Math.round((1 - this.screenVector.y) * this.parentDomNode.offsetHeight / 2);
+      const posx = (1 + this.screenVector.x) * this.parentDomNode.offsetWidth / 2;
+      const posy = (1 - this.screenVector.y) * this.parentDomNode.offsetHeight / 2;
 
       const boundingRect = this.box.getBoundingClientRect();
       const left = (posx - boundingRect.width + boundingRect.width / 2);
-      const top = (posy - boundingRect.height * 1.3);
+      const top = (posy - boundingRect.height * 1.5);
       // this._box.style.left = (posx - boundingRect.width + boundingRect.width / 2) + 'px';
       // this._box.style.top = (posy - boundingRect.height * 1.3) + 'px';
       // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/

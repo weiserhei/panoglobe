@@ -1,28 +1,16 @@
 import './../css/style.css';
 import "./../scss/main.scss";
 
-import init from './init';
+import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { ImageLoader } from 'three';
+import init from './init';
 import Preloader from 'Classes/preloader';
-import { WEBGL } from './utils/WebGL'; // because <three/examples/js/WebGL.js> is not a module
-
 import { getHeightData } from './utils/panoutils';
 
-// https://stackoverflow.com/questions/52376720/how-to-make-font-awesome-5-work-with-webpack
-// import '@fortawesome/fontawesome-free/js/fontawesome'
-// import '@fortawesome/fontawesome-free/js/solid'
-// import '@fortawesome/fontawesome-free/js/regular'
-
-// import { library, dom, config } from '@fortawesome/fontawesome-svg-core'
-// import { fas } from '@fortawesome/free-solid-svg-icons'
-// import { far } from '@fortawesome/free-regular-svg-icons'
-// config.autoReplaceSvg = false;
-// library.add(fas, far)
-// dom.watch();
+import T_heightmap from "../textures/heightmap_1440.jpg";
 
 if (WEBGL.isWebGLAvailable()) {
   // preload, then init
-
   const loadContainer = document.createElement('div');
   loadContainer.id = 'loadcontainer';
   document.body.appendChild(loadContainer);
@@ -30,9 +18,8 @@ if (WEBGL.isWebGLAvailable()) {
 
   // Preload Demo
   const imageLoader = new ImageLoader(preloader.manager);
-  const imageUrl = './textures/heightmap_1440.jpg';
   const loadHeightData = url => new Promise(resolve => imageLoader.load(url, resolve));
-  loadHeightData(imageUrl).then((heightImage) => {
+  loadHeightData(T_heightmap).then((heightImage) => {
     const scale = 20;
     const heightData = getHeightData(heightImage, scale);
 

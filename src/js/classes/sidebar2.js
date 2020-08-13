@@ -449,7 +449,7 @@ export default class Sidebar {
 
     
         // important! init after html is built
-        require('startbootstrap-sb-admin-2/js/sb-admin-2')
+        // require('startbootstrap-sb-admin-2/js/sb-admin-2')
 
 
         // if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {

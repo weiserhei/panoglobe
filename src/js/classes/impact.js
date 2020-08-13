@@ -8,7 +8,7 @@ import TWEEN from '@tweenjs/tween.js';
 
 export default class Impacts {
   constructor(globus, route) {
-    console.log(route);
+    // console.log(route);
     // route.marker
     const maxImpactAmount = route.marker.length;
     let materialShader = undefined;
@@ -29,7 +29,7 @@ export default class Impacts {
         impactRatio: 0.1
       });
     }
-    console.log(impacts);
+    // console.log(impacts);
 
     globus.mesh.material.onBeforeCompile = shader => {
       shader.uniforms.impacts = { value: impacts };

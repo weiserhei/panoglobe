@@ -173,7 +173,7 @@
 }
 
 .infobox .closeButton {
-	position:absolute; 
+	/* position:absolute;  */
 	top:0; 
 	right:0;
 	margin-right:9px;
