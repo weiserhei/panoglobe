@@ -9,7 +9,7 @@ export default class Label {
     this.box = document.createElement('button');
     // this._box.className = "htmlLabel btn btn-sm btn-dark";
     // google maps style labels
-    this.box.className = 'htmlLabel btn btn-link btn text-white font-weight-bold';
+    this.box.className = 'htmlLabel btn btn-link shadow-none text-white font-weight-bold';
     this.box.style.textShadow = '0 0 6px #000';
     // this._box.style.textDecoration = "none";
     this.box.innerHTML = text;
@@ -48,7 +48,7 @@ export default class Label {
 
       const boundingRect = this.box.getBoundingClientRect();
       const left = (posx - boundingRect.width + boundingRect.width / 2);
-      const top = (posy - boundingRect.height * 1.5);
+      const top = (posy - boundingRect.height * 1.4);
       // this._box.style.left = (posx - boundingRect.width + boundingRect.width / 2) + 'px';
       // this._box.style.top = (posy - boundingRect.height * 1.3) + 'px';
       // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/

@@ -163,6 +163,8 @@ export default class Route {
       // CREATE LABELS FOR MARKER
       const name = currentCoordinate.countryname || currentCoordinate.adresse;
       const text = "<small class='font-weight-bold'>" + this.cityMarkers.length + "</small>" + ' ' + name;
+      // const text = "(<small class='font-weight-bold'>" + this.cityMarkers.length + "</small>)" + ' ' + name;
+      // const text = '<span class="badge badge-pill badge-dark">' + this.cityMarkers.length + "</span>" + ' ' + name;
       marker.getLabel(this.container, text, this.showLabels, controls);
       marker.getIconLabel(this.container);
     });

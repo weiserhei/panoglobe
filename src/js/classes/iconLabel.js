@@ -12,7 +12,7 @@ export default class IconLabel {
     this.visible = false;
     // this._box = document.createElement('div');
     // this._box.className = "htmlLabel badge badge-dark";
-    this.box = document.createElement('span');
+    this.box = document.createElement('button');
     // this._box.className = "htmlLabel btn btn-sm btn-dark";
     // google maps style labels
     // <i class="fas fa-map-marker-alt"></i>
@@ -20,12 +20,13 @@ export default class IconLabel {
     // this.box.className = 'htmlLabel fas fa-map-marker-alt text-white';
     // this.box.className = 'htmlLabel fas fa-thumbtack text-white';
     // pin marker
-    this.box.className = 'htmlLabel';
+    this.box.className = 'htmlLabel btn btn-sm shadow-none px-1 py-0';
     // this.box.style.textShadow = '0 0 3px #000';
 
     this.box.innerHTML = icon(faMapPin, {
       styles: { color: "#ffffff", filter: "drop-shadow(0px 0px 1px rgba(0,0,0))" },
-      classes: ["fa-lg"],
+      // classes: ["fa-lg"],
+      // classes: ["badge", "badge-pill", "badge-dark"],
     }).html;
 
     // this._box.style.textDecoration = "none";
@@ -67,7 +68,7 @@ export default class IconLabel {
 
       const boundingRect = this.box.getBoundingClientRect();
       const left = (posx - boundingRect.width + boundingRect.width / 2);
-      const top = (posy - boundingRect.height * 1.1);
+      const top = (posy - boundingRect.height * 0.9);
     //   this.box.style.left = (posx - boundingRect.width + boundingRect.width / 2) + 'px';
     //   this.box.style.top = (posy - boundingRect.height * 1.3) + 'px';
       // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
