@@ -152,9 +152,9 @@ export default class Marker {
     // this.sprite.isVisible = value;
   }
 
-  getLabel(parentDomNode, text, showLabel) {
+  getLabel(parentDomNode, text, showLabel, scene) {
     // parentDomNode.appendChild(this.a);
-    this.label = new Label(parentDomNode, text);
+    this.label = new Label(parentDomNode, text, scene, this.mesh);
     this.label.isVisible = showLabel;
     this.label.domElement.addEventListener('click', ()=>{
       this.isActive = true;
@@ -172,8 +172,8 @@ export default class Marker {
     return this.label;
   }
   
-  getIconLabel(parentDomNode) {
-    this.iconLabel = new IconLabel(parentDomNode);
+  getIconLabel(parentDomNode, scene) {
+    this.iconLabel = new IconLabel(parentDomNode, undefined, scene, this.mesh);
     this.iconLabel.isVisible = true;
     this.iconLabel.domElement.addEventListener('click', ()=>{
       this.isActive = true;

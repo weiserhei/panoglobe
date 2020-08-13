@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+
 import TWEEN from '@tweenjs/tween.js';
 import Controls from 'Classes/controls';
 import Renderer from 'Classes/renderer';
@@ -23,8 +25,21 @@ export default function (preloader, heightdata) {
   const globus = new Globus(scene, preloader);
   const renderer = new Renderer(container);
 
+  const labelRenderer = new CSS2DRenderer();
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.domElement.style.position = 'absolute';
+  labelRenderer.domElement.style.top = '0px';
+  container.appendChild(labelRenderer.domElement);
+
+  document.addEventListener('DOMContentLoaded', resize, false);
+  window.addEventListener('resize', resize);
+  function resize() {
+    labelRenderer.setSize( window.innerWidth, window.innerHeight );
+  }
+
   const camera = new Camera(renderer.threeRenderer);
-  const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
+  // const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
+  const controls = new Controls(camera.threeCamera, labelRenderer.domElement);
   controls.threeControls.update();
 
   const lightManager = new LightManager(scene, controls.threeControls.object);
@@ -78,7 +93,7 @@ export default function (preloader, heightdata) {
 
     delta = clock.getDelta();
     update(delta);
-
+    labelRenderer.render( scene, camera.threeCamera );
     renderer.render(scene, camera.threeCamera);
   };
 

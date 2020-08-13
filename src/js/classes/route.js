@@ -50,7 +50,7 @@ export default class Route {
     this.speed = 0;
 
     const markergeo = new SphereBufferGeometry(1, 8, 6);
-    const markerMaterial = new MeshLambertMaterial();
+    const markerMaterial = new MeshLambertMaterial({ visible: false });
     this.markermesh = new Mesh(markergeo, markerMaterial);
 
     this.createRoute(this.routeData, scene, this.group, this.phase, this.steps, controls);
@@ -165,8 +165,8 @@ export default class Route {
       const text = "<small class='font-weight-bold'>" + this.cityMarkers.length + "</small>" + ' ' + name;
       // const text = "(<small class='font-weight-bold'>" + this.cityMarkers.length + "</small>)" + ' ' + name;
       // const text = '<span class="badge badge-pill badge-dark">' + this.cityMarkers.length + "</span>" + ' ' + name;
-      marker.getLabel(this.container, text, this.showLabels, controls);
-      marker.getIconLabel(this.container);
+      marker.getLabel(this.container, text, this.showLabels, scene);
+      marker.getIconLabel(this.container, scene);
     });
 
     // todo refactor this shit
