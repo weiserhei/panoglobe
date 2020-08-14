@@ -1,31 +1,37 @@
 import {
+  SphereBufferGeometry,
   Vector3,
   Mesh,
   MeshBasicMaterial,
+  MeshLambertMaterial,
   BackSide,
 } from 'three';
 import InfoBox from './infobox';
 import Label from './label';
-import IconLabel from './iconLabel';
 
 import $ from 'jquery';
 
+
+const markergeo = new SphereBufferGeometry(1, 8, 6);
+const markerMaterial = new MeshLambertMaterial();
+const markermesh = new Mesh(markergeo, markerMaterial);
+
 export default class Marker {
-  constructor(color, poi, positionVector, protoMesh, route, controls) {
+  constructor(color, poi, route, controls, index) {
     this.color = color;
     this.poi = poi;
     this.activeHandler = route;
     this.controls = controls;
+    this.index = index;
     this.active = false;
     this.infoBox = null;
     this.visible = true;
     this.label = null;
-    this.iconLabel = null;
     // last marker in route
     this.last = false;
 
-    let mesh = protoMesh.clone();
-    mesh.material = protoMesh.material.clone();
+    let mesh = markermesh.clone();
+    mesh.material = markermesh.material.clone();
     const hsl = color.getHSL({});
     // LOWER SATURATION FOR BLOBS
     hsl.s -= 0.2;
@@ -37,7 +43,7 @@ export default class Marker {
     mesh.material.emissive.setHSL(hsl.h, hsl.s, hsl.l);
     // var ohgodwhy = position.clone();
     // ohgodwhy.y += markermesh.geometry.parameters.height / 10; // pyramid geometry
-    mesh.position.copy(positionVector); // place mesh
+    mesh.position.copy(poi.displacedPos.clone()); // place mesh
     // mesh.lookAt( globe.mesh.position );
     const outlineMaterial = new MeshBasicMaterial({ color: 0x00ff00, side: BackSide });
     this.outlineMesh = new Mesh(mesh.geometry, outlineMaterial);
@@ -153,7 +159,6 @@ export default class Marker {
   }
 
   getLabel(parentDomNode, text, showLabel, scene) {
-    // parentDomNode.appendChild(this.a);
     this.label = new Label(parentDomNode, text, scene, this.mesh);
     this.label.isVisible = showLabel;
     this.label.domElement.addEventListener('click', ()=>{
@@ -169,21 +174,10 @@ export default class Marker {
       this.label.domElement.addEventListener('mouseup', handleMouseUp.bind(this), false);
       this.label.domElement.addEventListener('mouseout', handleMouseUp.bind(this), false);
     }, false);
-    return this.label;
-  }
-  
-  getIconLabel(parentDomNode, scene) {
-    this.iconLabel = new IconLabel(parentDomNode, undefined, scene, this.mesh);
-    this.iconLabel.isVisible = true;
-    this.iconLabel.domElement.addEventListener('click', ()=>{
-      this.isActive = true;
-    });
-
-    return this.iconLabel;
   }
 
-  getInfoBox(parentDomNode, city) {
-    const box = new InfoBox(parentDomNode, city);
+  getInfoBox(parentDomNode) {
+    const box = new InfoBox(parentDomNode, this.poi);
     this.infoBox = box;
     // close label on X click
     box.closeButton.addEventListener('click', ()=>{
@@ -222,47 +216,6 @@ export default class Marker {
 
     return box;
   }
-
-  linkify(route) {
-    var eventTarget = this.mesh;
-
-    function handleClick() {
-      // Hide the infoBox when itself is clicked again
-      if (route.activeMarker === this) {
-        this.isActive = false;
-        route.setActiveMarker(null);
-        return;
-      }
-      this.isActive = true;
-
-      if (this.controls.moveIntoCenter instanceof Function) {
-        // this._controls.moveIntoCenter( lat, lng, 1000 );
-        // if (this._controls !== undefined) {
-        // todo
-        // modify current rotation, dont overwrite it!
-        // center clicked point in the middle of the screen
-        // controls.rotateToCoordinate(lat, lng);
-      }
-    }
-    route.domEvents.addEventListener(eventTarget, 'click', handleClick.bind(this), false);
-    // activeHandler._domEvents.bind(eventTarget, 'click', handleClick, false);
-    // this._domEvents.bind( eventTarget, 'touchend', handleClick );
-    // bind 'mouseover'
-    route.domEvents.addEventListener(eventTarget, 'mouseover', () => {
-      // do nottin' when route is hidden
-      if (this.mesh.parent.visible === false) {
-        return;
-      }
-      document.body.style.cursor = 'pointer';
-      this.outlineMesh.visible = true;
-    }, false);
-    route.domEvents.bind(eventTarget, 'mouseout', () => {
-      if (this.isActive !== true) {
-        this.outlineMesh.visible = false;
-      }
-      document.body.style.cursor = 'default';
-    }, false);
-  }
 }
 
 Marker.prototype.update = (function () {
@@ -292,10 +245,7 @@ Marker.prototype.update = (function () {
     // const ocluded = spriteDistance > meshDistance;
 
     if (this.label !== null) {
-      this.label.update(camera, this.mesh, ocluded, dot);
-    }
-    if (this.iconLabel !== null) {
-      this.iconLabel.update(camera, this.mesh, ocluded, dot);
+      this.label.update(ocluded, dot);
     }
     if (this.sprite !== undefined) {
       // hide marker when overlay is active

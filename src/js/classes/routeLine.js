@@ -22,7 +22,7 @@ import { makeColorGradient, makeColorGradient2 } from './../utils/colors';
 import Config from '../../data/config';
 
 export default class RouteLine {
-  constructor() {
+  constructor(vertices, steps, phase) {
     this.colorWheel = 0;
     this.line = undefined;
     this.curve = undefined;
@@ -30,6 +30,15 @@ export default class RouteLine {
     this.drawCount = 0;
     this.currentPositionVec = new Vector3();
     this.nextPositionVec = new Vector3();
+
+    if (Config.routes.linewidth > 1) {
+      this.line = this.getThickLine(
+        vertices, steps, phase, Config.routes.linewidth, true
+      );
+    } else {
+      this.line = this.getColoredBufferLine(vertices, steps, phase);
+    }
+
   }
 
   get numberVertices() {
@@ -160,12 +169,12 @@ export default class RouteLine {
       dashed: false,
     });
 
-    this.line = new Line2(geometry, lineMaterial);
+    const line = new Line2(geometry, lineMaterial);
     // this._line.computeLineDistances();
     // this._line.scale.set( 1, 1, 1 );
 
     // resize line on page resize - renderer doesnt do this
-    window.addEventListener('resize', () => { this.line.material.resolution.set(window.innerWidth, window.innerHeight); }, false);
+    window.addEventListener('resize', () => { line.material.resolution.set(window.innerWidth, window.innerHeight); }, false);
     // render "on top"
     // interferes with atmosphere material
     // this._line.renderOrder = 999;
@@ -173,7 +182,7 @@ export default class RouteLine {
     // renderer.clearDepth();
     // };
 
-    return this.line;
+    return line;
   }
 
 
@@ -189,8 +198,8 @@ export default class RouteLine {
     const lineMaterial = new LineBasicMaterial({ vertexColors: VertexColors });
 
     // line
-    this.line = new Line(geometry, lineMaterial);
+    const line = new Line(geometry, lineMaterial);
 
-    return this.line;
+    return line;
   }
 }

@@ -29,7 +29,7 @@ export default class RouteManager {
     route.manager = this;
     this.routes.push(route);
 
-    // Onload other route disable last active marker
+    // // Onload other route disable last active marker
     if (this.activeMarker !== null) {
       this.activeMarker.active = false;
     }
@@ -39,7 +39,7 @@ export default class RouteManager {
     // select last Marker on first route, and first marker on following routes
     const index = this.routes.length > 1 ? 0 : route.pois.length - 1;
     const marker = route.pois[index];
-    this.controls.moveIntoCenter(marker.lat, marker.lng, 2000);
+    this.controls.moveIntoCenter(marker.poi.lat, marker.poi.lng, 2000);
 
     return route;
   }

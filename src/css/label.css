@@ -97,7 +97,7 @@
 }
 
 .infobox {
-	z-index: 0;
+	z-index: 10;
 	width: 280px;
 	/*height:150px;*/
 	/*position:relative;*/

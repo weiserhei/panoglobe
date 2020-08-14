@@ -59,6 +59,7 @@ export default function (preloader, heightdata) {
   );
 
   RouteManager.load(Config.routes.urls.pop(), routeData => {
+  // RouteManager.load(Config.routes.urls[0], routeData => {
     // const phase = getRandomArbitrary( 0, Math.PI * 2 );
     const phase = 0.9;
     const route = routeManager.buildRoute(routeData, phase);
