@@ -1,203 +1,209 @@
 import {
-  HemisphereLight,
-  DirectionalLight,
-  CameraHelper,
-  SpotLight,
-  SpotLightHelper,
-} from 'three';
+    HemisphereLight,
+    DirectionalLight,
+    CameraHelper,
+    SpotLight,
+    SpotLightHelper,
+} from "three";
 
-import Config from '../../data/config';
+import Config from "../../data/config";
 
 // Sets up and places all lights in scene
 export default class LightManager {
-  constructor(scene, camera) {
-    this.scene = scene;
-    this.camera = camera;
-    this.night = false;
-    this.init();
-  }
-
-  init() {
-    // Ambient
-    // this.ambientLight = new THREE.AmbientLight(Config.ambientLight.color);
-    // this.ambientLight.visible = Config.ambientLight.enabled;
-
-    // // Point light
-    // this.pointLight = new THREE.PointLight(
-    //   Config.pointLight.color,
-    //   Config.pointLight.intensity,
-    //   Config.pointLight.distance
-    // );
-    // this.pointLight.position.set(Config.pointLight.x, Config.pointLight.y, Config.pointLight.z);
-    // this.pointLight.visible = Config.pointLight.enabled;
-    // this.pointLight.castShadow = true;
-
-    // this.plhelper = new THREE.PointLightHelper( this.pointLight, 10 );
-    // this.scene.add(this.plhelper);
-
-    // Hemisphere light
-    // this.hemiLight = new THREE.HemisphereLight(
-    //   Config.hemiLight.color,
-    //   Config.hemiLight.groundColor,
-    //   Config.hemiLight.intensity
-    // );
-    this.hemiLight = new HemisphereLight();
-    this.hemiLight.intensity = Config.hemiLight.intensity;
-    this.hemiLight.color.setHSL(
-      Config.hemiLight.hColor,
-      Config.hemiLight.sColor,
-      Config.hemiLight.lColor
-    );
-    this.hemiLight.groundColor.setHSL(
-      Config.hemiLight.groundHColor,
-      Config.hemiLight.groundSColor,
-      Config.hemiLight.groundLColor
-    );
-    this.hemiLight.position.set(
-      Config.hemiLight.x,
-      Config.hemiLight.y,
-      Config.hemiLight.z
-    );
-    this.hemiLight.visible = Config.hemiLight.enabled;
-
-
-    // Directional light
-    this.directionalLight = new DirectionalLight();
-    this.directionalLight.intensity = Config.directionalLight.intensity;
-    this.directionalLight.color.setHSL(
-      Config.directionalLight.colorH,
-      Config.directionalLight.colorS,
-      Config.directionalLight.colorL
-    );
-
-    this.directionalLight.position.set(
-      Config.directionalLight.x,
-      Config.directionalLight.y,
-      Config.directionalLight.z
-    );
-    this.directionalLight.position.multiplyScalar(Config.directionalLight.multiplyScalarPosition);
-    this.directionalLight.visible = Config.directionalLight.enabled;
-
-    // Shadow map
-    this.directionalLight.castShadow = Config.shadow.enabled;
-    this.directionalLight.shadow.bias = Config.shadow.bias;
-    this.directionalLight.shadow.camera.near = Config.shadow.near;
-    this.directionalLight.shadow.camera.far = Config.shadow.far;
-    this.directionalLight.shadow.camera.left = Config.shadow.left;
-    this.directionalLight.shadow.camera.right = Config.shadow.right;
-    this.directionalLight.shadow.camera.top = Config.shadow.top;
-    this.directionalLight.shadow.camera.bottom = Config.shadow.bottom;
-    this.directionalLight.shadow.mapSize.width = Config.shadow.mapWidth;
-    this.directionalLight.shadow.mapSize.height = Config.shadow.mapHeight;
-
-    // Shadow camera helper
-    this.directionalLightHelper = new CameraHelper(this.directionalLight.shadow.camera);
-    // this.directionalLightHelper.visible = Config.shadow.helperEnabled;
-    this.directionalLightHelper.visible = true;
-
-    // MOONLIGHT
-    this.spotlight = new SpotLight(
-      Config.spotlight.color,
-      Config.spotlight.intensity,
-      Config.spotlight.distance,
-      Config.spotlight.angle,
-      Config.spotlight.decay
-    );
-
-    this.spotlight.position.set(
-      Config.spotlight.x,
-      Config.spotlight.y,
-      Config.spotlight.z
-    );
-
-    this.spotlight.target.position.set(
-      Config.spotlight.targetx,
-      Config.spotlight.targety,
-      Config.spotlight.targetz
-    );
-
-    this.spotLightHelper = new SpotLightHelper(this.spotlight);
-
-    // move light wih camera
-    // this.camera.add(this.directionalLight);
-  }
-
-  setNight(value) {
-    this.night = value;
-
-    this.spotlight.visible = !value;
-
-    if (value) {
-      this.directionalLight.intensity = Config.directionalLight.night.intensity;
-      // this.directionalLight.color.setHSL(
-      //   Config.directionalLight.colorH,
-      //   Config.directionalLight.colorS,
-      //   Config.directionalLight.colorL
-      // );
-      // this.directionalLight.color.set( Config.directionalLight.night.color );
-      this.directionalLight.color.setHex(Config.directionalLight.night.color);
-
-      // this.hemiLight.intensity = Config.hemiLight.night.intensity;
-      // this.hemiLight.color.set( Config.hemiLight.night.color );
-      // this.hemiLight.color.setHex( Config.hemiLight.night.color );
-      this.hemiLight.color.set(Config.hemiLight.night.color);
-      // this.hemiLight.groundColor.set( Config.hemiLight.night.groundColor );
-      // this.hemiLight.groundColor.setHex( Config.hemiLight.night.groundColor );
-      this.hemiLight.groundColor.set(Config.hemiLight.night.groundColor);
-    } else {
-      this.directionalLight.intensity = Config.directionalLight.intensity;
-      this.directionalLight.color.setHSL(
-        Config.directionalLight.colorH,
-        Config.directionalLight.colorS,
-        Config.directionalLight.colorL
-      );
-
-      // this.hemiLight.groundColor.intensity = Config.hemiLight.intensity;
-      this.hemiLight.color.setHSL(
-        Config.hemiLight.hColor,
-        Config.hemiLight.sColor,
-        Config.hemiLight.lColor
-      );
-      this.hemiLight.groundColor.setHSL(
-        Config.hemiLight.groundHColor,
-        Config.hemiLight.groundSColor,
-        Config.hemiLight.groundLColor
-      );
+    constructor(scene, camera) {
+        this.scene = scene;
+        this.camera = camera;
+        this.night = false;
+        this.init();
     }
-  }
 
-  // update( camera ) {
-  // this.pointLight.position.x = 110 * Math.cos( performance.now() / 1000 /1.5 ) + 0;
-  // this.pointLight.position.y = 110 * Math.sin( performance.now() / 1000 /1.5 ) + 0;
-  // this.spotlight.position.set(camera.position.x, camera.position.y, camera.position.z);
-  // }
+    init() {
+        // Ambient
+        // this.ambientLight = new THREE.AmbientLight(Config.ambientLight.color);
+        // this.ambientLight.visible = Config.ambientLight.enabled;
 
-  place(lightName) {
-    switch (lightName) {
-      case 'ambient':
-        this.scene.add(this.ambientLight);
-        break;
+        // // Point light
+        // this.pointLight = new THREE.PointLight(
+        //   Config.pointLight.color,
+        //   Config.pointLight.intensity,
+        //   Config.pointLight.distance
+        // );
+        // this.pointLight.position.set(Config.pointLight.x, Config.pointLight.y, Config.pointLight.z);
+        // this.pointLight.visible = Config.pointLight.enabled;
+        // this.pointLight.castShadow = true;
 
-      case 'spot':
-        this.scene.add(this.spotlight);
-        this.scene.add(this.spotlight.target);
-        // this.scene.add(this.spotLightHelper);
-        break;
+        // this.plhelper = new THREE.PointLightHelper( this.pointLight, 10 );
+        // this.scene.add(this.plhelper);
 
-      case 'directional':
-        this.scene.add(this.camera);
-        this.camera.add(this.directionalLight);
-        // this.camera.add(this.directionalLightHelper);
-        break;
+        // Hemisphere light
+        // this.hemiLight = new THREE.HemisphereLight(
+        //   Config.hemiLight.color,
+        //   Config.hemiLight.groundColor,
+        //   Config.hemiLight.intensity
+        // );
+        this.hemiLight = new HemisphereLight();
+        this.hemiLight.intensity = Config.hemiLight.intensity;
+        this.hemiLight.color.setHSL(
+            Config.hemiLight.hColor,
+            Config.hemiLight.sColor,
+            Config.hemiLight.lColor
+        );
+        this.hemiLight.groundColor.setHSL(
+            Config.hemiLight.groundHColor,
+            Config.hemiLight.groundSColor,
+            Config.hemiLight.groundLColor
+        );
+        this.hemiLight.position.set(
+            Config.hemiLight.x,
+            Config.hemiLight.y,
+            Config.hemiLight.z
+        );
+        this.hemiLight.visible = Config.hemiLight.enabled;
 
-      case 'point':
-        this.scene.add(this.pointLight);
-        break;
+        // Directional light
+        this.directionalLight = new DirectionalLight();
+        this.directionalLight.intensity = Config.directionalLight.intensity;
+        this.directionalLight.color.setHSL(
+            Config.directionalLight.colorH,
+            Config.directionalLight.colorS,
+            Config.directionalLight.colorL
+        );
 
-      case 'hemi':
-        this.scene.add(this.hemiLight);
-        break;
-      default:
+        this.directionalLight.position.set(
+            Config.directionalLight.x,
+            Config.directionalLight.y,
+            Config.directionalLight.z
+        );
+        this.directionalLight.position.multiplyScalar(
+            Config.directionalLight.multiplyScalarPosition
+        );
+        this.directionalLight.visible = Config.directionalLight.enabled;
+
+        // Shadow map
+        this.directionalLight.castShadow = Config.shadow.enabled;
+        this.directionalLight.shadow.bias = Config.shadow.bias;
+        this.directionalLight.shadow.camera.near = Config.shadow.near;
+        this.directionalLight.shadow.camera.far = Config.shadow.far;
+        this.directionalLight.shadow.camera.left = Config.shadow.left;
+        this.directionalLight.shadow.camera.right = Config.shadow.right;
+        this.directionalLight.shadow.camera.top = Config.shadow.top;
+        this.directionalLight.shadow.camera.bottom = Config.shadow.bottom;
+        this.directionalLight.shadow.mapSize.width = Config.shadow.mapWidth;
+        this.directionalLight.shadow.mapSize.height = Config.shadow.mapHeight;
+
+        // Shadow camera helper
+        this.directionalLightHelper = new CameraHelper(
+            this.directionalLight.shadow.camera
+        );
+        // this.directionalLightHelper.visible = Config.shadow.helperEnabled;
+        this.directionalLightHelper.visible = true;
+
+        // MOONLIGHT
+        this.spotlight = new SpotLight(
+            Config.spotlight.color,
+            Config.spotlight.intensity,
+            Config.spotlight.distance,
+            Config.spotlight.angle,
+            Config.spotlight.decay
+        );
+
+        this.spotlight.position.set(
+            Config.spotlight.x,
+            Config.spotlight.y,
+            Config.spotlight.z
+        );
+
+        this.spotlight.target.position.set(
+            Config.spotlight.targetx,
+            Config.spotlight.targety,
+            Config.spotlight.targetz
+        );
+
+        this.spotLightHelper = new SpotLightHelper(this.spotlight);
+
+        // move light wih camera
+        // this.camera.add(this.directionalLight);
     }
-  }
+
+    setNight(value) {
+        this.night = value;
+
+        this.spotlight.visible = !value;
+
+        if (value) {
+            this.directionalLight.intensity =
+                Config.directionalLight.night.intensity;
+            // this.directionalLight.color.setHSL(
+            //   Config.directionalLight.colorH,
+            //   Config.directionalLight.colorS,
+            //   Config.directionalLight.colorL
+            // );
+            // this.directionalLight.color.set( Config.directionalLight.night.color );
+            this.directionalLight.color.setHex(
+                Config.directionalLight.night.color
+            );
+
+            // this.hemiLight.intensity = Config.hemiLight.night.intensity;
+            // this.hemiLight.color.set( Config.hemiLight.night.color );
+            // this.hemiLight.color.setHex( Config.hemiLight.night.color );
+            this.hemiLight.color.set(Config.hemiLight.night.color);
+            // this.hemiLight.groundColor.set( Config.hemiLight.night.groundColor );
+            // this.hemiLight.groundColor.setHex( Config.hemiLight.night.groundColor );
+            this.hemiLight.groundColor.set(Config.hemiLight.night.groundColor);
+        } else {
+            this.directionalLight.intensity = Config.directionalLight.intensity;
+            this.directionalLight.color.setHSL(
+                Config.directionalLight.colorH,
+                Config.directionalLight.colorS,
+                Config.directionalLight.colorL
+            );
+
+            // this.hemiLight.groundColor.intensity = Config.hemiLight.intensity;
+            this.hemiLight.color.setHSL(
+                Config.hemiLight.hColor,
+                Config.hemiLight.sColor,
+                Config.hemiLight.lColor
+            );
+            this.hemiLight.groundColor.setHSL(
+                Config.hemiLight.groundHColor,
+                Config.hemiLight.groundSColor,
+                Config.hemiLight.groundLColor
+            );
+        }
+    }
+
+    // update( camera ) {
+    // this.pointLight.position.x = 110 * Math.cos( performance.now() / 1000 /1.5 ) + 0;
+    // this.pointLight.position.y = 110 * Math.sin( performance.now() / 1000 /1.5 ) + 0;
+    // this.spotlight.position.set(camera.position.x, camera.position.y, camera.position.z);
+    // }
+
+    place(lightName) {
+        switch (lightName) {
+            case "ambient":
+                this.scene.add(this.ambientLight);
+                break;
+
+            case "spot":
+                this.scene.add(this.spotlight);
+                this.scene.add(this.spotlight.target);
+                // this.scene.add(this.spotLightHelper);
+                break;
+
+            case "directional":
+                this.scene.add(this.camera);
+                this.camera.add(this.directionalLight);
+                // this.camera.add(this.directionalLightHelper);
+                break;
+
+            case "point":
+                this.scene.add(this.pointLight);
+                break;
+
+            case "hemi":
+                this.scene.add(this.hemiLight);
+                break;
+            default:
+        }
+    }
 }

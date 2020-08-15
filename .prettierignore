@@ -1,0 +1,5 @@
+# Ignore artifacts:
+.*
+src/vendor
+src/data
+!src/

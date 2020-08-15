@@ -20,7 +20,7 @@
     margin: -325px 0 0 -225px;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: #9370DB;
+    border-top-color: #9370db;
     -webkit-animation: spin 4s linear infinite;
     animation: spin 4s linear infinite;
 }
@@ -33,7 +33,7 @@
     bottom: 5px;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: #BA55D3;
+    border-top-color: #ba55d3;
     -webkit-animation: spin 6s linear infinite;
     animation: spin 6s linear infinite;
 }
@@ -46,12 +46,12 @@
     bottom: 15px;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: #FF00FF;
+    border-top-color: #ff00ff;
     -webkit-animation: spin 3s linear infinite;
     animation: spin 3s linear infinite;
 }
 @-webkit-keyframes spin {
-    0%   {
+    0% {
         -webkit-transform: rotate(0deg);
         -ms-transform: rotate(0deg);
         transform: rotate(0deg);
@@ -63,7 +63,7 @@
     }
 }
 @keyframes spin {
-    0%   {
+    0% {
         -webkit-transform: rotate(0deg);
         -ms-transform: rotate(0deg);
         transform: rotate(0deg);

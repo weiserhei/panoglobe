@@ -1,7 +1,7 @@
-import $ from 'jquery';
-import 'bootstrap';
+import $ from "jquery";
+import "bootstrap";
 
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 // import 'startbootstrap-sb-admin-2/css/sb-admin-2.min.css';
 // <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
@@ -13,7 +13,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 // import 'startbootstrap-sb-admin-2/js/sb-admin-2';
 
 export default class Sidebar {
-
     getHeading(name) {
         const div = document.createElement("div");
         div.className = "sidebar-heading";
@@ -32,44 +31,43 @@ export default class Sidebar {
         i.className = "fas fa-fw fa-cog";
 
         a.appendChild(i);
-        a.insertAdjacentHTML('beforeend', name);
+        a.insertAdjacentHTML("beforeend", name);
 
         return a;
     }
 
     addRoute(route) {
-
-      function icon(className, id) {
-        const i = document.createElement('i');
-        i.className = className;
-        i.id = id;
-        return i;
-      }
-      function mediaControlButton(text, classNames, icon) {
-        const button = document.createElement('button');
-        classNames.forEach(cssClass => button.classList.add(cssClass));
-        // button.className = className;
-        button.type = 'button';
-        if(icon !== undefined) {
-          button.classList.add("btn-icon-split");
-          const span = document.createElement("span");
-          span.classList.add("icon", "text-white-50");
-          span.appendChild(icon);
-          button.appendChild(span);
+        function icon(className, id) {
+            const i = document.createElement("i");
+            i.className = className;
+            i.id = id;
+            return i;
         }
-        if(text !== "") {
-          const textSpan = document.createElement("span");
-          // textSpan.classList.add("text", "d-sm-none", "hidden");
-          textSpan.classList.add("text", "d-sm-block", "test", "d-none");
-          textSpan.innerHTML = text;
-          button.appendChild(textSpan);
+        function mediaControlButton(text, classNames, icon) {
+            const button = document.createElement("button");
+            classNames.forEach((cssClass) => button.classList.add(cssClass));
+            // button.className = className;
+            button.type = "button";
+            if (icon !== undefined) {
+                button.classList.add("btn-icon-split");
+                const span = document.createElement("span");
+                span.classList.add("icon", "text-white-50");
+                span.appendChild(icon);
+                button.appendChild(span);
+            }
+            if (text !== "") {
+                const textSpan = document.createElement("span");
+                // textSpan.classList.add("text", "d-sm-none", "hidden");
+                textSpan.classList.add("text", "d-sm-block", "test", "d-none");
+                textSpan.innerHTML = text;
+                button.appendChild(textSpan);
+            }
+            // button.innerText = text;
+            // button.insertBefore(icon, button.firstChild);
+            return button;
         }
-        // button.innerText = text;
-        // button.insertBefore(icon, button.firstChild);
-        return button;
-      }
 
-        const safeName = route.name.replace(/[^A-Z0-9]+/ig, '_') + 'collapse';
+        const safeName = route.name.replace(/[^A-Z0-9]+/gi, "_") + "collapse";
         const info = route.name;
 
         const header = this.getHeading(route.name);
@@ -78,48 +76,56 @@ export default class Sidebar {
 
         // const children = this.getSidebarDropdown("Animation");
 
-        let playIcon = icon('fas fa-play-circle', 'play');
-        let pauseIcon = icon('fas fa-pause-circle', 'pause');
-        const stopIcon = icon('fas fa-stop-circle', 'stop');
+        let playIcon = icon("fas fa-play-circle", "play");
+        let pauseIcon = icon("fas fa-pause-circle", "pause");
+        const stopIcon = icon("fas fa-stop-circle", "stop");
 
         route.progressBar = this.progressBar;
         const self = this;
         const animate = function () {
-          if (route.runAnimation === false) {
-            this.classList.add("d-none");
-            // pauseButton.classList.remove("d-none");
-            stopButton.classList.remove("d-none");
-            
-            // this.innerHTML = pauseIcon.outerHTML + ' Pause';
-            // self.progress.classList.remove("invisible");
-            $(self.progress).fadeIn();
-            route.runAnimation = true;
-          } else if (route.runAnimation === true) {
-            // this.innerHTML = pauseIcon.outerHTML + ' Play';
-            route.pauseAnimation = true;
-            $(self.progress).fadeOut();
-          }
+            if (route.runAnimation === false) {
+                this.classList.add("d-none");
+                // pauseButton.classList.remove("d-none");
+                stopButton.classList.remove("d-none");
+
+                // this.innerHTML = pauseIcon.outerHTML + ' Pause';
+                // self.progress.classList.remove("invisible");
+                $(self.progress).fadeIn();
+                route.runAnimation = true;
+            } else if (route.runAnimation === true) {
+                // this.innerHTML = pauseIcon.outerHTML + ' Play';
+                route.pauseAnimation = true;
+                $(self.progress).fadeOut();
+            }
         };
-        const pause = function() {
+        const pause = function () {
             // this.innerHTML = pauseIcon.outerHTML + ' Play';
             this.classList.add("d-none");
             playButton.classList.remove("d-none");
             route.pauseAnimation = true;
             $(self.progress).fadeOut();
-        }
-        const stop = function() {
-          this.classList.add("d-none");
-          pauseButton.classList.add("d-none");
-          playButton.classList.remove("d-none");
-          route.runAnimation = false;
-          $(self.progress).fadeOut();
-        }
+        };
+        const stop = function () {
+            this.classList.add("d-none");
+            pauseButton.classList.add("d-none");
+            playButton.classList.remove("d-none");
+            route.runAnimation = false;
+            $(self.progress).fadeOut();
+        };
 
         // const buttonClass = 'btn btn-primary my-2 d-block';
         const buttonClasses = ["btn", "btn-primary", "my-2", "ml-4"];
         const playButton = mediaControlButton("Play", buttonClasses, playIcon);
-        const pauseButton = mediaControlButton("Pause", buttonClasses.concat("d-none"), pauseIcon);
-        const stopButton = mediaControlButton("Stop", buttonClasses.concat("d-none"), stopIcon);
+        const pauseButton = mediaControlButton(
+            "Pause",
+            buttonClasses.concat("d-none"),
+            pauseIcon
+        );
+        const stopButton = mediaControlButton(
+            "Stop",
+            buttonClasses.concat("d-none"),
+            stopIcon
+        );
         playButton.onclick = animate;
         pauseButton.onclick = pause;
         stopButton.onclick = stop;
@@ -132,7 +138,7 @@ export default class Sidebar {
         // const group = document.createElement("div");
         // group.classList.add("btn-group", "ml-2");
         // li.appendChild(group);
-        children.forEach(child => li.appendChild(child));
+        children.forEach((child) => li.appendChild(child));
 
         this.sidebarUl.appendChild(li);
         // <!-- Nav Item - Pages Collapse Menu -->\
@@ -146,35 +152,40 @@ export default class Sidebar {
         //     </div>\
         //   </div>\
         // </li>\
-        
     }
 
     addLink(name, callback) {
-      const li = document.createElement("li");
-      li.classList.add("nav-item");
-      const a = document.createElement("a");
-      a.classList.add("nav-link");
-      a.href = "#";
-      a.innerHTML = name;
+        const li = document.createElement("li");
+        li.classList.add("nav-item");
+        const a = document.createElement("a");
+        a.classList.add("nav-link");
+        a.href = "#";
+        a.innerHTML = name;
 
-      if(callback !== undefined) {
-        a.onclick = callback;
-      }
+        if (callback !== undefined) {
+            a.onclick = callback;
+        }
 
-      return a;
+        return a;
     }
 
     constructor(pageWrapper, lightManager, globus, controls) {
-
         document.body.id = "page-top";
 
         this.sidebarUl = document.createElement("ul");
-        this.sidebarUl.classList.add("navbar-nav", "bg-opaque", "sidebar", "sidebar-dark", "accordion");
+        this.sidebarUl.classList.add(
+            "navbar-nav",
+            "bg-opaque",
+            "sidebar",
+            "sidebar-dark",
+            "accordion"
+        );
         this.sidebarUl.id = "accordionSidebar";
 
         // const sidebar = '<ul class="navbar-nav bg-pro-sidebar sidebar sidebar-dark accordion" id="accordionSidebar">\
         // const sidebarHTML = '<ul class="navbar-nav bg-opaque sidebar sidebar-dark accordion" id="accordionSidebar">\
-        const sidebarHTML = '<!-- Sidebar - Brand -->\
+        const sidebarHTML =
+            '<!-- Sidebar - Brand -->\
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">\
           <div class="sidebar-brand-icon rotate-n-15">\
           <i class="fas fa-globe-americas"></i>\
@@ -261,21 +272,21 @@ export default class Sidebar {
         </div>';
 
         this.sidebarUl.innerHTML = sidebarHTML;
-    //   pageWrapper.innerHTML = sidebar;
-      // pageWrapper.insertAdjacentHTML('beforeend', sidebar);
-      pageWrapper.appendChild(this.sidebarUl);
+        //   pageWrapper.innerHTML = sidebar;
+        // pageWrapper.insertAdjacentHTML('beforeend', sidebar);
+        pageWrapper.appendChild(this.sidebarUl);
 
-      const contentWrapper = document.createElement("div");
-      contentWrapper.classList.add("d-flex", "flex-column", "o-hidden")
-      contentWrapper.id="content-wrapper";
-      pageWrapper.appendChild(contentWrapper);
+        const contentWrapper = document.createElement("div");
+        contentWrapper.classList.add("d-flex", "flex-column", "o-hidden");
+        contentWrapper.id = "content-wrapper";
+        pageWrapper.appendChild(contentWrapper);
 
-      const content = document.createElement("div");
-      content.id="content";
-      contentWrapper.appendChild(content);
+        const content = document.createElement("div");
+        content.id = "content";
+        contentWrapper.appendChild(content);
 
-    //   ${i}
-      const topbar = `<nav class="navbar navbar-expand navbar-light bg-opaque topbar mb-4 static-top shadow">\
+        //   ${i}
+        const topbar = `<nav class="navbar navbar-expand navbar-light bg-opaque topbar mb-4 static-top shadow">\
         <!-- Sidebar Toggle (Topbar) -->\
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">\
           <i class="fa fa-bars"></i>\
@@ -374,15 +385,15 @@ export default class Sidebar {
 
         content.innerHTML = topbar;
 
+        const containerFluid = document.createElement("div");
+        containerFluid.className = "container-fluid";
+        containerFluid.style.width = "100%";
+        containerFluid.style.height = "100%";
 
-      const containerFluid = document.createElement("div");
-      containerFluid.className = "container-fluid";
-      containerFluid.style.width = "100%";
-      containerFluid.style.height = "100%";
+        content.appendChild(containerFluid);
 
-      content.appendChild(containerFluid);
-
-      containerFluid.innerHTML = '\
+        containerFluid.innerHTML =
+            '\
         <!-- Page Heading -->\
         <div class="d-sm-flex align-items-center justify-content-between mb-4">\
           <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>\
@@ -414,7 +425,15 @@ export default class Sidebar {
         this.container = pageWrapper;
 
         this.progress = document.createElement("div");
-        this.progress.classList.add("progress", "progress-sm", "bg-darker", "mb-0", "shadow", "border", "border-darker");
+        this.progress.classList.add(
+            "progress",
+            "progress-sm",
+            "bg-darker",
+            "mb-0",
+            "shadow",
+            "border",
+            "border-darker"
+        );
         this.progress.style.display = "none";
 
         this.progressBar = document.createElement("div");
@@ -447,20 +466,16 @@ export default class Sidebar {
         // contentWrapper.insertAdjacentHTML('beforeend', footer);
         contentWrapper.appendChild(footer);
 
-    
         // important! init after html is built
         // require('startbootstrap-sb-admin-2/js/sb-admin-2')
 
-
         // if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // $('.navbar-nav').mCustomScrollbar({
-            //   axis: 'y',
-            //   autoHideScrollbar: false,
-            //   scrollInertia: 300,
-            // });
-            // $('.navbar-nav').addClass('desktop');
+        // $('.navbar-nav').mCustomScrollbar({
+        //   axis: 'y',
+        //   autoHideScrollbar: false,
+        //   scrollInertia: 300,
+        // });
+        // $('.navbar-nav').addClass('desktop');
         // }
-
     }
-
-};
+}

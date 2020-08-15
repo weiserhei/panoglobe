@@ -2,45 +2,48 @@
  * from https://codepen.io/prisoner849/pen/ErwYqM
  * https://discourse.threejs.org/t/impact-shock-wave/5988/9
  */
-import { Vector3, Math as THREEMath } from 'three';
-import Config from './../../data/config';
-import TWEEN from '@tweenjs/tween.js';
+import { Vector3, Math as THREEMath } from "three";
+import Config from "./../../data/config";
+import TWEEN from "@tweenjs/tween.js";
 
 export default class Impacts {
-  constructor(globus, route) {
-    // console.log(route);
-    // route.marker
-    const maxImpactAmount = route.marker.length;
-    let materialShader = undefined;
-    let impactSize = 0.03;
-    // init uniforms impacts array
-    const impacts = [];
-    for (let i = 0; i < maxImpactAmount; i += 1) {
-      impacts.push({
-        impactPosition: new Vector3().copy(route.marker[i].mesh.position),
-        color: route.marker[i].color,
-        // impactPosition: new Vector3().setFromSphericalCoords(
-        //   Config.globus.radius,
-        //   Math.PI * Math.random(),
-        //   Math.PI * 2 * Math.random()
-        // ),
-        // impactMaxRadius: Config.globus.radius * THREEMath.randFloat(0.5, 0.75),
-        impactMaxRadius: Config.globus.radius * impactSize,
-        impactRatio: 0.1
-      });
-    }
-    // console.log(impacts);
+    constructor(globus, route) {
+        // console.log(route);
+        // route.marker
+        const maxImpactAmount = route.marker.length;
+        let materialShader = undefined;
+        let impactSize = 0.03;
+        // init uniforms impacts array
+        const impacts = [];
+        for (let i = 0; i < maxImpactAmount; i += 1) {
+            impacts.push({
+                impactPosition: new Vector3().copy(
+                    route.marker[i].mesh.position
+                ),
+                color: route.marker[i].color,
+                // impactPosition: new Vector3().setFromSphericalCoords(
+                //   Config.globus.radius,
+                //   Math.PI * Math.random(),
+                //   Math.PI * 2 * Math.random()
+                // ),
+                // impactMaxRadius: Config.globus.radius * THREEMath.randFloat(0.5, 0.75),
+                impactMaxRadius: Config.globus.radius * impactSize,
+                impactRatio: 0.1,
+            });
+        }
+        // console.log(impacts);
 
-    globus.mesh.material.onBeforeCompile = shader => {
-      shader.uniforms.impacts = { value: impacts };
-      shader.vertexShader = "varying vec3 vPosition;\n" + shader.vertexShader;
-      shader.vertexShader = shader.vertexShader.replace(
-        "#include <worldpos_vertex>",
-        `#include <worldpos_vertex>
+        globus.mesh.material.onBeforeCompile = (shader) => {
+            shader.uniforms.impacts = { value: impacts };
+            shader.vertexShader =
+                "varying vec3 vPosition;\n" + shader.vertexShader;
+            shader.vertexShader = shader.vertexShader.replace(
+                "#include <worldpos_vertex>",
+                `#include <worldpos_vertex>
         vPosition = transformed.xyz;`
-      );
-      shader.fragmentShader =
-        `struct impact {
+            );
+            shader.fragmentShader =
+                `struct impact {
             vec3 impactPosition;
             float impactMaxRadius;
             float impactRatio;
@@ -49,9 +52,9 @@ export default class Impacts {
          uniform impact impacts[${maxImpactAmount}];
          varying vec3 vPosition;
         ` + shader.fragmentShader;
-      shader.fragmentShader = shader.fragmentShader.replace(
-        "#include <dithering_fragment>",
-        `#include <dithering_fragment>
+            shader.fragmentShader = shader.fragmentShader.replace(
+                "#include <dithering_fragment>",
+                `#include <dithering_fragment>
           float finalStep = 0.0;
 
           for (int i = 0; i < ${maxImpactAmount};i++){
@@ -68,48 +71,60 @@ export default class Impacts {
           vec3 col = mix(impacts[0].color, impacts[${maxImpactAmount}-1].color, finalStep);
           // vec3 col = mix(vec3(1., 0.5, 0.0625), vec3(1.,0.125, 0.0625), finalStep);
           gl_FragColor = vec4( mix( col, gl_FragColor.rgb, finalStep), diffuseColor.a );`
-      );
-      materialShader = shader;
-    };
+            );
+            materialShader = shader;
+        };
 
-    globus.mesh.material.needsUpdate = true;
+        globus.mesh.material.needsUpdate = true;
 
-    var tweens = [];
+        var tweens = [];
 
-    for (let i = 0; i < maxImpactAmount; i++) {
-      tweens.push({
-        runTween: function() {
-          var tween = new TWEEN.Tween({ value: 0 })
-            // .to({ value: 1 }, THREEMath.randInt(2500, 5000))
-            // second value = duration of wave in ms
-            .to({ value: 1 }, 5000)
-            //.delay(THREE.Math.randInt(500, 2000))
-            .onUpdate(val => {
-              if (materialShader)
-                materialShader.uniforms.impacts.value[i].impactRatio = val.value;
-            })
-            .onComplete(val => {
-              if (materialShader) {
-                materialShader.uniforms.impacts.value[i].color.copy(route.marker[i].color),
-                materialShader.uniforms.impacts.value[i].impactPosition.
-                copy(route.marker[i].mesh.position),
-                // setFromSphericalCoords(
-                //   Config.globus.radius,
-                //   Math.PI * Math.random(),
-                //   Math.PI * 2 * Math.random()
-                // );
-                // materialShader.uniforms.impacts.value[i].impactMaxRadius = Config.globus.radius * THREEMath.randFloat(0.1, 0.15);
-                materialShader.uniforms.impacts.value[i].impactMaxRadius = Config.globus.radius * impactSize;
-              }
-              tweens[i].runTween();
+        for (let i = 0; i < maxImpactAmount; i++) {
+            tweens.push({
+                runTween: function () {
+                    var tween = new TWEEN.Tween({ value: 0 })
+                        // .to({ value: 1 }, THREEMath.randInt(2500, 5000))
+                        // second value = duration of wave in ms
+                        .to({ value: 1 }, 5000)
+                        //.delay(THREE.Math.randInt(500, 2000))
+                        .onUpdate((val) => {
+                            if (materialShader)
+                                materialShader.uniforms.impacts.value[
+                                    i
+                                ].impactRatio = val.value;
+                        })
+                        .onComplete((val) => {
+                            if (materialShader) {
+                                materialShader.uniforms.impacts.value[
+                                    i
+                                ].color.copy(route.marker[i].color),
+                                    materialShader.uniforms.impacts.value[
+                                        i
+                                    ].impactPosition.copy(
+                                        route.marker[i].mesh.position
+                                    ),
+                                    // setFromSphericalCoords(
+                                    //   Config.globus.radius,
+                                    //   Math.PI * Math.random(),
+                                    //   Math.PI * 2 * Math.random()
+                                    // );
+                                    // materialShader.uniforms.impacts.value[i].impactMaxRadius = Config.globus.radius * THREEMath.randFloat(0.1, 0.15);
+                                    (materialShader.uniforms.impacts.value[
+                                        i
+                                    ].impactMaxRadius =
+                                        Config.globus.radius * impactSize);
+                            }
+                            tweens[i].runTween();
+                        });
+                    tween.start();
+                },
             });
-          tween.start();
         }
-      });
+
+        tweens.forEach((t) => {
+            t.runTween();
+        });
+
+        return;
     }
-
-    tweens.forEach(t => {t.runTween();})
-
-    return;
-  }
 }

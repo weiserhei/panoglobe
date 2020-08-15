@@ -1,15 +1,15 @@
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+const { merge } = require("webpack-merge");
+const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
-    mode: 'development',
+    mode: "development",
     // devtool: 'inline-source-map',
-    devtool: 'source-map',
+    devtool: "source-map",
     devServer: {
-        contentBase: './src/',
+        contentBase: "./src/",
         open: true,
         port: 8080,
-        public: 'http://localhost:' + 8080,
-        host: "0.0.0.0"
-    }
+        public: "http://localhost:" + 8080,
+        host: "0.0.0.0",
+    },
 });
