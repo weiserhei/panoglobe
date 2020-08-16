@@ -5,28 +5,12 @@
 
 // import { Color } from "three";
 // import { makeColorGradient } from "./../utils/colors";
-import { calc3DPositions, createSphereArc } from "./../utils/panoutils";
 import RouteLine from "./routeLine.js";
 import Marker from "./marker";
 import Config from "./../../data/config";
 
-function getVertices(routeData) {
-    const vertices = [];
-    routeData.forEach((element, index) => {
-        if (index > 0) {
-            const curve = createSphereArc(
-                routeData[index - 1].displacedPos,
-                element.displacedPos
-            );
-            vertices.push(...curve.getPoints(Config.routes.lineSegments));
-        }
-    });
-
-    return vertices;
-}
-
 export default class Route {
-    constructor(scene, container, routeData, phase, controls, manager) {
+    constructor(scene, container, routeData, phase, controls, manager, folder) {
         // routeData:
         // [
         //   {
@@ -42,10 +26,7 @@ export default class Route {
         // ]
 
         this.routeData = routeData;
-        const vertices = getVertices(this.routeData);
-
         this.activeMarker = null;
-        this.container = container;
 
         const steps = 1.2; // how fast change the color (0 = fast)
         // const frequency = 1 / (steps * this.routeData.length);
@@ -91,11 +72,15 @@ export default class Route {
 
         this.marker.forEach((m) => {
             // CREATE HUDLABELS FOR MARKER
-            m.addInfoBox(this.container, controls.threeControls);
+            m.addInfoBox(container, controls.threeControls);
         });
 
-        this.routeLine = new RouteLine(vertices, steps, phase);
+        this.routeLine = new RouteLine(routeData, steps, phase, folder);
         scene.add(this.routeLine.line);
+
+        // this.routeLine.setDrawCount(this.routeLine.numberVertices);
+        // this.routeLine.setDrawProgress(1);
+        this.routeLine.drawPoi(this.marker[1].index);
 
         this.setRunAnimation = function (value) {
             this.animate = false;
@@ -197,8 +182,8 @@ export default class Route {
 
     set isVisible(value) {
         this.visible = value;
-        this.markre.forEach((marker) => {
-            marker.isVisible = value;
+        this.marker.forEach((marker) => {
+            marker.setVisible(value);
         });
         this.routeLine.line.visible = value;
     }
@@ -208,6 +193,7 @@ export default class Route {
             marker.update(camera, delta);
         });
 
+        // this.routeLine.update(delta);
         if (this.animate === true) {
             this.animateRoute(delta);
         }

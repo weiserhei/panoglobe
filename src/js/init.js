@@ -74,7 +74,8 @@ export default function (preloader, heightdata) {
         // RouteManager.load(Config.routes.urls[0], routeData => {
         // const phase = getRandomArbitrary( 0, Math.PI * 2 );
         const phase = 0.9;
-        const route = routeManager.buildRoute(routeData, phase);
+        const route = routeManager.buildRoute(routeData, phase, folder);
+
         // route.showLabels = false;
         // const impacts = new Impact(globus, route);
 
@@ -100,7 +101,7 @@ export default function (preloader, heightdata) {
                 });
             },
         };
-        folder.add(obj, "add");
+        folder.add(obj, "add").name("Add Route Asien");
     }
 
     const clock = new THREE.Clock();

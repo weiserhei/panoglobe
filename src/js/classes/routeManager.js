@@ -16,7 +16,7 @@ export default class RouteManager {
         this.activeMarker = null;
     }
 
-    buildRoute(routeData, phase) {
+    buildRoute(routeData, phase, folder) {
         let calculatedRouteData = calc3DPositions(
             routeData.gps,
             this.heightData,
@@ -29,9 +29,35 @@ export default class RouteManager {
             calculatedRouteData,
             phase,
             this.controls,
-            this
+            this,
+            folder
         );
         this.routes.push(route);
+
+        let x = folder.add(
+            {
+                range: 1,
+            },
+            "range",
+            0,
+            1,
+            0.1
+        );
+        x.onChange(function (value) {
+            route.routeLine.setDrawProgress(value);
+        });
+
+        const manager = this;
+        route.marker.forEach((m) => {
+            const x = folder
+                .add({ toggle: false }, "toggle")
+                .name(m.poi.adresse);
+            x.onChange(function (value) {
+                // route.setActiveMarker(m);
+                // m.setActive(value);
+                manager.controls.moveIntoCenter(m.poi.lat, m.poi.lng, 2000);
+            });
+        });
 
         // // Onload other route disable last active marker
         if (this.activeMarker !== null) {

@@ -19,29 +19,66 @@ import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { makeColorGradient, makeColorGradient2 } from "./../utils/colors";
+import { createSphereArc } from "./../utils/panoutils";
 import Config from "../../data/config";
 
+function getVertices(routeData) {
+    const vertices = [];
+    routeData.forEach((element, index) => {
+        if (index > 0) {
+            const curve = createSphereArc(
+                routeData[index - 1].displacedPos,
+                element.displacedPos
+            );
+            vertices.push(...curve.getPoints(Config.routes.lineSegments));
+        }
+    });
+
+    return vertices;
+}
+
 export default class RouteLine {
-    constructor(vertices, steps, phase) {
-        this.colorWheel = 0;
+    constructor(routeData, steps, phase) {
         this.line = undefined;
         this.curve = undefined;
-        this.vertices = [];
+        this.vertices = getVertices(routeData);
         this.drawCount = 0;
         this.currentPositionVec = new Vector3();
         this.nextPositionVec = new Vector3();
+        this.colorWheel = 0;
 
         if (Config.routes.linewidth > 1) {
             this.line = this.getThickLine(
-                vertices,
+                this.vertices,
                 steps,
                 phase,
                 Config.routes.linewidth,
                 true
             );
         } else {
-            this.line = this.getColoredBufferLine(vertices, steps, phase);
+            this.line = this.getColoredBufferLine(this.vertices, steps, phase);
         }
+
+        this.drawPoi = function (index) {
+            const range = index * (Config.routes.lineSegments + 1);
+            this.line.geometry.instanceCount = range - 1;
+        };
+
+        this.setDrawProgress = function (percent) {
+            // const normalizedProgress = this.drawCount / this.numberVertices;
+            const drawRamge = percent * this.numberVertices;
+            this.line.geometry.instanceCount = drawRamge;
+            // console.log(
+            //     this.numberVertices,
+            //     routeData.length,
+            //     (routeData.length - 1) * (Config.routes.lineSegments + 1)
+            // );
+        };
+        this.setDrawCount = function (number) {
+            this.drawCount = number;
+            // this.drawCount = number % this.numberVertices;
+            this.line.geometry.instanceCount = number - 1;
+        };
     }
 
     get numberVertices() {
@@ -49,6 +86,8 @@ export default class RouteLine {
     }
 
     update(speed = 1) {
+        // this.updateColors(speed * 30);
+        // return;
         // console.log( this.line.geometry.attributes.instanceStart.data.array )
         // console.log( this.vertices[Math.floor(this.drawCount)] )
         this.currentPositionVec = this.vertices[Math.floor(this.drawCount)];
@@ -78,23 +117,25 @@ export default class RouteLine {
         const steps = 1;
         const phase = 0.9;
 
-        const numberVertices = this.lineMergeGeometry.vertices.length;
+        // const numberVertices = this.line.geometry.vertices.length;
+        const numberVertices = this.numberVertices;
         const color = new Color();
         const frequency = 1 / (steps * numberVertices);
 
         this.colorWheel = (this.colorWheel + 3) % numberVertices;
-        // console.log(this.colorWheel);
+        // console.log(colorWheel);
         // this.positions = new Float32Array( numberVertices * 3 ); // 3 vertices per point
         const colors = new Float32Array(numberVertices * 3);
-        const self = this;
-        this.lineMergeGeometry.vertices.forEach((vertice, i) => {
+        // this.colors.forEach((vertice, i) => {
+        // this.line.geometry.vertices.forEach((vertice, i) => {
+        for (let i = 0; i < numberVertices; i++) {
             if (
-                i === self.colorWheel ||
-                i === self.colorWheel + 2 ||
-                i === self.colorWheel + 4 ||
-                i === self.colorWheel + 6 ||
-                i === self.colorWheel + 8 ||
-                i === self.colorWheel + 10
+                i === this.colorWheel ||
+                i === this.colorWheel + 2 ||
+                i === this.colorWheel + 4 ||
+                i === this.colorWheel + 6 ||
+                i === this.colorWheel + 8 ||
+                i === this.colorWheel + 10
             ) {
                 const highlightcolor = new Color(0xffffff);
                 colors[i * 3] = highlightcolor.r;
@@ -112,7 +153,7 @@ export default class RouteLine {
                 colors[i * 3 + 1] = color.g;
                 colors[i * 3 + 2] = color.b;
             }
-        });
+        }
 
         return colors;
     }
