@@ -80,7 +80,28 @@ export default class Route {
 
         // this.routeLine.setDrawCount(this.routeLine.numberVertices);
         // this.routeLine.setDrawProgress(1);
-        this.routeLine.drawPoi(this.marker[1].index);
+        // this.routeLine.drawPoi(this.marker[1].index);
+
+        this.setActiveMarker = function (marker) {
+            // if (this.activeMarker === marker) {
+            //     // active marker is calling himself => deactivate
+            //     this.activeMarker = null;
+            //     marker.setActive(false);
+            //     return;
+            // }
+
+            if (manager !== undefined) {
+                manager.setActiveMarker(this, marker);
+                return;
+            }
+
+            if (this.activeMarker != undefined) {
+                this.activeMarker.setActive(false);
+            }
+
+            this.activeMarker = marker;
+            marker.setActive(true);
+        };
 
         this.setRunAnimation = function (value) {
             this.animate = false;
@@ -114,42 +135,33 @@ export default class Route {
             }
         };
 
-        this.setActiveMarker = function (marker) {
-            if (this.activeMarker === marker) {
-                // active marker is calling himself => deactivate
-                this.activeMarker = null;
-                marker.setActive(false);
-                return;
+        this.cycleNextActive = function (marker) {
+            if (!this.activeMarker === marker) {
+                // only sanity check
+                return false;
             }
-
-            if (manager !== undefined) {
-                manager.setActiveMarker(marker);
-                return;
-            }
-
-            if (this.activeMarker != undefined) {
-                this.activeMarker.setActive(false);
-            }
-
-            this.activeMarker = marker;
-            marker.setActive(true);
+            const currentIndex = this.marker.indexOf(marker);
+            const nextIndex = (currentIndex + 1) % this.marker.length;
+            const nextMarker = this.marker[nextIndex];
+            // this.activeMarker = this.marker[nextIndex];
+            // this.marker[currentIndex].setActive(false);
+            // this.marker[nextIndex].setActive(true);
+            manager.setActiveMarker(this, nextMarker);
         };
-    }
 
-    cycleNextActive() {
-        const currentIndex = this.marker.indexOf(this.activeMarker);
-        const nextIndex = (currentIndex + 1) % this.marker.length;
-        this.activeMarker = this.marker[nextIndex];
-        this.marker[currentIndex].setActive(false);
-        this.marker[nextIndex].setActive(true);
-    }
-
-    cyclePrevActive() {
-        const currentIndex = this.marker.indexOf(this.activeMarker);
-        const prevIndex = (currentIndex - 1) % this.marker.length;
-        this.activeMarker = this.marker[prevIndex];
-        this.marker[currentIndex].setActive(false);
-        this.marker[prevIndex].setActive(true);
+        this.cyclePrevActive = function (marker) {
+            if (!this.activeMarker === marker) {
+                // only sanity check
+                return false;
+            }
+            const currentIndex = this.marker.indexOf(marker);
+            const prevIndex = (currentIndex - 1) % this.marker.length;
+            const prevMarker = this.marker[prevIndex];
+            // this.activeMarker = this.marker[prevIndex];
+            // this.marker[currentIndex].setActive(false);
+            // this.marker[prevIndex].setActive(true);
+            manager.setActiveMarker(this, prevMarker);
+        };
     }
 
     getPrev(marker) {

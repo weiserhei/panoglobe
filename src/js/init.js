@@ -37,8 +37,13 @@ export default function (preloader, heightdata) {
         const gui = new dat.GUI({ autoPlace: false });
         var folder = gui.addFolder("GUI");
         folder.open();
-        labelRenderer.domElement.appendChild(gui.domElement);
-        gui.domElement.classList.add("ml-auto");
+        container.insertBefore(gui.domElement, labelRenderer.domElement);
+        // labelRenderer.domElement.appendChild(gui.domElement);
+        gui.domElement.classList.add(
+            "ml-auto",
+            "position-absolute",
+            "fixed-top"
+        );
     }
 
     document.addEventListener("DOMContentLoaded", resize, false);
@@ -96,7 +101,11 @@ export default function (preloader, heightdata) {
                 RouteManager.load(Config.routes.urls[0], (routeData) => {
                     // const phase = getRandomArbitrary( 0, Math.PI * 2 );
                     const phase = 5;
-                    const route2 = routeManager.buildRoute(routeData, phase);
+                    const route2 = routeManager.buildRoute(
+                        routeData,
+                        phase,
+                        folder
+                    );
                     // route.showLabels = false;
                 });
             },

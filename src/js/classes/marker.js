@@ -83,10 +83,10 @@ export default class Marker {
                 infoBox.prevButton.className = "d-none";
             }
             infoBox.nextButton.addEventListener("click", () => {
-                route.cycleNextActive();
+                route.cycleNextActive(this);
             });
             infoBox.prevButton.addEventListener("click", () => {
-                route.cyclePrevActive();
+                route.cyclePrevActive(this);
             });
         };
 
