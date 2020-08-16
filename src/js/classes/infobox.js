@@ -4,7 +4,7 @@ import { library, icon } from "@fortawesome/fontawesome-svg-core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export default class InfoBox {
-    constructor(parentDomNode, city) {
+    constructor(parentDomNode, controls, city) {
         this.visible = false;
 
         this.box = document.createElement("div");
@@ -50,6 +50,29 @@ export default class InfoBox {
             classes: ["fa-lg"],
         }).html;
         this.box.appendChild(this.closeButton);
+
+        function handleMouseUp() {
+            controls.enabled = true;
+        }
+
+        this.closeButton.addEventListener(
+            "mousedown",
+            function () {
+                controls.enabled = false;
+                this.addEventListener("mouseup", handleMouseUp, false);
+                this.addEventListener("mouseout", handleMouseUp, false);
+            },
+            false
+        );
+        this.domElement.addEventListener(
+            "mousedown",
+            function () {
+                controls.enabled = false;
+                this.addEventListener("mouseup", handleMouseUp, false);
+                this.addEventListener("mouseout", handleMouseUp, false);
+            },
+            false
+        );
 
         const screenVector = new Vector3();
 

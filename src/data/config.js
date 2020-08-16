@@ -105,7 +105,7 @@ export default {
     controls: {
         autoRotate: false,
         autoRotateSpeed: -0.5,
-        rotateSpeed: 0.1,
+        rotateSpeed: 0.2,
         enableDamping: true,
         dampingFactor: 0.15,
         enableZoom: true,

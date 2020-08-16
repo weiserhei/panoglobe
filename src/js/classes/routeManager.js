@@ -23,9 +23,9 @@ export default class RouteManager {
             this.heightData,
             this.globusradius,
             phase,
-            this.controls
+            this.controls,
+            this
         );
-        route.manager = this;
         this.routes.push(route);
 
         // // Onload other route disable last active marker
@@ -36,8 +36,8 @@ export default class RouteManager {
         // const lat = 48.78232, lng = 9.17702; // stgt
         // const lat = 19.432608, lng = -99.133209; // mexico
         // select last Marker on first route, and first marker on following routes
-        const index = this.routes.length > 1 ? 0 : route.pois.length - 1;
-        const marker = route.pois[index];
+        const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
+        const marker = route.marker[index];
         this.controls.moveIntoCenter(marker.poi.lat, marker.poi.lng, 2000);
 
         return route;

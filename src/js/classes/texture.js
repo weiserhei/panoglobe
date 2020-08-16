@@ -4,6 +4,13 @@ import { Promise } from "es6-promise";
 // import Helpers from '../../utils/helpers';
 import Config from "../../data/config";
 
+import T1 from "../../textures/4k/fair_clouds_4k.jpg";
+import T2 from "../../textures/galaxy_starfield.png";
+import T3 from "../../textures/4k/2_no_clouds_4k.jpg";
+import T4 from "../../textures/4k/Spec-Mask-inverted_4k.png";
+import T5 from "../../textures/4k/earth_normalmap_flat_4k.jpg";
+import T6 from "../../textures/4k/Bump_4k.jpg";
+
 // This class preloads all textures in the imageFiles array in the Config via ES6 Promises.
 // Once all textures are done loading the model itself will be loaded after the Promise .then() callback.
 // Using promises to preload textures prevents issues when applying textures to materials

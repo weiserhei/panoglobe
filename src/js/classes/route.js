@@ -35,13 +35,56 @@ export default class Route {
         heightData,
         radius,
         phase,
-        controls
+        controls,
+        manager
     ) {
         if (heightData.length === 0) {
             console.warn("No height data for route ", routeData.meta.name);
         }
 
-        this.controls = controls;
+        this.setActiveMarker = function (marker) {
+            if (this.activeMarker != undefined) {
+                this.activeMarker.setActive(false);
+            }
+            if (this.activeMarker === marker) {
+                marker.setActive(false);
+                this.activeMarker = null;
+                return;
+            }
+            this.activeMarker = marker;
+            marker.setActive(true);
+            if (manager !== undefined) {
+                manager.setActiveMarker(marker);
+            }
+        };
+
+        this.cycleNextActive = function () {
+            const currentIndex = this.marker.indexOf(this.activeMarker);
+            const nextIndex = (currentIndex + 1) % this.marker.length;
+            this.activeMarker = this.marker[nextIndex];
+            this.marker[currentIndex].setActive(false);
+            this.marker[nextIndex].setActive(true);
+        };
+
+        this.cyclePrevActive = function () {
+            const currentIndex = this.marker.indexOf(this.activeMarker);
+            const prevIndex = (currentIndex - 1) % this.marker.length;
+            this.activeMarker = this.marker[prevIndex];
+            this.marker[currentIndex].setActive(false);
+            this.marker[prevIndex].setActive(true);
+        };
+
+        this.getPrev = function (marker) {
+            const index = this.marker.indexOf(marker);
+            if (index >= 0 && index < this.marker.length)
+                return this.marker[index - 1];
+        };
+
+        this.getNext = function (marker) {
+            const index = this.marker.indexOf(marker);
+            if (index >= 0 && index < this.marker.length - 1)
+                return this.marker[index + 1];
+        };
 
         this.name = routeData.meta.name || "";
         this.routeData = calc3DPositions(
@@ -70,7 +113,7 @@ export default class Route {
 
         this.heightData = [];
         const steps = 1.2; // how fast change the color (0 = fast)
-        const frequency = 1 / (steps * this.routeData.length);
+        // const frequency = 1 / (steps * this.routeData.length);
 
         this.marker = [];
 
@@ -80,61 +123,77 @@ export default class Route {
         this.animate = false;
         this.speed = 0;
 
+        const poi = this.routeData.filter((c) => c.adresse);
+
         this.routeData.forEach((currentCoordinate, index) => {
             // DONT DRAW MARKER WHEN THEY HAVE NO NAME
             if (!currentCoordinate.adresse) {
                 return;
             }
 
+            const name =
+                currentCoordinate.countryname || currentCoordinate.adresse;
+            const text = `<small class='font-weight-bold'>${
+                this.marker.length + 1
+            }</small> ${name}`;
+
+            // const color = new Color(
+            //     makeColorGradient(index, frequency, undefined, undefined, phase)
+            // );
+
             // CREATE MARKER
             const marker = new Marker(
-                new Color(
-                    makeColorGradient(
-                        index,
-                        frequency,
-                        undefined,
-                        undefined,
-                        phase
-                    )
-                ),
                 currentCoordinate,
                 this,
                 controls,
-                index
+                index,
+                text,
+                scene,
+                this.container
             );
             this.marker.push(marker);
             // scene.add(marker.mesh);
-            currentCoordinate.marker = marker;
-
-            // CREATE LABELS FOR MARKER
-            const name =
-                currentCoordinate.countryname || currentCoordinate.adresse;
-            const text =
-                "<small class='font-weight-bold'>" +
-                this.marker.length +
-                "</small>" +
-                " " +
-                name;
-            marker.getLabel(this.container, text, this.showLabels, scene);
-            // marker.getIconLabel(this.container, scene);
         });
 
-        this.marker[this.marker.length - 1].isLast = true;
-
-        this.marker.forEach((m, index) => {
-            if (index !== 0) {
-                m.previous = this.marker[index - 1];
-            }
-            if (index !== this.marker.length - 1) {
-                m.next = this.marker[index + 1];
-            }
-
+        this.marker.forEach((m) => {
             // CREATE HUDLABELS FOR MARKER
-            m.getInfoBox(this.container);
+            m.addInfoBox(this.container, controls.threeControls);
         });
 
         this.routeLine = new RouteLine(vertices, steps, phase);
         scene.add(this.routeLine.line);
+
+        this.setRunAnimation = function (value) {
+            this.animate = false;
+            this.showLabels = !value;
+            this.drawCount = 0;
+
+            if (value === false) {
+                // stop animation
+                this.routeLine.drawCount = 0;
+                this.routeLine.drawFull();
+
+                if (this.activeMarker !== null) {
+                    this.activeMarker.active = false;
+                }
+            } else {
+                // this._routeLine.drawFull();
+                this.routeLine.drawCount = 0;
+
+                this.controls.moveIntoCenter(
+                    this.pois[0].lat,
+                    this.pois[0].lng,
+                    1000,
+                    undefined,
+                    undefined,
+                    () => {
+                        // this._routeData[ 0 ].marker.active = true;
+                        // setTimeout(() => { this._animate = true; }, 500);
+                        this.animate = true;
+                    }
+                );
+            }
+        };
     }
 
     get showLabels() {
@@ -144,15 +203,9 @@ export default class Route {
     set showLabels(value) {
         this.showLabels1 = value;
         this.marker.forEach((marker) => {
+            // ugh please
             marker.label.isVisible = value;
         });
-    }
-
-    setActiveMarker(value) {
-        this.activeMarker = value;
-        if (this.manager !== undefined) {
-            this.manager.setActiveMarker(value);
-        }
     }
 
     get isVisible() {
@@ -161,7 +214,7 @@ export default class Route {
 
     set isVisible(value) {
         this.visible = value;
-        this.marker.forEach((marker) => {
+        this.markre.forEach((marker) => {
             marker.isVisible = value;
         });
         this.routeLine.line.visible = value;
@@ -177,44 +230,8 @@ export default class Route {
         }
     }
 
-    get pois() {
-        return this.marker;
-    }
-
     get runAnimation() {
         return this.animate;
-    }
-
-    set runAnimation(value) {
-        this.animate = false;
-        this.showLabels = !value;
-        this.drawCount = 0;
-
-        if (value === false) {
-            // stop animation
-            this.routeLine.drawCount = 0;
-            this.routeLine.drawFull();
-
-            if (this.activeMarker !== null) {
-                this.activeMarker.active = false;
-            }
-        } else {
-            // this._routeLine.drawFull();
-            this.routeLine.drawCount = 0;
-
-            this.controls.moveIntoCenter(
-                this.pois[0].lat,
-                this.pois[0].lng,
-                1000,
-                undefined,
-                undefined,
-                () => {
-                    // this._routeData[ 0 ].marker.active = true;
-                    // setTimeout(() => { this._animate = true; }, 500);
-                    this.animate = true;
-                }
-            );
-        }
     }
 
     set pauseAnimation(value) {

@@ -1,8 +1,5 @@
 import * as THREE from "three";
-import {
-    CSS2DRenderer,
-    CSS2DObject,
-} from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 import TWEEN from "@tweenjs/tween.js";
 import Controls from "Classes/controls";
@@ -13,7 +10,8 @@ import Texture from "Classes/texture";
 import Globus from "Classes/globus";
 import LightManager from "Classes/lightManager";
 import RouteManager from "Classes/routeManager";
-import Impact from "Classes/impact";
+// import Impact from "Classes/impact";
+import * as dat from "dat.gui";
 
 import Config from "./../data/config";
 
@@ -33,6 +31,15 @@ export default function (preloader, heightdata) {
     labelRenderer.domElement.style.position = "absolute";
     labelRenderer.domElement.style.top = "0px";
     container.appendChild(labelRenderer.domElement);
+    /*global process*/
+    /*eslint no-undef: "error"*/
+    if (process.env.NODE_ENV === "development") {
+        const gui = new dat.GUI({ autoPlace: false });
+        var folder = gui.addFolder("GUI");
+        folder.open();
+        labelRenderer.domElement.appendChild(gui.domElement);
+        gui.domElement.classList.add("ml-auto");
+    }
 
     document.addEventListener("DOMContentLoaded", resize, false);
     window.addEventListener("resize", resize);
@@ -41,9 +48,11 @@ export default function (preloader, heightdata) {
     }
 
     const camera = new Camera(renderer.threeRenderer);
-    // const controls = new Controls(camera.threeCamera, renderer.threeRenderer.domElement);
     const controls = new Controls(camera.threeCamera, labelRenderer.domElement);
     controls.threeControls.update();
+    if (process.env.NODE_ENV === "development") {
+        folder.add(controls.threeControls, "enableDamping");
+    }
 
     const lightManager = new LightManager(scene, controls.threeControls.object);
     // Create and place lights in scene
@@ -79,6 +88,20 @@ export default function (preloader, heightdata) {
         //   });
         // });
     });
+
+    if (process.env.NODE_ENV === "development") {
+        var obj = {
+            add: function () {
+                RouteManager.load(Config.routes.urls[0], (routeData) => {
+                    // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+                    const phase = 5;
+                    const route2 = routeManager.buildRoute(routeData, phase);
+                    // route.showLabels = false;
+                });
+            },
+        };
+        folder.add(obj, "add");
+    }
 
     const clock = new THREE.Clock();
     let delta = 0;

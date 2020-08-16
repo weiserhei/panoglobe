@@ -24,6 +24,9 @@ module.exports = {
         filename: "[name].bundle.js",
         path: path.resolve(__dirname, "dist"),
     },
+    optimization: {
+        splitChunks: { name: "vendor", chunks: "all" },
+    },
     resolve: {
         alias: {
             Classes: path.resolve(__dirname, "src/js/classes/"),

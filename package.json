@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "prettier": "npx prettier --write",
+        "prettier": "npx prettier --write src/",
         "eslint": "npx eslint ./src/",
         "build": "webpack --progress --color --config webpack.prod.js",
         "dev": "webpack-dev-server --open --public --config webpack.dev.js"
@@ -31,6 +31,7 @@
         "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^6.0.3",
         "css-loader": "^4.2.1",
+        "dat.gui": "^0.7.7",
         "es6-promise": "^4.2.8",
         "eslint": "^7.6.0",
         "eslint-config-prettier": "^6.11.0",
