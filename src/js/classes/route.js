@@ -3,14 +3,12 @@
  * create the Route
  */
 
-import { Color } from "three";
-
-import Config from "./../../data/config";
-
+// import { Color } from "three";
+// import { makeColorGradient } from "./../utils/colors";
 import { calc3DPositions, createSphereArc } from "./../utils/panoutils";
-import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine.js";
 import Marker from "./marker";
+import Config from "./../../data/config";
 
 function getVertices(routeData) {
     const vertices = [];
@@ -28,71 +26,8 @@ function getVertices(routeData) {
 }
 
 export default class Route {
-    constructor(
-        scene,
-        container,
-        routeData,
-        heightData,
-        radius,
-        phase,
-        controls,
-        manager
-    ) {
-        if (heightData.length === 0) {
-            console.warn("No height data for route ", routeData.meta.name);
-        }
-
-        this.setActiveMarker = function (marker) {
-            if (this.activeMarker != undefined) {
-                this.activeMarker.setActive(false);
-            }
-            if (this.activeMarker === marker) {
-                marker.setActive(false);
-                this.activeMarker = null;
-                return;
-            }
-            this.activeMarker = marker;
-            marker.setActive(true);
-            if (manager !== undefined) {
-                manager.setActiveMarker(marker);
-            }
-        };
-
-        this.cycleNextActive = function () {
-            const currentIndex = this.marker.indexOf(this.activeMarker);
-            const nextIndex = (currentIndex + 1) % this.marker.length;
-            this.activeMarker = this.marker[nextIndex];
-            this.marker[currentIndex].setActive(false);
-            this.marker[nextIndex].setActive(true);
-        };
-
-        this.cyclePrevActive = function () {
-            const currentIndex = this.marker.indexOf(this.activeMarker);
-            const prevIndex = (currentIndex - 1) % this.marker.length;
-            this.activeMarker = this.marker[prevIndex];
-            this.marker[currentIndex].setActive(false);
-            this.marker[prevIndex].setActive(true);
-        };
-
-        this.getPrev = function (marker) {
-            const index = this.marker.indexOf(marker);
-            if (index >= 0 && index < this.marker.length)
-                return this.marker[index - 1];
-        };
-
-        this.getNext = function (marker) {
-            const index = this.marker.indexOf(marker);
-            if (index >= 0 && index < this.marker.length - 1)
-                return this.marker[index + 1];
-        };
-
-        this.name = routeData.meta.name || "";
-        this.routeData = calc3DPositions(
-            routeData.gps,
-            heightData,
-            radius + 0.0
-        );
-        // this.routeData:
+    constructor(scene, container, routeData, phase, controls, manager) {
+        // routeData:
         // [
         //   {
         //     adresse: ""
@@ -106,12 +41,12 @@ export default class Route {
         //   },
         // ]
 
+        this.routeData = routeData;
         const vertices = getVertices(this.routeData);
 
         this.activeMarker = null;
         this.container = container;
 
-        this.heightData = [];
         const steps = 1.2; // how fast change the color (0 = fast)
         // const frequency = 1 / (steps * this.routeData.length);
 
@@ -123,7 +58,7 @@ export default class Route {
         this.animate = false;
         this.speed = 0;
 
-        const poi = this.routeData.filter((c) => c.adresse);
+        // const poi = this.routeData.filter((c) => c.adresse);
 
         this.routeData.forEach((currentCoordinate, index) => {
             // DONT DRAW MARKER WHEN THEY HAVE NO NAME
@@ -148,8 +83,7 @@ export default class Route {
                 controls,
                 index,
                 text,
-                scene,
-                this.container
+                scene
             );
             this.marker.push(marker);
             // scene.add(marker.mesh);
@@ -194,6 +128,55 @@ export default class Route {
                 );
             }
         };
+
+        this.setActiveMarker = function (marker) {
+            if (this.activeMarker === marker) {
+                // active marker is calling himself => deactivate
+                this.activeMarker = null;
+                marker.setActive(false);
+                return;
+            }
+
+            if (manager !== undefined) {
+                manager.setActiveMarker(marker);
+                return;
+            }
+
+            if (this.activeMarker != undefined) {
+                this.activeMarker.setActive(false);
+            }
+
+            this.activeMarker = marker;
+            marker.setActive(true);
+        };
+    }
+
+    cycleNextActive() {
+        const currentIndex = this.marker.indexOf(this.activeMarker);
+        const nextIndex = (currentIndex + 1) % this.marker.length;
+        this.activeMarker = this.marker[nextIndex];
+        this.marker[currentIndex].setActive(false);
+        this.marker[nextIndex].setActive(true);
+    }
+
+    cyclePrevActive() {
+        const currentIndex = this.marker.indexOf(this.activeMarker);
+        const prevIndex = (currentIndex - 1) % this.marker.length;
+        this.activeMarker = this.marker[prevIndex];
+        this.marker[currentIndex].setActive(false);
+        this.marker[prevIndex].setActive(true);
+    }
+
+    getPrev(marker) {
+        const index = this.marker.indexOf(marker);
+        if (index >= 0 && index < this.marker.length)
+            return this.marker[index - 1];
+    }
+
+    getNext(marker) {
+        const index = this.marker.indexOf(marker);
+        if (index >= 0 && index < this.marker.length - 1)
+            return this.marker[index + 1];
     }
 
     get showLabels() {

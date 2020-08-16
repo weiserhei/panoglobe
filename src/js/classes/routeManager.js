@@ -1,5 +1,6 @@
-import Route from "./route";
 import $ from "jquery";
+import Route from "./route";
+import { calc3DPositions } from "./../utils/panoutils";
 
 export default class RouteManager {
     constructor(scene, container, heightData, globusradius, controls) {
@@ -16,12 +17,16 @@ export default class RouteManager {
     }
 
     buildRoute(routeData, phase) {
+        let calculatedRouteData = calc3DPositions(
+            routeData.gps,
+            this.heightData,
+            this.globusradius + 0.0
+        );
+
         const route = new Route(
             this.scene,
             this.container,
-            routeData,
-            this.heightData,
-            this.globusradius,
+            calculatedRouteData,
             phase,
             this.controls,
             this
@@ -47,15 +52,15 @@ export default class RouteManager {
     //   return this.activeMarker;
     // }
 
-    setActiveMarker(value) {
-        // when a marker is trying to get active
-        // while the manager knows of an active one
-        // disable it first
-        if (value !== null && this.activeMarker !== null) {
-            // console.log("Deactivating active marker from "+this._activeMarker._activeHandler.name);
-            this.activeMarker.active = false;
-        }
-        this.activeMarker = value;
+    setActiveMarker(marker) {
+        // the manager disables ALL active Markers
+        this.routes.forEach((r) => {
+            if (r.activeMarker != undefined) {
+                r.activeMarker.setActive(false);
+                r.activeMarker = null;
+            }
+        });
+        marker.setActive(true);
     }
 
     static load(url, callback) {

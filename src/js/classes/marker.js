@@ -48,6 +48,11 @@ export default class Marker {
         this.setActive = function (value) {
             // do not call me, im getting called by the managers
             active = value;
+            if (value) {
+                route.activeMarker = this;
+            } else {
+                route.activeMarker = null;
+            }
             if (infoBox !== null) {
                 infoBox.isVisible = value;
             }
@@ -60,8 +65,8 @@ export default class Marker {
         };
 
         this.addInfoBox = function (parentDomNode, controls) {
-            let next = route.getNext(this);
-            let previous = route.getPrev(this);
+            let nextMarker = route.getNext(this);
+            let previousMarker = route.getPrev(this);
 
             infoBox = new InfoBox(parentDomNode, controls, poi);
 
@@ -71,10 +76,10 @@ export default class Marker {
                 route.setActiveMarker(this);
             });
 
-            if (next === undefined) {
+            if (nextMarker === undefined) {
                 infoBox.nextButton.className = "d-none";
             }
-            if (previous === undefined) {
+            if (previousMarker === undefined) {
                 infoBox.prevButton.className = "d-none";
             }
             infoBox.nextButton.addEventListener("click", () => {
