@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-
 import TWEEN from "@tweenjs/tween.js";
+
 import Controls from "Classes/controls";
 import Renderer from "Classes/renderer";
 import Camera from "Classes/camera";
