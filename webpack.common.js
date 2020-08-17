@@ -35,6 +35,10 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.geojson$/,
+                loader: "json-loader",
+            },
+            {
                 test: /\.css$/,
                 use: ["style-loader", "css-loader"],
             },

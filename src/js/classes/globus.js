@@ -21,6 +21,8 @@ import Config from "./../../data/config";
 import { drawThreeGeo } from "./../utils/threeGeoJSON";
 import AtmosphereMaterial from "./../utils/atmosphereMaterial";
 
+import geoJSON from "./../../data/countries_states.geojson";
+
 function getClouds(geometry) {
     const cloudMaterial = new MeshBasicMaterial({
         // map: this.textures.clouds,
@@ -124,31 +126,19 @@ export default class Globus {
         // borderlines.visible = false;
         this.borderlines = borderlines;
 
-        fetch(Config.data.geojsonPath, { mode: "cors" })
-            .then(function (resp) {
-                if (resp.ok) {
-                    return resp.json();
-                }
-                console.error("fetch failed");
-            })
-            .then(function (data) {
-                const materialOptions = {
-                    transparent: true,
-                    opacity: 0.5,
-                    color: "white",
-                };
-                drawThreeGeo(
-                    data,
-                    Config.globus.radius + 0.5,
-                    "sphere",
-                    materialOptions,
-                    borderlines
-                );
-                borderlines.rotation.set(0, Math.PI / 2, 0);
-            })
-            .catch(function (err) {
-                console.error(err);
-            });
+        const materialOptions = {
+            transparent: true,
+            opacity: 0.5,
+            color: "white",
+        };
+        drawThreeGeo(
+            geoJSON,
+            Config.globus.radius + 0.5,
+            "sphere",
+            materialOptions,
+            borderlines
+        );
+        borderlines.rotation.set(0, Math.PI / 2, 0);
 
         //  $.getJSON("./data/countries_states.geojson", function(data) {
         //     const materialOptions = { transparent: true, opacity: 0.5, color: 'white' };
