@@ -1,5 +1,5 @@
 const path = require("path");
-const webpack = require("webpack"); //to access built-in plugins
+// const webpack = require("webpack"); //to access built-in plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
@@ -79,7 +79,7 @@ module.exports = {
                 use: [
                     {
                         loader: "file-loader",
-                        options: { outputPath: "images" }, // where to place images referenced in CSS
+                        options: { outputPath: "images" }, // where to place images
                     },
                 ],
             },

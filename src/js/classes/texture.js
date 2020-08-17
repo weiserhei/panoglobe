@@ -27,36 +27,31 @@ export default class Texture {
         const maxAnisotropy = Config.maxAnisotropy;
         const imageFiles = Config.texture.imageFiles;
         const promiseArray = [];
+        const t = [T1, T2, T3, T4, T5, T6];
 
-        loader.setPath(Config.texture.path);
+        // loader.setPath("");
 
-        imageFiles.forEach((imageFile) => {
+        t.forEach((texture) => {
             // Add an individual Promise for each image in array
             promiseArray.push(
                 new Promise((resolve, reject) => {
                     // Each Promise will attempt to load the image file
                     loader.load(
-                        imageFile.image,
+                        texture,
                         // This gets called on load with the loaded texture
                         (texture) => {
                             texture.anisotropy = maxAnisotropy;
-
                             // Resolve Promise with object of texture if it is instance of THREE.Texture
-                            const modelOBJ = {};
-                            modelOBJ[imageFile.name] = texture;
-                            if (
-                                modelOBJ[imageFile.name] instanceof THREETexture
-                            ) {
-                                resolve(modelOBJ);
+                            if (texture instanceof THREETexture) {
+                                resolve(texture);
                             }
                         },
-                        // Helpers.logProgress(),
                         (xhr) =>
                             reject(
                                 new Error(
                                     xhr +
                                         "An error occurred loading while loading " +
-                                        imageFile.image
+                                        t.image
                                 )
                             )
                     );
@@ -69,9 +64,9 @@ export default class Texture {
         return Promise.all(promiseArray).then(
             (textures) => {
                 // Set the textures prop object to have name be the resolved texture
-                for (let i = 0; i < textures.length; i += 1) {
-                    this.textures[Object.keys(textures[i])[0]] =
-                        textures[i][Object.keys(textures[i])[0]];
+                for (let i = 0; i < imageFiles.length; i += 1) {
+                    const name = imageFiles[i][Object.keys(imageFiles[i])[0]];
+                    this.textures[name] = textures[i];
                 }
             },
             (reason) => console.log(reason)
