@@ -79,6 +79,11 @@ export default class RouteLine {
             // this.drawCount = number % this.numberVertices;
             this.line.geometry.instanceCount = number - 1;
         };
+        this.setDrawIndex = function (number) {
+            this.drawCount = number * (Config.routes.lineSegments + 1);
+            // this.drawCount = number % this.numberVertices;
+            this.line.geometry.instanceCount = this.drawCount;
+        };
     }
 
     get numberVertices() {

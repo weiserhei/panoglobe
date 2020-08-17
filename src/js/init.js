@@ -36,7 +36,7 @@ export default function (preloader, heightdata) {
     if (process.env.NODE_ENV === "development") {
         const gui = new dat.GUI({ autoPlace: false });
         var folder = gui.addFolder("GUI");
-        folder.open();
+        // folder.open();
         container.insertBefore(gui.domElement, labelRenderer.domElement);
         // labelRenderer.domElement.appendChild(gui.domElement);
         gui.domElement.classList.add(

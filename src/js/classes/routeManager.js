@@ -1,11 +1,31 @@
 import $ from "jquery";
 import Route from "./route";
 import { calc3DPositions } from "./../utils/panoutils";
+import MyFormatter from "./../utils/sliderFormatter";
+import Config from "../../data/config";
+
+import noUiSlider from "nouislider";
+import "nouislider/distribute/nouislider.css";
+import "../../css/nouislider.css";
 
 export default class RouteManager {
     constructor(scene, container, heightData, globusradius, controls) {
         this.routes = [];
         this.activeMarker = null;
+
+        const ui = document.createElement("div");
+        ui.classList.add(
+            "position-absolute",
+            "fixed-bottom",
+            "m-2",
+            "mb-5",
+            "m-md-5",
+            "p-2"
+        );
+        container.appendChild(ui);
+
+        const slider = document.createElement("div");
+        ui.appendChild(slider);
 
         this.buildRoute = function (routeData, phase, folder) {
             let calculatedRouteData = calc3DPositions(
@@ -13,6 +33,75 @@ export default class RouteManager {
                 heightData,
                 globusradius + 0.0
             );
+
+            // const max =
+            //     (calculatedRouteData.length - 1) *
+            //     (Config.routes.lineSegments + 1);
+            const max = calculatedRouteData.length - 1;
+
+            const poi = [];
+            const strings = [];
+            calculatedRouteData.forEach(function (e, index) {
+                // e.index = index;
+                if (e.adresse) poi.push(index);
+                strings.push(e.adresse);
+            });
+            // let result = poi.map((a) => a.index);
+
+            if (slider.noUiSlider) {
+                slider.noUiSlider.destroy();
+            }
+            const mf = new MyFormatter(strings);
+            noUiSlider.create(
+                slider,
+                {
+                    start: [strings.length],
+                    step: 1,
+                    connect: false,
+                    range: {
+                        min: 0,
+                        max: max,
+                    },
+                    pips: {
+                        mode: "values",
+                        values: poi,
+                        stepped: true,
+                        density: 100,
+                        format: mf,
+                    },
+                },
+                true
+            );
+            slider.noUiSlider.on("set", function (value) {
+                controls.moveIntoCenter(
+                    calculatedRouteData[Math.floor(value)].lat,
+                    calculatedRouteData[Math.floor(value)].lng,
+                    500
+                );
+            });
+            slider.noUiSlider.on("slide", function (value) {
+                route.routeLine.setDrawIndex(value);
+            });
+
+            var pips = slider.querySelectorAll(".noUi-value");
+
+            function clickOnPip() {
+                const value = Number(this.getAttribute("data-value"));
+                slider.noUiSlider.set(value);
+                route.routeLine.setDrawIndex(value);
+                controls.moveIntoCenter(
+                    // routeData.gps[Math.floor(value)].lat,
+                    // routeData.gps[Math.floor(value)].lng,
+                    calculatedRouteData[Math.floor(value)].lat,
+                    calculatedRouteData[Math.floor(value)].lng,
+                    1000
+                );
+            }
+
+            for (var i = 0; i < pips.length; i++) {
+                // pips[i].style.cursor = "pointer";
+                pips[i].addEventListener("click", clickOnPip);
+            }
 
             const route = new Route(
                 scene,
@@ -25,30 +114,31 @@ export default class RouteManager {
             );
             this.routes.push(route);
 
-            let x = folder.add(
-                {
-                    range: 1,
-                },
-                "range",
-                0,
-                1,
-                0.1
-            );
-            x.onChange(function (value) {
-                route.routeLine.setDrawProgress(value);
-            });
+            // let x = folder.add(
+            //     {
+            //         range: 1,
+            //     },
+            //     "range",
+            //     0,
+            //     1,
+            //     0.1
+            // );
+            // x.onChange(function (value) {
+            //     route.routeLine.setDrawProgress(value);
+            //     const x = Math.floor(calculatedRouteData.length * value);
+            //     slider.noUiSlider.set(x);
+            // });
 
-            const manager = this;
-            route.marker.forEach((m) => {
-                const x = folder
-                    .add({ toggle: false }, "toggle")
-                    .name(m.poi.adresse);
-                x.onChange(function (value) {
-                    // route.setActiveMarker(m);
-                    // m.setActive(value);
-                    manager.controls.moveIntoCenter(m.poi.lat, m.poi.lng, 2000);
-                });
-            });
+            // route.marker.forEach((m) => {
+            //     const x = folder
+            //         .add({ toggle: false }, "toggle")
+            //         .name(m.poi.adresse);
+            //     x.onChange(function (value) {
+            //         // route.setActiveMarker(m);
+            //         // m.setActive(value);
+            //         controls.moveIntoCenter(m.poi.lat, m.poi.lng, 1000);
+            //     });
+            // });
 
             // // Onload other route disable last active marker
             if (this.activeMarker !== null) {

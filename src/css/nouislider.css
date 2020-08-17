@@ -1,0 +1,35 @@
+.noUi-target {
+    background-color: #212529; /* pano darkblue */
+    /* border-color: #222222; */
+    border-color: #343a40; /* bs-dark */
+    box-shadow: none;
+}
+
+.noUi-handle {
+    /* background-color: #584258; */
+    background-color: #384258;
+    box-shadow: none;
+}
+
+/* .noUi-pips {
+    background-color:#00ffaa;
+} */
+.noUi-marker {
+    background-color: #384258;
+}
+
+.noUi-marker-horizontal {
+    height: 0.5em !important;
+}
+
+.noUi-value {
+    /* color: #ffaa00; */
+    /* color: #007bff; */
+    color: #f8f9fa;
+    /* color: #384258; */
+    /* color: #212529; */
+    text-shadow: 0px 0px 3px #000;
+    /* text-shadow: 0px 0px 1px #fff; */
+    cursor: pointer;
+    font-weight: bold;
+}
