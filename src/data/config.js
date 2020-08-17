@@ -13,9 +13,6 @@ export default {
     dpr: 1,
     easing: TWEEN.Easing.Quadratic.InOut,
     duration: 500,
-    data: {
-        geojsonPath: "./data/countries_states.geojson",
-    },
     routes: {
         linewidth: 3, // error on 2.0 width wtf lol
         lineSegments: 7,
