@@ -76,8 +76,6 @@ function getOuterGlow(geometry) {
 // Class that creates the globe
 export default class Globus {
     constructor(scene, preloader) {
-        this.preloader = preloader;
-
         const geometry = new IcosahedronBufferGeometry(
             Config.globus.radius,
             Config.globus.detail
@@ -151,6 +149,29 @@ export default class Globus {
         // }).fail(function(x) {
         //   console.log( "error",x );
         // });
+
+        this.setNight = function (value) {
+            preloader.inline = true;
+            this.night = value;
+
+            if (value) {
+                if (
+                    this.textures[Config.globus.material.nightmap] === undefined
+                ) {
+                    const textureLoader = preloader.textureLoader;
+                    const url = "./textures/4k/Night-Lights-4k.jpg";
+                    this.textures.night = textureLoader.load(url, (texture) => {
+                        this.material.map = texture;
+                    });
+                } else {
+                    this.material.map = this.textures[
+                        Config.globus.material.nightmap
+                    ];
+                }
+            } else {
+                this.material.map = this.textures[Config.globus.material.map];
+            }
+        };
     }
 
     get borders() {
@@ -159,27 +180,6 @@ export default class Globus {
 
     set borders(value) {
         this.borderlines.visible = value;
-    }
-
-    setNight(value) {
-        this.preloader.inline = true;
-        this.night = value;
-
-        if (value) {
-            if (this.textures[Config.globus.material.nightmap] === undefined) {
-                const textureLoader = this.preloader.textureLoader;
-                const url = "./textures/4k/Night-Lights-4k.jpg";
-                this.textures.night = textureLoader.load(url, (texture) => {
-                    this.material.map = texture;
-                });
-            } else {
-                this.material.map = this.textures[
-                    Config.globus.material.nightmap
-                ];
-            }
-        } else {
-            this.material.map = this.textures[Config.globus.material.map];
-        }
     }
 
     setTextures(textures) {

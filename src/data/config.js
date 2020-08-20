@@ -63,7 +63,7 @@ export default {
             normalScale: -0.4,
             displacementMap: "displacemap",
             // displacementMap: "earthColor",
-            displacementScale: 2,
+            displacementScale: 3,
             // displacementScale: 20,
             // displacementBias: 0.428408,
             displacementBias: 0,
