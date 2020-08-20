@@ -8,7 +8,6 @@ import {
     IcosahedronBufferGeometry,
     Color,
     BackSide,
-    DoubleSide,
     AdditiveBlending,
     Vector2,
     Matrix4,

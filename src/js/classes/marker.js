@@ -42,7 +42,7 @@ export default class Marker {
         );
 
         this.setVisible = function (value) {
-            label.isVisible = value;
+            label.setVisible(value);
             infoBox.isVisible = value;
         };
         this.setActive = function (value) {

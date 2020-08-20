@@ -183,8 +183,7 @@ export default class Route {
     set showLabels(value) {
         this.showLabels1 = value;
         this.marker.forEach((marker) => {
-            // ugh please
-            marker.label.isVisible = value;
+            marker.setVisible(value);
         });
     }
 

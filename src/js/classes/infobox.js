@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { numberWithCommas } from "./../utils/panoutils";
-import { library, icon } from "@fortawesome/fontawesome-svg-core";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export default class InfoBox {

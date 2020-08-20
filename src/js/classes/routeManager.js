@@ -18,7 +18,6 @@ export default class RouteManager {
         this.activeMarker = null;
 
         const heightData = new Promise((resolve) => {
-            // return new ImageLoader(preloader.manager).load(
             return new ImageLoader().load(T_heightmap, resolve);
         }).then((image) => {
             const scaleDivider = 20;
@@ -40,12 +39,10 @@ export default class RouteManager {
         ui.appendChild(slider);
 
         this.buildRoute = function (routeData, phase, folder) {
-            heightData.then((x) => {
-                // load complete! begin rendering
-
+            return heightData.then((data) => {
                 let calculatedRouteData = calc3DPositions(
                     routeData.gps,
-                    x,
+                    data,
                     globusradius + 0.0
                 );
 
@@ -197,19 +194,15 @@ export default class RouteManager {
         };
     }
 
-    // get activeMarker() {
-    //   return this.activeMarker;
-    // }
-
-    static load(url, callback) {
+    static load(url) {
         // load datalist
         if (url) {
-            $.getJSON(url, {
+            return $.getJSON(url, {
                 format: "json",
             })
-                .done((data) => {
+                .done(() => {
                     console.log("Route has been loaded");
-                    callback(data);
+                    // this.buildRoute(data, phase, folder);
                 })
                 .fail(() => {
                     alert("Sorry! An Error occured while loading the route :(");
@@ -222,6 +215,10 @@ export default class RouteManager {
             alert("Call to loadRoute without providing a Link to a datalist");
         }
     }
+
+    // get activeMarker() {
+    //   return this.activeMarker;
+    // }
 
     update(delta, camera) {
         this.routes.forEach((route) => {
