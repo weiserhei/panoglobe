@@ -18,7 +18,7 @@ if (WEBGL.isWebGLAvailable()) {
 
     // Preload Demo
     const imageLoader = new ImageLoader(preloader.manager);
-    const loadHeightData = (url) =>
+    const loadHeightData = (url: string) =>
         new Promise((resolve) => imageLoader.load(url, resolve));
     loadHeightData(T_heightmap).then((heightImage) => {
         const scale = 20;

@@ -15,7 +15,7 @@ import * as dat from "dat.gui";
 
 import Config from "../data/config";
 
-export default function (preloader, heightdata) {
+export default function (preloader: any, heightdata: Array<number>) {
     const container = document.createElement("div");
     document.body.appendChild(container);
 
@@ -75,7 +75,7 @@ export default function (preloader, heightdata) {
         controls
     );
 
-    RouteManager.load(Config.routes.urls.pop(), (routeData) => {
+    RouteManager.load(Config.routes.urls.pop(), (routeData: Array<Object>) => {
         // RouteManager.load(Config.routes.urls[0], routeData => {
         // const phase = getRandomArbitrary( 0, Math.PI * 2 );
         const phase = 0.9;
@@ -98,16 +98,19 @@ export default function (preloader, heightdata) {
     if (process.env.NODE_ENV === "development") {
         var obj = {
             add: function () {
-                RouteManager.load(Config.routes.urls[0], (routeData) => {
-                    // const phase = getRandomArbitrary( 0, Math.PI * 2 );
-                    const phase = 5;
-                    const route2 = routeManager.buildRoute(
-                        routeData,
-                        phase,
-                        folder
-                    );
-                    // route.showLabels = false;
-                });
+                RouteManager.load(
+                    Config.routes.urls[0],
+                    (routeData: Array<Object>) => {
+                        // const phase = getRandomArbitrary( 0, Math.PI * 2 );
+                        const phase = 5;
+                        const route2 = routeManager.buildRoute(
+                            routeData,
+                            phase,
+                            folder
+                        );
+                        // route.showLabels = false;
+                    }
+                );
             },
         };
         folder.add(obj, "add").name("Add Route Asien");
@@ -116,7 +119,7 @@ export default function (preloader, heightdata) {
     const clock = new THREE.Clock();
     let delta = 0;
 
-    function update(delta) {
+    function update(delta: number) {
         // update TWEEN before controls! jaggy rotation
         // @ts-ignore
         TWEEN.update();
@@ -138,7 +141,7 @@ export default function (preloader, heightdata) {
     texture.load().then(() => {
         globus.setTextures(texture.textures);
         // skybox.setTexture(texture.textures.uvtest);
-        skybox.setTexture(texture.textures.stars);
+        skybox.setTexture(texture.textures["stars"]);
 
         animate();
     });

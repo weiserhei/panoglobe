@@ -6,7 +6,11 @@
         "allowJs": true,
         // Allow default imports from modules with no default export (tween.js)
         // "allowSyntheticDefaultImports": true
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        // Gives error if there are implied "<any>" types.
+        "noImplicitAny": true,
+        // Allows you to access non-constant properties, such as object[keyVar]
+        "suppressImplicitAnyIndexErrors": true
     },
     "include": ["./src/**/*.ts"],
     "exclude": ["node_modules"]
