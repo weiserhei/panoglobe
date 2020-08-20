@@ -4,7 +4,7 @@ import "./../scss/main.scss";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { ImageLoader } from "three";
 import init from "./init";
-import Preloader from "Classes/preloader";
+import Preloader from "./classes/preloader";
 import { getHeightData } from "./utils/panoutils";
 
 import T_heightmap from "../textures/heightmap_1440.jpg";

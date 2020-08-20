@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "allowJs": true,
+        // Allow default imports from modules with no default export (tween.js)
+        // "allowSyntheticDefaultImports": true
+        "esModuleInterop": true
+    },
+    "include": ["./src/**/*.ts"],
+    "exclude": ["node_modules"]
+}

@@ -2,18 +2,18 @@ import * as THREE from "three";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import TWEEN from "@tweenjs/tween.js";
 
-import Controls from "Classes/controls";
-import Renderer from "Classes/renderer";
-import Camera from "Classes/camera";
-import Skybox from "Classes/skybox";
-import Texture from "Classes/texture";
-import Globus from "Classes/globus";
-import LightManager from "Classes/lightManager";
-import RouteManager from "Classes/routeManager";
-// import Impact from "Classes/impact";
+import Controls from "./classes/controls";
+import Renderer from "./classes/renderer";
+import Camera from "./classes/camera";
+import Skybox from "./classes/skybox";
+import Texture from "./classes/texture";
+import Globus from "./classes/globus";
+import LightManager from "./classes/lightManager";
+import RouteManager from "./classes/routeManager";
+// import Impact from "./classes/impact";
 import * as dat from "dat.gui";
 
-import Config from "./../data/config";
+import Config from "../data/config";
 
 export default function (preloader, heightdata) {
     const container = document.createElement("div");
@@ -117,7 +117,8 @@ export default function (preloader, heightdata) {
     let delta = 0;
 
     function update(delta) {
-        // update TWEEN before controls!! jaggy rotation
+        // update TWEEN before controls! jaggy rotation
+        // @ts-ignore
         TWEEN.update();
         skybox.update(delta);
         controls.threeControls.update();

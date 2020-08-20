@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-    entry: "./src/js/index.js",
+    entry: "./src/js/index",
     plugins: [
         new CleanWebpackPlugin(),
         // new webpack.ProvidePlugin({
@@ -28,12 +28,20 @@ module.exports = {
         splitChunks: { name: "vendor", chunks: "all" },
     },
     resolve: {
+        // Add `.ts` and `.tsx` as a resolvable extension.
+        extensions: [".ts", ".tsx", ".js"],
         alias: {
             Classes: path.resolve(__dirname, "src/js/classes/"),
         },
     },
     module: {
         rules: [
+            {
+                // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+                test: /\.tsx?$/,
+                use: "ts-loader",
+                exclude: /node_modules/,
+            },
             {
                 test: /\.geojson$/,
                 loader: "json-loader",
