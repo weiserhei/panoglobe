@@ -1,13 +1,12 @@
 import "./../css/style.css";
 import "./../scss/main.scss";
 
-import { ImageLoader, Scene, Color, FogExp2, Clock } from "three";
+import { Scene, Color, FogExp2, Clock } from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import TWEEN from "@tweenjs/tween.js";
 import * as dat from "dat.gui";
 
-import { getHeightData } from "./utils/panoutils";
 import Preloader from "./classes/preloader";
 import Controls from "./classes/controls";
 import Renderer from "./classes/renderer";
@@ -20,7 +19,6 @@ import RouteManager from "./classes/routeManager";
 // import Impact from "./classes/impact";
 
 import Config from "../data/config";
-import T_heightmap from "../textures/heightmap_1440.jpg";
 
 if (!WEBGL.isWebGLAvailable()) {
     const warning = WEBGL.getWebGLErrorMessage();
@@ -28,20 +26,12 @@ if (!WEBGL.isWebGLAvailable()) {
     throw new Error(warning.innerHTML);
 }
 
-const loadContainer = document.createElement("div");
-loadContainer.id = "loadcontainer";
-document.body.appendChild(loadContainer);
-const preloader = new Preloader(loadContainer);
+function init() {
+    const loadContainer = document.createElement("div");
+    loadContainer.id = "loadcontainer";
+    document.body.appendChild(loadContainer);
+    const preloader = new Preloader(loadContainer);
 
-// Preload Height Data
-const imageLoader = new ImageLoader(preloader.manager);
-imageLoader.load(T_heightmap, (image) => {
-    const scaleDivider = 20;
-    const heightData = getHeightData(image, scaleDivider);
-    init(heightData);
-});
-
-function init(heightdata: Array<number>) {
     const container = document.createElement("div");
     document.body.appendChild(container);
 
@@ -93,7 +83,6 @@ function init(heightdata: Array<number>) {
     const routeManager = new RouteManager(
         scene,
         container,
-        heightdata,
         Config.globus.radius,
         controls
     );
@@ -140,7 +129,6 @@ function init(heightdata: Array<number>) {
     }
 
     const clock = new Clock();
-    let delta = 0;
 
     function update(delta: number) {
         // update TWEEN before controls! jaggy rotation
@@ -154,7 +142,7 @@ function init(heightdata: Array<number>) {
     const animate = function animate() {
         requestAnimationFrame(animate);
 
-        delta = clock.getDelta();
+        const delta = clock.getDelta();
         update(delta);
         labelRenderer.render(scene, camera.threeCamera);
         renderer.render(scene, camera.threeCamera);
@@ -169,3 +157,5 @@ function init(heightdata: Array<number>) {
         animate();
     });
 }
+
+init();

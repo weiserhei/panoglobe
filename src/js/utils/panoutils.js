@@ -119,7 +119,7 @@ export const calc3DPositions = (data, heightData, radius) => {
         ).multiplyScalar(radius); // 100.5
 
         if (heightData.length > 0) {
-            const latHeight = Math.floor(
+            let latHeight = Math.floor(
                 (data[i].lat * (heightData.length / 180) -
                     heightData.length / 2) *
                     -1
