@@ -3,17 +3,34 @@ import { SphereBufferGeometry, Vector3, Mesh } from "three";
 import InfoBox from "./infobox";
 import Label from "./label";
 
+import Route from "./route";
+import Controls from "./controls";
+
 const markergeo = new SphereBufferGeometry(1, 8, 6);
 const markermesh = new Mesh(markergeo);
 
-export default class Marker {
-    constructor(poi, route, controls, index, text, scene) {
-        this.poi = poi;
-        this.index = index;
+// type Poi = {
+//     displacedPos: THREE.Vector3;
+// };
 
+export default class Marker {
+    public mesh: THREE.Mesh;
+    public setVisible: any;
+    public addInfoBox: any;
+    public setActive: any;
+    public update: any;
+
+    constructor(
+        public poi: Poi,
+        route: Route,
+        controls: Controls,
+        public index: number,
+        text: string,
+        scene: THREE.Scene
+    ) {
         const meshVector = new Vector3();
         let ocluded = false;
-        let infoBox = null;
+        let infoBox: InfoBox = null;
         let active = false;
 
         let mesh = markermesh.clone();
@@ -41,11 +58,11 @@ export default class Marker {
             false
         );
 
-        this.setVisible = function (value) {
+        this.setVisible = function (value: boolean) {
             label.setVisible(value);
             infoBox.isVisible = value;
         };
-        this.setActive = function (value) {
+        this.setActive = function (value: boolean) {
             // do not call me, im getting called by the managers
             active = value;
             if (value) {
@@ -64,7 +81,7 @@ export default class Marker {
             }
         };
 
-        this.addInfoBox = function (parentDomNode, controls) {
+        this.addInfoBox = function (parentDomNode: HTMLElement) {
             let nextMarker = route.getNext(this);
             let previousMarker = route.getPrev(this);
 
@@ -90,7 +107,7 @@ export default class Marker {
             });
         };
 
-        this.update = function (camera) {
+        this.update = function (camera: THREE.Camera) {
             // Like Sketchfab
             // https://manu.ninja/webgl-three-js-annotations
             this.mesh.getWorldPosition(meshVector);

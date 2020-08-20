@@ -6,7 +6,6 @@
 
 import {
     Vector2,
-    VertexColors,
     BufferGeometry,
     BufferAttribute,
     Color,
@@ -18,27 +17,71 @@ import {
 import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
-import { makeColorGradient, makeColorGradient2 } from "./../utils/colors";
-import { createSphereArc } from "./../utils/panoutils";
+import { makeColorGradient, makeColorGradient2 } from "../utils/colors";
+import { createSphereArc } from "../utils/panoutils";
 import Config from "../../data/config";
 
-function getVertices(routeData) {
-    const vertices = [];
+function getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
+    const vertices: Array<THREE.Vector3> = [];
     routeData.forEach((element, index) => {
         if (index > 0) {
             const curve = createSphereArc(
                 routeData[index - 1].displacedPos,
                 element.displacedPos
             );
+            // curve.getPoints returns Type Vector instead of Vector3
+            // @ts-ignore
             vertices.push(...curve.getPoints(Config.routes.lineSegments));
         }
     });
 
+    // vertices.map((v) => {
+    //     return new Vector3(v.x, v.y, v.z);
+    // });
+
+    // console.log(vertices);
     return vertices;
 }
 
 export default class RouteLine {
-    constructor(routeData, steps, phase) {
+    // todo
+    // public line: Line | Line2;
+    public line: any;
+    public curve: THREE.Curve<Vector3>;
+    public vertices: Array<Vector3>;
+    public drawCount: number;
+    public currentPositionVec: THREE.Vector;
+    public nextPositionVec: THREE.Vector;
+    public colorWheel: number;
+    private positions: Float32Array;
+    private colors: Float32Array;
+
+    public drawPoi(index: number) {
+        const range = index * (Config.routes.lineSegments + 1);
+        this.line.geometry.instanceCount = range - 1;
+    }
+    public setDrawProgress(percent: number) {
+        // const normalizedProgress = this.drawCount / this.numberVertices;
+        const drawRamge = percent * this.numberVertices;
+        this.line.geometry.instanceCount = drawRamge;
+        // console.log(
+        //     this.numberVertices,
+        //     routeData.length,
+        //     (routeData.length - 1) * (Config.routes.lineSegments + 1)
+        // );
+    }
+    public setDrawCount(number: number) {
+        this.drawCount = number;
+        // this.drawCount = number % this.numberVertices;
+        this.line.geometry.instanceCount = number - 1;
+    }
+    public setDrawIndex(number: number) {
+        this.drawCount = number * (Config.routes.lineSegments + 1);
+        // this.drawCount = number % this.numberVertices;
+        this.line.geometry.instanceCount = this.drawCount;
+    }
+
+    constructor(routeData: Array<Poi>, steps: number, phase: number) {
         this.line = undefined;
         this.curve = undefined;
         this.vertices = getVertices(routeData);
@@ -56,37 +99,11 @@ export default class RouteLine {
                 true
             );
         } else {
-            this.line = this.getColoredBufferLine(this.vertices, steps, phase);
+            this.line = this.getColoredBufferLine(steps, phase);
         }
-
-        this.drawPoi = function (index) {
-            const range = index * (Config.routes.lineSegments + 1);
-            this.line.geometry.instanceCount = range - 1;
-        };
-
-        this.setDrawProgress = function (percent) {
-            // const normalizedProgress = this.drawCount / this.numberVertices;
-            const drawRamge = percent * this.numberVertices;
-            this.line.geometry.instanceCount = drawRamge;
-            // console.log(
-            //     this.numberVertices,
-            //     routeData.length,
-            //     (routeData.length - 1) * (Config.routes.lineSegments + 1)
-            // );
-        };
-        this.setDrawCount = function (number) {
-            this.drawCount = number;
-            // this.drawCount = number % this.numberVertices;
-            this.line.geometry.instanceCount = number - 1;
-        };
-        this.setDrawIndex = function (number) {
-            this.drawCount = number * (Config.routes.lineSegments + 1);
-            // this.drawCount = number % this.numberVertices;
-            this.line.geometry.instanceCount = this.drawCount;
-        };
     }
 
-    get numberVertices() {
+    get numberVertices(): number {
         return this.vertices.length;
     }
 
@@ -118,7 +135,7 @@ export default class RouteLine {
         }
     }
 
-    rainbow(delta) {
+    rainbow(delta: number) {
         const steps = 1;
         const phase = 0.9;
 
@@ -130,7 +147,7 @@ export default class RouteLine {
         this.colorWheel = (this.colorWheel + 3) % numberVertices;
         // console.log(colorWheel);
         // this.positions = new Float32Array( numberVertices * 3 ); // 3 vertices per point
-        const colors = new Float32Array(numberVertices * 3);
+        this.colors = new Float32Array(numberVertices * 3);
         // this.colors.forEach((vertice, i) => {
         // this.line.geometry.vertices.forEach((vertice, i) => {
         for (let i = 0; i < numberVertices; i++) {
@@ -143,9 +160,9 @@ export default class RouteLine {
                 i === this.colorWheel + 10
             ) {
                 const highlightcolor = new Color(0xffffff);
-                colors[i * 3] = highlightcolor.r;
-                colors[i * 3 + 1] = highlightcolor.g;
-                colors[i * 3 + 2] = highlightcolor.b;
+                this.colors[i * 3] = highlightcolor.r;
+                this.colors[i * 3 + 1] = highlightcolor.g;
+                this.colors[i * 3 + 2] = highlightcolor.b;
             } else {
                 // this.positions[ i * 3 ] = vertice.x;
                 // this.positions[ i * 3 + 1 ] = vertice.y;
@@ -154,21 +171,21 @@ export default class RouteLine {
                     makeColorGradient(i, frequency, undefined, undefined, phase)
                 );
                 // color.set(0x883300);
-                colors[i * 3] = color.r;
-                colors[i * 3 + 1] = color.g;
-                colors[i * 3 + 2] = color.b;
+                this.colors[i * 3] = color.r;
+                this.colors[i * 3 + 1] = color.g;
+                this.colors[i * 3 + 2] = color.b;
             }
         }
 
-        return colors;
+        return this.colors;
     }
 
-    updateColors(delta) {
+    updateColors(delta: number) {
         const geometry = this.line.geometry;
         // Put your drawing code here
         const colors = this.rainbow(delta);
-        // geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
-        geometry.setColors(colors);
+        geometry.setAttribute("color", new BufferAttribute(colors, 3));
+        // geometry.setColors(colors);
     }
 
     drawFull() {
@@ -180,7 +197,7 @@ export default class RouteLine {
         }
     }
 
-    build(vertices, steps, phase) {
+    build(vertices: Array<THREE.Vector3>, steps: number, phase: number) {
         // calculate Positions and Colors
         // based on steps and color phase
         const numberVertices = vertices.length;
@@ -205,7 +222,13 @@ export default class RouteLine {
         });
     }
 
-    getThickLine(vertices, steps, phase, linewidth, CMR) {
+    getThickLine(
+        vertices: Array<THREE.Vector3>,
+        steps: number,
+        phase: number,
+        linewidth: number,
+        CMR: boolean
+    ) {
         if (CMR) {
             const curve = new CatmullRomCurve3(vertices);
             this.curve = curve;
@@ -226,7 +249,7 @@ export default class RouteLine {
         const lineMaterial = new LineMaterial({
             color: 0xffffff,
             linewidth: linewidth, // in pixels
-            vertexColors: VertexColors,
+            vertexColors: true,
             resolution: new Vector2(window.innerWidth, window.innerHeight),
             // resolution:  // to be set by renderer, eventually
             dashed: false,
@@ -240,10 +263,10 @@ export default class RouteLine {
         window.addEventListener(
             "resize",
             () => {
-                line.material.resolution.set(
-                    window.innerWidth,
-                    window.innerHeight
-                );
+                // line.material.resolution.set(
+                //     window.innerWidth,
+                //     window.innerHeight
+                // );
             },
             false
         );
@@ -257,8 +280,8 @@ export default class RouteLine {
         return line;
     }
 
-    getColoredBufferLine(steps, phase) {
-        this.build(steps, phase);
+    getColoredBufferLine(steps: number, phase: number) {
+        this.build(this.vertices, steps, phase);
 
         // geometry
         const geometry = new BufferGeometry();
@@ -270,7 +293,7 @@ export default class RouteLine {
 
         // material
         const lineMaterial = new LineBasicMaterial({
-            vertexColors: VertexColors,
+            vertexColors: true,
         });
 
         // line

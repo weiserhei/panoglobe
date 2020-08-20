@@ -12,6 +12,6 @@
         // Allows you to access non-constant properties, such as object[keyVar]
         "suppressImplicitAnyIndexErrors": true
     },
-    "include": ["./src/**/*.ts"],
+    "include": ["./src/**/*.ts", "./src/js/interfaces/*.ts"],
     "exclude": ["node_modules"]
 }
