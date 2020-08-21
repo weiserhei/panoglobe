@@ -56,6 +56,14 @@ export default class RouteLine {
     private positions: Float32Array;
     private colors: Float32Array;
 
+    set drawProgress(value: number) {
+        this.setDrawProgress(value);
+    }
+
+    get drawProgress(): number {
+        return this.line.geometry.instanceCount;
+    }
+
     public drawPoi(index: number) {
         const range = index * (Config.routes.lineSegments + 1);
         this.line.geometry.instanceCount = range - 1;

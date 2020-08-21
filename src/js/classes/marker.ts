@@ -14,7 +14,8 @@ export default class Marker {
     public setVisible: any;
     public addInfoBox: any;
     public setActive: any;
-    public update: any;
+    public update: (camera: THREE.Camera, delta: number) => void;
+    public spawn: () => any;
 
     constructor(
         public poi: Poi,
@@ -104,7 +105,12 @@ export default class Marker {
             });
         };
 
-        this.update = function (camera: THREE.Camera) {
+        this.spawn = function () {
+            // label.animation();
+            return label.getSpawnTween;
+        };
+
+        this.update = function (camera: THREE.Camera, delta) {
             // Like Sketchfab
             // https://manu.ninja/webgl-three-js-annotations
             this.mesh.getWorldPosition(meshVector);

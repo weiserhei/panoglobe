@@ -2,7 +2,7 @@
  * Route Class
  * create the Route
  */
-
+import TWEEN from "@tweenjs/tween.js";
 import { Color } from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
@@ -88,6 +88,33 @@ export default class Route {
         // this.routeLine.setDrawCount(this.routeLine.numberVertices);
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
+
+        this.marker.forEach((m, index) => {
+            // drop marker delayed
+            const t = m.spawn();
+            t.delay(100 * index);
+            t.start();
+        });
+
+        this.routeLine.drawProgress = 0;
+        const test = { drawProgress: 0 };
+        // @ts-ignore
+        new TWEEN.Tween(test)
+            // @ts-ignore
+            .to({ drawProgress: 1 }, 3000)
+            // .easing( TWEEN.Easing.Circular.InOut )
+            // .easing( TWEEN.Easing.Quintic.InOut )
+            // .easing(TWEEN.Easing.Cubic.InOut)
+            .easing(TWEEN.Easing.Circular.Out)
+            // .easing(easing || Config.easing)
+            .onStart(() => {})
+            .onUpdate((value: any) => {
+                this.routeLine.drawProgress = value.drawProgress;
+            })
+            // .repeat(Infinity)
+            .onComplete(() => {})
+            // @ts-ignore
+            .start();
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {
@@ -206,7 +233,7 @@ export default class Route {
         this.routeLine.line.visible = value;
     }
 
-    update(delta: number, camera: THREE.Camera) {
+    public update(delta: number, camera: THREE.Camera) {
         this.marker.forEach((marker) => {
             marker.update(camera, delta);
         });
@@ -217,13 +244,13 @@ export default class Route {
         }
     }
 
-    get runAnimation() {
-        return this.animate;
-    }
+    // get runAnimation() {
+    //     return this.animate;
+    // }
 
-    set pauseAnimation(value: boolean) {
-        this.animate = !value;
-    }
+    // set pauseAnimation(value: boolean) {
+    //     this.animate = !value;
+    // }
 
     // animateRoute(delta: number) {
     //     let speed = delta * 30;

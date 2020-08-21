@@ -90,8 +90,8 @@ export default class RouteManager {
                 // select last Marker on first route, and first marker on following routes
                 const index =
                     this.routes.length > 1 ? 0 : route.marker.length - 1;
-                // const marker = route.marker[index];
-                const marker = route.marker[0];
+                const marker = route.marker[index];
+                // const marker = route.marker[0];
                 controls.moveIntoCenter(
                     marker.poi.lat,
                     marker.poi.lng,

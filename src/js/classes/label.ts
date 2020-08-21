@@ -1,12 +1,39 @@
+import TWEEN from "@tweenjs/tween.js";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import "./../../css/label.css";
 // import * as $ from "jquery";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
+function spawn2(label: CSS2DObject, mesh: THREE.Mesh) {
+    label.position.y += 15;
+
+    return (
+        // @ts-ignore
+        new TWEEN.Tween(label.position)
+            // @ts-ignore
+            .to({ y: mesh.position.y }, 1000)
+            // .easing( TWEEN.Easing.Circular.InOut )
+            // .easing( TWEEN.Easing.Quintic.InOut )
+            // .easing(TWEEN.Easing.Cubic.InOut)
+            .easing(TWEEN.Easing.Bounce.Out)
+            // .easing(easing || Config.easing)
+            .onStart(() => {
+                // this.enabled = false;
+            })
+            // .repeat(Infinity)
+            .onComplete(() => {})
+        // @ts-ignore
+        // .start()
+    );
+}
+
 export default class Label {
     private visible: boolean;
     public domElement: HTMLElement;
+    public animation: () => void;
+    public getSpawnTween: () => any;
+
     constructor(text: string, scene: THREE.Scene, followMesh: THREE.Mesh) {
         this.visible = true;
         // this._box = document.createElement('div');
@@ -33,10 +60,17 @@ export default class Label {
 
         domElement.appendChild(pinIcon.node[0]);
 
-        var css2dlabel = new CSS2DObject(domElement);
+        const css2dlabel = new CSS2DObject(domElement);
         css2dlabel.position.copy(followMesh.position);
-        // css2dlabel.position.y += 2;
+        // css2dlabel.position.y += 5;
         scene.add(css2dlabel);
+
+        // spawn(css2dlabel, followMesh);
+
+        // @ts-ignore
+        this.getSpawnTween = spawn2(css2dlabel, followMesh);
+
+        this.animation = function () {};
 
         // const boundingRect = this.box.getBoundingClientRect();
         // const left = (0 - boundingRect.width + boundingRect.width / 2);
