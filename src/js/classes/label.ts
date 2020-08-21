@@ -5,11 +5,6 @@ import $ from "jquery";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
-// function spawn2(label: CSS2DObject, mesh: THREE.Mesh) {
-//     return (
-//     );
-// }
-
 export default class Label {
     private visible: boolean;
     public domElement: HTMLElement;

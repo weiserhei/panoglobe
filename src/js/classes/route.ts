@@ -15,6 +15,7 @@ import RouteManager from "./routeManager";
 export default class Route {
     private animate: boolean;
     private animationPace: number;
+    private routeAnimation: (value: any) => void;
 
     public activeMarker: Marker;
     public marker: Array<Marker>;
@@ -45,7 +46,7 @@ export default class Route {
         this.visible = false;
         this.showLabels1 = true;
         this.animate = false;
-        this.animationPace = 200;
+        this.animationPace = 100;
 
         // const poi = this.routeData.filter((c) => c.adresse);
 
@@ -91,32 +92,71 @@ export default class Route {
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
 
+        let lastActive: number = undefined;
+        this.routeAnimation = function (value: any) {
+            this.routeLine.setDrawIndex(value.drawIndex);
+
+            const result = this.marker.find((marker: Marker) => {
+                return marker.index === Math.floor(value.drawIndex);
+            });
+
+            if (result === undefined) return;
+            if (result.index === 0 && lastActive === undefined) {
+                lastActive = 0;
+                const next = this.getNext(result);
+                controls.moveIntoCenter(
+                    next.poi.lat,
+                    next.poi.lng,
+                    1000,
+                    undefined,
+                    250,
+                    () => {
+                        // marker.showLabel();
+                    }
+                );
+            } else if (result.index > lastActive) {
+                // debounce
+                lastActive = result.index;
+                // this.setActiveMarker(result);
+                const tween = result.spawn();
+                tween.start();
+                result.showLabel();
+
+                const next = this.getNext(result);
+                if (!next) return;
+                controls.moveIntoCenter(
+                    next.poi.lat,
+                    next.poi.lng,
+                    1000,
+                    undefined,
+                    300,
+                    () => {
+                        // marker.showLabel();
+                    }
+                );
+            }
+        };
+
         this.runAnimation = function () {
             const marker = this.marker[0];
+            if (this.activeMarker) {
+                this.setActiveMarker(this.activeMarker);
+            }
             // hide label
-            this.showLabels = false;
+            this.marker.forEach((marker: Marker) => {
+                // marker.showLabel(false);
+                marker.setVisible(false);
+            });
             // show in label 1
             // hide route
             this.routeLine.setDrawProgress(0);
             // this.setActiveMarker(marker);
-            // move camera to start
-            controls.moveIntoCenter(
-                marker.poi.lat,
-                marker.poi.lng,
-                1000,
-                undefined,
-                300,
-                () => {
-                    marker.showLabel();
-                }
-            );
 
+            // slow down tween: https://github.com/tweenjs/tween.js/issues/105#issuecomment-34570228
             // start draw route progress
             this.routeLine.setDrawIndex(0);
             const test = { drawIndex: 0 };
-            let lastActive: number = undefined;
-            // @ts-ignore
-            new TWEEN.Tween(test)
+            const t = new TWEEN.Tween(test)
                 // @ts-ignore
                 .to(
                     { drawIndex: routeData.length },
@@ -125,47 +165,7 @@ export default class Route {
                 // .easing( TWEEN.Easing.Circular.InOut )
                 .onStart(() => {})
                 .onUpdate((value: any) => {
-                    this.routeLine.setDrawIndex(value.drawIndex);
-
-                    const result = this.marker.find((marker: Marker) => {
-                        return marker.index === Math.floor(value.drawIndex);
-                    });
-
-                    if (result === undefined) return;
-                    if (result.index === 0 && lastActive === undefined) {
-                        lastActive = 0;
-                        const next = this.getNext(result);
-                        controls.moveIntoCenter(
-                            next.poi.lat,
-                            next.poi.lng,
-                            1000,
-                            undefined,
-                            250,
-                            () => {
-                                // marker.showLabel();
-                            }
-                        );
-                    } else if (result.index > lastActive) {
-                        // debounce
-                        lastActive = result.index;
-                        // this.setActiveMarker(result);
-                        const tween = result.spawn();
-                        tween.start();
-                        result.showLabel();
-
-                        const next = this.getNext(result);
-                        if (!next) return;
-                        controls.moveIntoCenter(
-                            next.poi.lat,
-                            next.poi.lng,
-                            1000,
-                            undefined,
-                            300,
-                            () => {
-                                // marker.showLabel();
-                            }
-                        );
-                    }
+                    this.routeAnimation(value);
                 })
                 // .repeat(Infinity)
                 .onComplete(() => {
@@ -174,11 +174,35 @@ export default class Route {
                         marker.showLabel(true);
                     });
                     this.routeLine.drawProgress = 1;
+                    lastActive = undefined;
+
+                    controls.moveIntoCenter(
+                        this.marker[this.marker.length - 1].poi.lat,
+                        this.marker[this.marker.length - 1].poi.lng,
+                        2000,
+                        undefined,
+                        600
+                    );
                 })
-                .delay(200)
-                // @ts-ignore
-                .start();
+                .delay(2000);
+            // @ts-ignore
+            // .start();
+
+            // move camera to start
+            controls.moveIntoCenter(
+                marker.poi.lat,
+                marker.poi.lng,
+                2000,
+                undefined,
+                300,
+                () => {
+                    marker.showLabel();
+                    // @ts-ignore
+                    t.start();
+                }
+            );
         };
+        folder.add(this, "animationPace").min(10).max(300).step(10);
         folder.add(this, "runAnimation");
 
         this.spawn = function () {
@@ -318,7 +342,7 @@ export default class Route {
     set showLabels(value) {
         this.showLabels1 = value;
         this.marker.forEach((marker) => {
-            marker.setVisible(value);
+            marker.showLabel(value);
         });
     }
 
