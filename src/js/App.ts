@@ -96,7 +96,9 @@ class App {
         );
 
         RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
+            console.log("buildroute");
             const route = routeManager.buildRoute(x, 0.9, folder);
+            console.log("buildroute end");
             // route.then((route) => {
             //     // new Impact(globus, route);
             //     // route.showLabels = false;
