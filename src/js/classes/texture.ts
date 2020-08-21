@@ -1,6 +1,4 @@
 import { TextureLoader, Texture as THREETexture } from "three";
-// Promise polyfill for IE
-import { Promise } from "es6-promise";
 import Config from "../../data/config";
 
 import T1 from "../../textures/4k/fair_clouds_4k.jpg";

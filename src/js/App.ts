@@ -17,7 +17,7 @@ import Globus from "./classes/globus";
 import LightManager from "./classes/lightManager";
 import RouteManager from "./classes/routeManager";
 import Route from "./classes/route";
-import Impact from "./classes/impact";
+// import Impact from "./classes/impact";
 
 import Config from "../data/config";
 
@@ -58,7 +58,7 @@ class App {
         if (process.env.NODE_ENV === "development") {
             const gui = new dat.GUI({ autoPlace: false });
             var folder = gui.addFolder("GUI");
-            // folder.open();
+            folder.open();
             container.insertBefore(gui.domElement, labelRenderer.domElement);
             // labelRenderer.domElement.appendChild(gui.domElement);
             gui.domElement.classList.add(
