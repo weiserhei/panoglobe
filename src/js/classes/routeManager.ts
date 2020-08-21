@@ -38,98 +38,13 @@ export default class RouteManager {
             return getHeightData(image, scaleDivider);
         });
 
-        const ui = document.createElement("div");
-        ui.classList.add(
-            "position-absolute",
-            "fixed-bottom",
-            "m-2",
-            "mb-5",
-            "m-md-5",
-            "p-2"
-        );
-        container.appendChild(ui);
-
-        const sliderDomElement = document.createElement("div");
-        ui.appendChild(sliderDomElement);
-        const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
-
         this.buildRoute = function (routeData, phase, folder): Promise<Route> {
             return heightData.then((data) => {
-                let calculatedRouteData = calc3DPositions(
+                let calculatedRouteData: Array<Poi> = calc3DPositions(
                     routeData.gps,
                     data,
                     globusradius + 0.0
                 );
-
-                // const max =
-                //     (calculatedRouteData.length - 1) *
-                //     (Config.routes.lineSegments + 1);
-                const max = calculatedRouteData.length - 1;
-
-                const poi: Array<number> = [];
-                const strings: Array<string> = [];
-                calculatedRouteData.forEach(function (e: Poi, index: number) {
-                    if (e.adresse) poi.push(index);
-                    strings.push(e.adresse);
-                });
-                // let result = poi.map((a) => a.index);
-
-                if (slider.noUiSlider) {
-                    slider.noUiSlider.destroy();
-                }
-                const mf = new MyFormatter(strings);
-                noUiSlider.create(
-                    slider,
-                    {
-                        start: [strings.length],
-                        step: 1,
-                        connect: false,
-                        range: {
-                            min: 0,
-                            max: max,
-                        },
-                        pips: {
-                            mode: "values",
-                            values: poi,
-                            stepped: true,
-                            density: 100,
-                            format: mf,
-                        },
-                    },
-                    // @ts-ignore
-                    true
-                );
-                slider.noUiSlider.on("set", function (value: any) {
-                    controls.moveIntoCenter(
-                        calculatedRouteData[Math.floor(value)].lat,
-                        calculatedRouteData[Math.floor(value)].lng,
-                        500
-                    );
-                });
-
-                slider.noUiSlider.on("slide", function (value: any) {
-                    route.routeLine.setDrawIndex(value);
-                });
-
-                var pips = slider.querySelectorAll(".noUi-value");
-
-                function clickOnPip() {
-                    const value = Number(this.getAttribute("data-value"));
-                    slider.noUiSlider.set(value);
-                    route.routeLine.setDrawIndex(value);
-                    controls.moveIntoCenter(
-                        // routeData.gps[Math.floor(value)].lat,
-                        // routeData.gps[Math.floor(value)].lng,
-                        calculatedRouteData[Math.floor(value)].lat,
-                        calculatedRouteData[Math.floor(value)].lng,
-                        1000
-                    );
-                }
-
-                for (var i = 0; i < pips.length; i++) {
-                    // pips[i].style.cursor = "pointer";
-                    pips[i].addEventListener("click", clickOnPip);
-                }
 
                 const route = new Route(
                     scene,
@@ -179,7 +94,98 @@ export default class RouteManager {
                 const index =
                     this.routes.length > 1 ? 0 : route.marker.length - 1;
                 const marker = route.marker[index];
-                controls.moveIntoCenter(marker.poi.lat, marker.poi.lng, 2000);
+                controls.moveIntoCenter(
+                    marker.poi.lat,
+                    marker.poi.lng,
+                    2000,
+                    undefined,
+                    undefined,
+                    function () {
+                        // build slider
+                        const poi: Array<number> = [];
+                        const strings: Array<string> = [];
+                        calculatedRouteData.forEach(function (
+                            e: Poi,
+                            index: number
+                        ) {
+                            if (e.adresse) poi.push(index);
+                            strings.push(e.adresse);
+                        });
+                        // let result = poi.map((a) => a.index);
+
+                        const ui = document.createElement("div");
+                        ui.classList.add(
+                            "position-absolute",
+                            "fixed-bottom",
+                            "m-2",
+                            "mb-5",
+                            "m-md-5",
+                            "p-2"
+                        );
+                        container.appendChild(ui);
+
+                        const sliderDomElement = document.createElement("div");
+                        const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
+                        ui.appendChild(sliderDomElement);
+                        if (slider.noUiSlider) {
+                            slider.noUiSlider.destroy();
+                        }
+                        noUiSlider.create(
+                            slider,
+                            {
+                                start: [strings.length],
+                                step: 1,
+                                connect: false,
+                                range: {
+                                    min: 0,
+                                    max: calculatedRouteData.length - 1,
+                                },
+                                pips: {
+                                    mode: "values",
+                                    values: poi,
+                                    stepped: true,
+                                    density: 100,
+                                    format: new MyFormatter(strings),
+                                },
+                            },
+                            // @ts-ignore
+                            true
+                        );
+                        slider.noUiSlider.on("set", function (value: any) {
+                            controls.moveIntoCenter(
+                                calculatedRouteData[Math.floor(value)].lat,
+                                calculatedRouteData[Math.floor(value)].lng,
+                                500
+                            );
+                        });
+
+                        slider.noUiSlider.on("slide", function (value: any) {
+                            route.routeLine.setDrawIndex(value);
+                        });
+
+                        var pips = slider.querySelectorAll(".noUi-value");
+
+                        function clickOnPip() {
+                            const value = Number(
+                                this.getAttribute("data-value")
+                            );
+                            slider.noUiSlider.set(value);
+                            route.routeLine.setDrawIndex(value);
+                            controls.moveIntoCenter(
+                                // routeData.gps[Math.floor(value)].lat,
+                                // routeData.gps[Math.floor(value)].lng,
+                                calculatedRouteData[Math.floor(value)].lat,
+                                calculatedRouteData[Math.floor(value)].lng,
+                                1000
+                            );
+                        }
+
+                        for (var i = 0; i < pips.length; i++) {
+                            // pips[i].style.cursor = "pointer";
+                            pips[i].addEventListener("click", clickOnPip);
+                        }
+                    }
+                );
 
                 return route;
             });

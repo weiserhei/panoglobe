@@ -32,9 +32,9 @@ export default class Controls {
         this.moveIntoCenter = function tween(
             lat: number,
             lng: number,
-            time: number,
-            easing: any,
-            distance: number,
+            time: number = 2000,
+            easing?: any,
+            distance?: number,
             callback?: () => void
         ) {
             const phi = ((90 - lat) * Math.PI) / 180;
@@ -57,7 +57,7 @@ export default class Controls {
 
             new TWEEN.Tween(this.camera.position)
                 // @ts-ignore
-                .to(position, time || 2000)
+                .to(position, time)
                 // .easing( TWEEN.Easing.Circular.InOut )
                 // .easing( TWEEN.Easing.Quintic.InOut )
                 .easing(easing || Config.easing)

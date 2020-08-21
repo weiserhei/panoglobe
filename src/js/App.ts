@@ -97,10 +97,10 @@ class App {
 
         RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
             const route = routeManager.buildRoute(x, 0.9, folder);
-            route.then((route) => {
-                // new Impact(globus, route);
-                // route.showLabels = false;
-            });
+            // route.then((route) => {
+            //     // new Impact(globus, route);
+            //     // route.showLabels = false;
+            // });
         });
 
         if (process.env.NODE_ENV === "development") {
@@ -141,8 +141,7 @@ class App {
 
         function animate(): void {
             requestAnimationFrame(animate);
-            const delta = clock.getDelta();
-            update(delta);
+            update(clock.getDelta());
             labelRenderer.render(scene, camera.threeCamera);
             renderer.render(scene, camera.threeCamera);
         }
