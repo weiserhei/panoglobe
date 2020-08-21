@@ -94,6 +94,7 @@ export default class Route {
             const t = m.spawn();
             t.delay(100 * index);
             t.start();
+            console.log("running marker animation");
         });
 
         this.routeLine.drawProgress = 0;

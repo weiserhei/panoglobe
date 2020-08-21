@@ -137,6 +137,7 @@ class App {
             // skybox.setTexture(texture.textures.uvtest);
             skybox.setTexture(textureObject["stars"]);
             animate();
+            routeManager.spawn();
         });
 
         function animate(): void {

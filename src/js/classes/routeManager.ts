@@ -18,6 +18,7 @@ export default class RouteManager {
         phase: number,
         folder: any
     ) => Promise<Route>;
+    public spawn: () => void;
     constructor(
         scene: THREE.Scene,
         container: HTMLElement,
@@ -34,6 +35,11 @@ export default class RouteManager {
             const scaleDivider = 20;
             return getHeightData(image, scaleDivider);
         });
+
+        this.spawn = function () {
+            // this.routes
+            console.log("spawn");
+        };
 
         this.buildRoute = function (routeData, phase, folder): Promise<Route> {
             return heightData.then((data) => {
