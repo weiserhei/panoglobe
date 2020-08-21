@@ -14,7 +14,7 @@ import {
     Group,
 } from "three";
 
-import Preloader from "../classes/Preloader";
+import Preloader from "../classes/preloader";
 import Config from "../../data/config";
 // import { Water } from 'three-full';
 // import { Water2 } from 'three-full';
