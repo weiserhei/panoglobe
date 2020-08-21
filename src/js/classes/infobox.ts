@@ -1,16 +1,28 @@
 import { Vector3 } from "three";
-import { numberWithCommas } from "./../utils/panoutils";
-import { library, icon } from "@fortawesome/fontawesome-svg-core";
+import { numberWithCommas } from "../utils/panoutils";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export default class InfoBox {
-    constructor(parentDomNode, controls, city) {
-        this.visible = false;
+import Controls from "./controls";
 
+export default class InfoBox {
+    private visible: boolean;
+    private box: HTMLElement;
+    private screenVector: THREE.Vector3;
+    public nextButton: HTMLElement;
+    public prevButton: HTMLElement;
+    public closeButton: HTMLElement;
+    constructor(
+        private parentDomNode: HTMLElement,
+        controls: Controls,
+        city: Poi
+    ) {
+        this.visible = false;
+        this.screenVector = new Vector3();
         this.box = document.createElement("div");
         parentDomNode.appendChild(this.box);
-        const lng = (Math.round(city.lng * 100) / 100).toFixed(2);
-        const lat = (Math.round(city.lat * 100) / 100).toFixed(2);
+        const lng = (Math.round(parseInt(city.lng) * 100) / 100).toFixed(2);
+        const lat = (Math.round(parseInt(city.lat) * 100) / 100).toFixed(2);
 
         let text = "<div class='labelHead'>";
         text += "<b>" + city.adresse + "</b>";
@@ -45,10 +57,12 @@ export default class InfoBox {
         this.closeButton = document.createElement("button");
         this.closeButton.className =
             "btn btn-sm btn-danger shadow-none closeButton position-absolute";
-        this.closeButton.innerHTML = icon(faTimes, {
-            styles: { filter: "drop-shadow(0px 0px 1px rgba(0,0,0))" },
-            classes: ["fa-lg"],
-        }).html;
+        this.closeButton.innerHTML = String(
+            icon(faTimes, {
+                styles: { filter: "drop-shadow(0px 0px 1px rgba(0,0,0))" },
+                classes: ["fa-lg"],
+            }).html
+        );
         this.box.appendChild(this.closeButton);
 
         function handleMouseUp() {
@@ -73,35 +87,13 @@ export default class InfoBox {
             },
             false
         );
-
-        const screenVector = new Vector3();
-
-        this.box.updatePosition = function update(camera, followMesh) {
-            // overlay is visible
-            screenVector.copy(followMesh.position).project(camera);
-
-            const posx = ((1 + screenVector.x) * parentDomNode.offsetWidth) / 2;
-            const posy =
-                ((1 - screenVector.y) * parentDomNode.offsetHeight) / 2;
-            const boundingRect = this.getBoundingClientRect();
-
-            // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
-            this.style.transform =
-                "translate(" +
-                Math.floor(posx - boundingRect.width - 28) +
-                "px, " +
-                Math.floor(posy - 23) +
-                "px)";
-            // this.style.left = (posx - boundingRect.width - 28) + 'px';
-            // this.style.top = (posy - 23) + 'px';
-        };
     }
 
     get isVisible() {
         return this.visible;
     }
 
-    set isVisible(value) {
+    set isVisible(value: boolean) {
         this.visible = value;
         if (value) {
             this.box.style.display = "block";
@@ -112,7 +104,12 @@ export default class InfoBox {
         }
     }
 
-    update(camera, followMesh, ocluded, active) {
+    public update(
+        camera: THREE.Camera,
+        followMesh: THREE.Mesh,
+        ocluded: boolean,
+        active: boolean
+    ) {
         // hide label when ocluded
         if (ocluded && this.isVisible && active) {
             this.isVisible = false;
@@ -121,7 +118,26 @@ export default class InfoBox {
         }
 
         if (this.isVisible) {
-            this.box.updatePosition(camera, followMesh);
+            // overlay is visible
+            this.screenVector.copy(followMesh.position).project(camera);
+
+            const posx =
+                ((1 + this.screenVector.x) * this.parentDomNode.offsetWidth) /
+                2;
+            const posy =
+                ((1 - this.screenVector.y) * this.parentDomNode.offsetHeight) /
+                2;
+            const boundingRect = this.box.getBoundingClientRect();
+
+            // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
+            this.box.style.transform =
+                "translate(" +
+                Math.floor(posx - boundingRect.width - 28) +
+                "px, " +
+                Math.floor(posy - 23) +
+                "px)";
+            // this.style.left = (posx - boundingRect.width - 28) + 'px';
+            // this.style.top = (posy - 23) + 'px';
         }
     }
 

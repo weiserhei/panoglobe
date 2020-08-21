@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        // Allow default imports from modules with no default export (tween.js)
+        // "allowSyntheticDefaultImports": true
+        "esModuleInterop": true,
+        // Gives error if there are implied "<any>" types.
+        "noImplicitAny": true,
+        // Allows you to access non-constant properties, such as object[keyVar]
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "include": ["./src/**/*.ts", "./src/js/interfaces/*.ts"],
+    "exclude": ["node_modules"]
+}

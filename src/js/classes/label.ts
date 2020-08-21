@@ -5,7 +5,9 @@ import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
 export default class Label {
-    constructor(text, scene, followMesh) {
+    private visible: boolean;
+    public domElement: HTMLElement;
+    constructor(text: string, scene: THREE.Scene, followMesh: THREE.Mesh) {
         this.visible = true;
         // this._box = document.createElement('div');
         // this._box.className = "htmlLabel badge badge-dark";
@@ -43,27 +45,36 @@ export default class Label {
         // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
         // this.box.style.transform = 'translate(0px, ' + Math.floor(top) + 'px)';
 
-        this.update = function (ocluded, dot) {
-            // overlay is visible
-            if (this.visible) {
-                if (!ocluded) {
-                    domElement.style.opacity = 1;
-                    // $(this.box).fadeIn(200);
-                } else {
-                    // HIDE EACH BLOB+LABEL IF CAMERA CANT SEE IT (I.E. WHEN IT IS BEHIND THE GLOBE)
-                    domElement.style.opacity = 1 + dot * 4;
-                    // $(this.box).fadeOut(200);
-                }
-            }
-        };
+        // this.setVisible = function (value: boolean) {
+        //     this.visible = value;
+        //     if (value === true) {
+        //         domElement.style.visibility = "visible";
+        //     } else {
+        //         domElement.style.visibility = "hidden";
+        //     }
+        // };
+    }
 
-        this.setVisible = function (value) {
-            this.visible = value;
-            if (value === true) {
-                domElement.style.visibility = "visible";
+    public setVisible(value: boolean): void {
+        this.visible = value;
+        if (value === true) {
+            this.domElement.style.visibility = "visible";
+        } else {
+            this.domElement.style.visibility = "hidden";
+        }
+    }
+
+    public update(ocluded: boolean, dot: number): void {
+        // overlay is visible
+        if (this.visible) {
+            if (!ocluded) {
+                this.domElement.style.opacity = String(1);
+                // $(this.box).fadeIn(200);
             } else {
-                domElement.style.visibility = "hidden";
+                // HIDE EACH BLOB+LABEL IF CAMERA CANT SEE IT (I.E. WHEN IT IS BEHIND THE GLOBE)
+                this.domElement.style.opacity = String(1 + dot * 4);
+                // $(this.box).fadeOut(200);
             }
-        };
+        }
     }
 }

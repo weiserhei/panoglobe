@@ -5,13 +5,12 @@ import {
     BackSide,
     RepeatWrapping,
 } from "three";
-// import * as THREE from 'three'
 import Config from "../../data/config";
 
-// Class that creates and updates the main camera
+// SKYBOX
 export default class Skybox {
-    constructor(scene) {
-        // SKYBOX
+    private mesh: THREE.Mesh;
+    constructor(scene: THREE.Scene) {
         // const geometry = new SphereBufferGeometry(
         // Config.galaxy.radius, Config.galaxy.widthSegments, Config.galaxy.heightSegments
         // );
@@ -33,17 +32,19 @@ export default class Skybox {
         scene.add(this.mesh);
     }
 
-    setTexture(texture) {
+    public setTexture(texture: THREE.Texture) {
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.offset.set(0, 0.5);
         texture.repeat.set(2, 2);
 
-        this.mesh.material.map = texture;
-        this.mesh.material.needsUpdate = true;
+        // wow, typescript, much smart
+        // TS2339: Property 'map' does not exist on type 'Material | Material[]'.
+        (this.mesh.material as MeshBasicMaterial).map = texture;
+        (this.mesh.material as MeshBasicMaterial).needsUpdate = true;
     }
 
-    update(delta) {
+    public update(delta: number) {
         this.mesh.rotation.y += delta * Config.galaxy.rotationSpeed;
     }
 }

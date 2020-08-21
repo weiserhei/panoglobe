@@ -3,7 +3,8 @@ import Config from "../../data/config";
 
 // Class that creates and updates the main camera
 export default class Camera {
-    constructor(renderer) {
+    public threeCamera: THREE.PerspectiveCamera;
+    constructor(renderer: THREE.Renderer) {
         const fov = Config.camera.fov;
         const near = Config.camera.near;
         const far = Config.camera.far;
@@ -28,7 +29,7 @@ export default class Camera {
         );
     }
 
-    updateSize(renderer) {
+    updateSize(renderer: THREE.Renderer) {
         // Multiply by dpr in case it is retina device
         // const width = renderer.domElement.width * Config.dpr;
         // const height = renderer.domElement.height * Config.dpr;

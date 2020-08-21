@@ -8,22 +8,22 @@ import {
     IcosahedronBufferGeometry,
     Color,
     BackSide,
-    DoubleSide,
     AdditiveBlending,
     Vector2,
     Matrix4,
     Group,
 } from "three";
 
-import Config from "./../../data/config";
+import Preloader from "../classes/Preloader";
+import Config from "../../data/config";
 // import { Water } from 'three-full';
 // import { Water2 } from 'three-full';
-import { drawThreeGeo } from "./../utils/threeGeoJSON";
-import AtmosphereMaterial from "./../utils/atmosphereMaterial";
+import { drawThreeGeo } from "../utils/threeGeoJSON";
+import AtmosphereMaterial from "../utils/atmosphereMaterial";
 
-import geoJSON from "./../../data/countries_states.geojson";
+import geoJSON from "../../data/countries_states.geojson";
 
-function getClouds(geometry) {
+function getClouds(geometry: THREE.IcosahedronBufferGeometry): THREE.Mesh {
     const cloudMaterial = new MeshBasicMaterial({
         // map: this.textures.clouds,
         transparent: true,
@@ -42,7 +42,7 @@ function getClouds(geometry) {
     return cloudSphere;
 }
 
-function getInnerGlow(geometry) {
+function getInnerGlow(geometry: THREE.IcosahedronBufferGeometry) {
     // inner Glow
     const color = new Color(Config.globus.innerGlow.color);
     const material = new AtmosphereMaterial(color);
@@ -57,7 +57,7 @@ function getInnerGlow(geometry) {
     return mesh;
 }
 
-function getOuterGlow(geometry) {
+function getOuterGlow(geometry: THREE.IcosahedronBufferGeometry) {
     // outer Glow
     const color = new Color(Config.globus.outerGlow.color);
     const material = new AtmosphereMaterial(color);
@@ -75,9 +75,13 @@ function getOuterGlow(geometry) {
 
 // Class that creates the globe
 export default class Globus {
-    constructor(scene, preloader) {
-        this.preloader = preloader;
-
+    public material: THREE.MeshPhongMaterial;
+    public mesh: THREE.Mesh;
+    public clouds: THREE.Mesh;
+    public borderlines: THREE.Group;
+    public setNight: (value: boolean) => void;
+    public textures: object;
+    constructor(private scene: THREE.Scene, preloader: Preloader) {
         const geometry = new IcosahedronBufferGeometry(
             Config.globus.radius,
             Config.globus.detail
@@ -116,9 +120,7 @@ export default class Globus {
             this.mesh.add(this.clouds);
         }
 
-        scene.add(this.mesh);
-
-        this.scene = scene;
+        this.scene.add(this.mesh);
 
         // borderlines.renderOrder = 2;
         const borderlines = new Group();
@@ -151,6 +153,33 @@ export default class Globus {
         // }).fail(function(x) {
         //   console.log( "error",x );
         // });
+
+        this.setNight = function (value: boolean) {
+            preloader.setInline(true);
+            this.night = value;
+
+            if (value) {
+                if (
+                    this.textures[Config.globus.material["nightmap"]] ===
+                    undefined
+                ) {
+                    const textureLoader = preloader.textureLoader;
+                    const url = "./textures/4k/Night-Lights-4k.jpg";
+                    this.textures.night = textureLoader.load(
+                        url,
+                        (texture: THREE.Texture) => {
+                            this.material.map = texture;
+                        }
+                    );
+                } else {
+                    this.material.map = this.textures[
+                        Config.globus.material["nightmap"]
+                    ];
+                }
+            } else {
+                this.material.map = this.textures[Config.globus.material.map];
+            }
+        };
     }
 
     get borders() {
@@ -161,28 +190,7 @@ export default class Globus {
         this.borderlines.visible = value;
     }
 
-    setNight(value) {
-        this.preloader.inline = true;
-        this.night = value;
-
-        if (value) {
-            if (this.textures[Config.globus.material.nightmap] === undefined) {
-                const textureLoader = this.preloader.textureLoader;
-                const url = "./textures/4k/Night-Lights-4k.jpg";
-                this.textures.night = textureLoader.load(url, (texture) => {
-                    this.material.map = texture;
-                });
-            } else {
-                this.material.map = this.textures[
-                    Config.globus.material.nightmap
-                ];
-            }
-        } else {
-            this.material.map = this.textures[Config.globus.material.map];
-        }
-    }
-
-    setTextures(textures) {
+    setTextures(textures: object) {
         this.textures = textures;
 
         this.material.map = textures[Config.globus.material.map];
@@ -191,7 +199,7 @@ export default class Globus {
         this.material.normalMap = textures[Config.globus.material.normalMap];
         this.material.displacementMap =
             textures[Config.globus.material.displacementMap];
-        this.mesh.material.needsUpdate = true;
+        (this.mesh.material as MeshPhongMaterial).needsUpdate = true;
 
         // material for shadows on displacement
         // this.mesh.customDepthMaterial = new THREE.MeshDepthMaterial( {
@@ -202,8 +210,9 @@ export default class Globus {
         // } );
 
         if (Config.globus.clouds.enabled === true) {
-            this.clouds.material.map = textures.clouds;
-            this.clouds.material.needsUpdate = true;
+            (this.clouds.material as MeshBasicMaterial).map =
+                textures["clouds"];
+            (this.clouds.material as MeshBasicMaterial).needsUpdate = true;
         }
 
         // var loader = new CubeTextureLoader();

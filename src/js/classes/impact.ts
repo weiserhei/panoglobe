@@ -2,19 +2,21 @@
  * from https://codepen.io/prisoner849/pen/ErwYqM
  * https://discourse.threejs.org/t/impact-shock-wave/5988/9
  */
-import { Vector3, Math as THREEMath } from "three";
-import Config from "./../../data/config";
+import { Vector3, MeshPhongMaterial } from "three";
+import Config from "../../data/config";
 import TWEEN from "@tweenjs/tween.js";
+import Globus from "./globus";
+import Route from "./route";
 
 export default class Impacts {
-    constructor(globus, route) {
+    constructor(globus: Globus, route: Route) {
         // console.log(route);
         // route.marker
         const maxImpactAmount = route.marker.length;
-        let materialShader = undefined;
-        let impactSize = 0.03;
+        let materialShader: THREE.Shader = undefined;
+        let impactSize = 0.05;
         // init uniforms impacts array
-        const impacts = [];
+        const impacts: Array<object> = [];
         for (let i = 0; i < maxImpactAmount; i += 1) {
             impacts.push({
                 impactPosition: new Vector3().copy(
@@ -33,7 +35,9 @@ export default class Impacts {
         }
         // console.log(impacts);
 
-        globus.mesh.material.onBeforeCompile = (shader) => {
+        (globus.mesh.material as MeshPhongMaterial).onBeforeCompile = (
+            shader
+        ) => {
             shader.uniforms.impacts = { value: impacts };
             shader.vertexShader =
                 "varying vec3 vPosition;\n" + shader.vertexShader;
@@ -75,9 +79,9 @@ export default class Impacts {
             materialShader = shader;
         };
 
-        globus.mesh.material.needsUpdate = true;
+        (globus.mesh.material as MeshPhongMaterial).needsUpdate = true;
 
-        var tweens = [];
+        var tweens: Array<object> = [];
 
         for (let i = 0; i < maxImpactAmount; i++) {
             tweens.push({
@@ -114,14 +118,17 @@ export default class Impacts {
                                     ].impactMaxRadius =
                                         Config.globus.radius * impactSize);
                             }
+                            // @ts-ignore
                             tweens[i].runTween();
                         });
+                    // @ts-ignore
                     tween.start();
                 },
             });
         }
 
         tweens.forEach((t) => {
+            // @ts-ignore
             t.runTween();
         });
 
