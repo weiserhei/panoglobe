@@ -53,9 +53,10 @@ export default class Preloader {
         innerContainer.appendChild(loader);
 
         const style = window.getComputedStyle(progressbarContainer);
-        const padding = Number(style.paddingLeft) + Number(style.paddingRight);
+        const padding =
+            parseInt(style.paddingLeft) + parseInt(style.paddingRight);
         const barwidth =
-            Number(
+            parseInt(
                 window
                     .getComputedStyle(progressbarContainer)
                     .getPropertyValue("width")
@@ -80,7 +81,6 @@ export default class Preloader {
             // this.progressbar.style.width = 1 * this.barwidth + "px";
             // this.container.style.display = "none";
             // container.onclick = () => { $(container).fadeOut() };
-
             $(container).delay(400).fadeOut(800);
         };
 
