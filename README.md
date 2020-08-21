@@ -1,11 +1,11 @@
 # panoglobe-webpack
-Route Visualizer using `three.js` & `bootstrap`.
+Route Visualizer using `three.js`.
 
 ## Livedemo
-https://weiserhei.github.io/panoglobe-webpack/dist/
+https://weiserhei.github.io/panoglobe-webpack/
 
 ## npm
-Poorly bundled with webpack.
+Bundled with webpack.
 
 `npm i`
 
