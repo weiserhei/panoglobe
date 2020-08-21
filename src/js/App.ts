@@ -28,12 +28,7 @@ if (!WEBGL.isWebGLAvailable()) {
 }
 
 class App {
-    constructor() {
-        const loadContainer = document.createElement("div");
-        loadContainer.id = "loadcontainer";
-        document.body.appendChild(loadContainer);
-        const preloader = new Preloader(loadContainer);
-
+    constructor(textures: object) {
         const container = document.createElement("div");
         document.body.appendChild(container);
 
@@ -96,9 +91,7 @@ class App {
         );
 
         RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
-            console.log("buildroute");
             const route = routeManager.buildRoute(x, 0.9, folder);
-            console.log("buildroute end");
             // route.then((route) => {
             //     // new Impact(globus, route);
             //     // route.showLabels = false;
@@ -134,13 +127,10 @@ class App {
             folder.add(obj, "add").name("Add Route Asien");
         }
 
-        new Texture(preloader.manager).load().then((textureObject) => {
-            globus.setTextures(textureObject);
-            // skybox.setTexture(texture.textures.uvtest);
-            skybox.setTexture(textureObject["stars"]);
-            animate();
-            routeManager.spawn();
-        });
+        globus.setTextures(textures);
+        // skybox.setTexture(texture.textures.uvtest);
+        skybox.setTexture(textures["stars"]);
+        animate();
 
         function animate(): void {
             requestAnimationFrame(animate);
@@ -160,4 +150,10 @@ class App {
     }
 }
 
-new App();
+const loadContainer = document.createElement("div");
+loadContainer.id = "loadcontainer";
+document.body.appendChild(loadContainer);
+const preloader = new Preloader(loadContainer);
+new Texture(preloader.manager).load().then((textureObject) => {
+    new App(textureObject);
+});

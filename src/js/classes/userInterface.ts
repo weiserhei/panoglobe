@@ -15,30 +15,34 @@ export default class UserInterface {
         adresses: Array<string>
     ) => void;
     constructor(private container: HTMLElement, private controls: Controls) {
+        const ui = document.createElement("div");
+        ui.classList.add(
+            "position-absolute",
+            "fixed-bottom",
+            "m-2",
+            "mb-5",
+            "m-md-5",
+            "p-2"
+        );
+        container.appendChild(ui);
+        let sliderInstance: any = undefined;
+        const sliderDomElement = document.createElement("div");
+        ui.appendChild(sliderDomElement);
+
         this.createSlider = function (
             calculatedRouteData: Array<Poi>,
             routeLine: RouteLine,
             poi: Array<number>,
             adresses: Array<string>
         ) {
-            const ui = document.createElement("div");
-            ui.classList.add(
-                "position-absolute",
-                "fixed-bottom",
-                "m-2",
-                "mb-5",
-                "m-md-5",
-                "p-2"
-            );
-            container.appendChild(ui);
-
-            const sliderDomElement = document.createElement("div");
             const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
-            ui.appendChild(sliderDomElement);
             $(ui).hide().fadeIn();
-            if (slider.noUiSlider) {
-                slider.noUiSlider.destroy();
+
+            if (sliderInstance) {
+                sliderInstance.noUiSlider.destroy();
             }
+            sliderInstance = slider;
+
             noUiSlider.create(
                 slider,
                 {

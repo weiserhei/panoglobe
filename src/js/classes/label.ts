@@ -6,13 +6,13 @@ import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
 function spawn2(label: CSS2DObject, mesh: THREE.Mesh) {
-    label.position.y += 15;
+    label.position.y += 20;
 
     return (
         // @ts-ignore
         new TWEEN.Tween(label.position)
             // @ts-ignore
-            .to({ y: mesh.position.y }, 1000)
+            .to({ y: mesh.position.y }, 1500)
             // .easing( TWEEN.Easing.Circular.InOut )
             // .easing( TWEEN.Easing.Quintic.InOut )
             // .easing(TWEEN.Easing.Cubic.InOut)

@@ -25,6 +25,7 @@ export default class Route {
     public setRunAnimation: any;
     public cycleNextActive: any;
     public cyclePrevActive: any;
+    public spawn: () => void;
 
     constructor(
         scene: THREE.Scene,
@@ -89,33 +90,34 @@ export default class Route {
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
 
-        this.marker.forEach((m, index) => {
-            // drop marker delayed
-            const t = m.spawn();
-            t.delay(100 * index);
-            t.start();
-            console.log("running marker animation");
-        });
-
-        this.routeLine.drawProgress = 0;
-        const test = { drawProgress: 0 };
-        // @ts-ignore
-        new TWEEN.Tween(test)
+        this.spawn = function () {
+            this.marker.forEach((m: Marker, index: number) => {
+                // drop marker delayed
+                const t = m.spawn();
+                t.delay(100 * (index + 2));
+                t.start();
+            });
+            this.routeLine.drawProgress = 0;
+            const test = { drawProgress: 0 };
             // @ts-ignore
-            .to({ drawProgress: 1 }, 3000)
-            // .easing( TWEEN.Easing.Circular.InOut )
-            // .easing( TWEEN.Easing.Quintic.InOut )
-            // .easing(TWEEN.Easing.Cubic.InOut)
-            .easing(TWEEN.Easing.Circular.Out)
-            // .easing(easing || Config.easing)
-            .onStart(() => {})
-            .onUpdate((value: any) => {
-                this.routeLine.drawProgress = value.drawProgress;
-            })
-            // .repeat(Infinity)
-            .onComplete(() => {})
-            // @ts-ignore
-            .start();
+            new TWEEN.Tween(test)
+                // @ts-ignore
+                .to({ drawProgress: 1 }, 3000)
+                // .easing( TWEEN.Easing.Circular.InOut )
+                // .easing( TWEEN.Easing.Quintic.InOut )
+                // .easing(TWEEN.Easing.Cubic.InOut)
+                .easing(TWEEN.Easing.Circular.Out)
+                // .easing(easing || Config.easing)
+                .onStart(() => {})
+                .onUpdate((value: any) => {
+                    this.routeLine.drawProgress = value.drawProgress;
+                })
+                // .repeat(Infinity)
+                .onComplete(() => {})
+                .delay(200)
+                // @ts-ignore
+                .start();
+        };
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {
