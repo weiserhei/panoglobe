@@ -94,10 +94,11 @@ export default class Route {
 
         let lastActive: number = undefined;
         this.routeAnimation = function (value: any) {
+            const index = Math.floor(value.drawIndex);
             this.routeLine.setDrawIndex(value.drawIndex);
 
             const result = this.marker.find((marker: Marker) => {
-                return marker.index === Math.floor(value.drawIndex);
+                return marker.index === index;
             });
 
             if (result === undefined) return;
@@ -129,16 +130,13 @@ export default class Route {
                     next.poi.lng,
                     1000,
                     undefined,
-                    300,
-                    () => {
-                        // marker.showLabel();
-                    }
+                    300
                 );
             }
         };
 
         this.runAnimation = function () {
-            const marker = this.marker[0];
+            // disable active marker if any
             if (this.activeMarker) {
                 this.setActiveMarker(this.activeMarker);
             }
@@ -147,16 +145,12 @@ export default class Route {
                 // marker.showLabel(false);
                 marker.setVisible(false);
             });
-            // show in label 1
-            // hide route
-            this.routeLine.setDrawProgress(0);
-            // this.setActiveMarker(marker);
-
             // slow down tween: https://github.com/tweenjs/tween.js/issues/105#issuecomment-34570228
-            // start draw route progress
+            // hide route
             this.routeLine.setDrawIndex(0);
-            const test = { drawIndex: 0 };
-            const t = new TWEEN.Tween(test)
+            const marker = this.marker[0];
+
+            const t = new TWEEN.Tween({ drawIndex: 0 })
                 // @ts-ignore
                 .to(
                     { drawIndex: routeData.length },
@@ -168,6 +162,28 @@ export default class Route {
                     this.routeAnimation(value);
                 })
                 // .repeat(Infinity)
+                .repeatDelay(3000)
+                .onRepeat(() => {
+                    lastActive = undefined;
+                    if (this.activeMarker) {
+                        this.setActiveMarker(this.activeMarker);
+                    }
+                    this.routeLine.drawProgress = 0;
+                    // hide label
+                    this.marker.forEach((marker: Marker) => {
+                        marker.setVisible(false);
+                    });
+                    // move camera to start
+                    controls.moveIntoCenter(
+                        marker.poi.lat,
+                        marker.poi.lng,
+                        2000,
+                        undefined,
+                        300,
+                        () => {}
+                    );
+                    marker.showLabel();
+                })
                 .onComplete(() => {
                     // not called when on repeat
                     this.marker.forEach((marker: Marker) => {
@@ -196,6 +212,7 @@ export default class Route {
                 undefined,
                 300,
                 () => {
+                    // show in label 1
                     marker.showLabel();
                     // @ts-ignore
                     t.start();
@@ -362,11 +379,9 @@ export default class Route {
         this.marker.forEach((marker) => {
             marker.update(camera, delta);
         });
-
         // this.routeLine.update(delta);
-        if (this.animate === true) {
-            // this.animateRoute(delta);
-        }
+        // if (this.animate === true) {
+        // }
     }
 
     // get runAnimation() {
@@ -375,106 +390,5 @@ export default class Route {
 
     // set pauseAnimation(value: boolean) {
     //     this.animate = !value;
-    // }
-
-    // animateRoute(delta: number) {
-    //     let speed = delta * 30;
-
-    //     // let currentCoordinate = Math.floor( ( this._drawCount / (Config.routes.lineSegments+1) ) );
-    //     // divider must be in the range of routeData.length
-    //     const divider =
-    //         this.drawCount /
-    //         (this.routeLine.numberVertices / this.routeData.length);
-    //     let currentCoordinate = Math.floor(divider);
-    //     // if( currentCoordinate > 1 && this._routeData[ currentCoordinate ].marker !== undefined ) {
-    //     if (this.routeData[currentCoordinate].marker !== undefined) {
-    //         if (
-    //             this.currentInAnimation !==
-    //             this.routeData[currentCoordinate].marker
-    //         ) {
-    //             this.currentInAnimation = this.routeData[
-    //                 currentCoordinate
-    //             ].marker;
-    //             if (this.activeMarker !== null) {
-    //                 this.activeMarker.active = false;
-    //             }
-    //             this.routeData[currentCoordinate].marker.isActive = true;
-    //             setTimeout(() => {
-    //                 if (this.activeMarker !== null) {
-    //                     this.activeMarker.isActive = false;
-    //                 }
-    //             }, 2000);
-    //             const index = this.routeData[currentCoordinate].marker.index;
-    //             if (
-    //                 this.routeData[currentCoordinate].marker.next !== undefined
-    //             ) {
-    //                 const nextIndex = this.routeData[currentCoordinate].marker
-    //                     .next.index;
-    //                 const diff = nextIndex - index;
-    //                 const poi = this.activeMarker.next.poi;
-    //                 // todo: kill slow tween when buttons are pressed
-    //                 this.controls.moveIntoCenter(
-    //                     poi.lat,
-    //                     poi.lng,
-    //                     200 * diff,
-    //                     Config.easing,
-    //                     250
-    //                 );
-    //             }
-    //         }
-    //         // fake slow down on marker
-    //         speed = delta * 10;
-    //     }
-
-    //     // follow endpoint when last active POI is 50 units behind
-    //     const lastMarkerIndex = this.routeData.findIndex((currCo) => {
-    //         return this.currentInAnimation === currCo.marker;
-    //     });
-    //     if (currentCoordinate > lastMarkerIndex + 50) {
-    //         // if(this.activeMarker !== null) {
-    //         // if( this.activeMarker.next !== undefined ) {
-    //         // // move camera to next marker in advance
-    //         // this._controls.moveIntoCenter(
-    //         // this.activeMarker.next._poi.lat,
-    //         // this.activeMarker.next._poi.lng,
-    //         // 1000
-    //         // );
-    //         this.controls.moveIntoCenter(
-    //             this.routeData[currentCoordinate].lat,
-    //             this.routeData[currentCoordinate].lng,
-    //             200,
-    //             Config.easing,
-    //             300
-    //         );
-    //         // }
-    //         // // this.activeMarker.active = false;
-    //         // }
-    //     }
-
-    //     this.routeLine.update(speed);
-    //     this.speed = speed;
-    //     // this._drawCount = ( this._drawCount + 1 ) % this._routeLine.numberVertices;
-    //     this.drawCount = this.routeLine.drawCount;
-    //     this.normalizedProgress =
-    //         this.routeLine.drawCount / (this.routeLine.numberVertices - 3);
-    //     this.progressBar.style.width = `${this.normalizedProgress * 100}0%`;
-    //     // console.log( this.routeLine.drawCount / this.routeLine.numberVertices );
-
-    //     // dont repeat
-    //     // console.log( this._drawCount, this._routeLine.numberVertices );
-    //     if (
-    //         this.drawCount >=
-    //         this.routeLine.numberVertices - Config.routes.lineSegments
-    //     ) {
-    //         this.runAnimation = false;
-    //         const lastMarker = this.pois[this.pois.length - 1];
-    //         this.controls.moveIntoCenter(
-    //             lastMarker.lat,
-    //             lastMarker.lng,
-    //             1000,
-    //             Config.easing,
-    //             400
-    //         );
-    //     }
     // }
 }
