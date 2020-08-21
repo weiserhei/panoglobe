@@ -1,8 +1,8 @@
 import { SphereBufferGeometry, Vector3, Mesh } from "three";
-// import $ from "jquery";
+import TWEEN from "@tweenjs/tween.js";
+import $ from "jquery";
 import InfoBox from "./infobox";
 import Label from "./label";
-
 import Route from "./route";
 import Controls from "./controls";
 
@@ -16,6 +16,7 @@ export default class Marker {
     public setActive: any;
     public update: (camera: THREE.Camera, delta: number) => void;
     public spawn: () => any;
+    public showLabel: (value: boolean) => void;
 
     constructor(
         public poi: Poi,
@@ -55,6 +56,10 @@ export default class Marker {
             },
             false
         );
+
+        this.showLabel = function (value = true) {
+            label.setVisible(value);
+        };
 
         this.setVisible = function (value: boolean) {
             label.setVisible(value);
@@ -107,7 +112,23 @@ export default class Marker {
 
         this.spawn = function () {
             // label.animation();
-            return label.getSpawnTween;
+            label.css2dobject.position.y += 20;
+            return (
+                // @ts-ignore
+                new TWEEN.Tween(label.css2dobject.position)
+                    // @ts-ignore
+                    .to({ y: this.mesh.position.y }, 1500)
+                    // .easing( TWEEN.Easing.Circular.InOut )
+                    // .easing( TWEEN.Easing.Quintic.InOut )
+                    // .easing(TWEEN.Easing.Cubic.InOut)
+                    .easing(TWEEN.Easing.Bounce.Out)
+                    // .onStart(() => {
+                    // })
+                    // .repeat(Infinity)
+                    .onComplete(() => {})
+            );
+            // @ts-ignore
+            // .start()
         };
 
         this.update = function (camera: THREE.Camera, delta) {

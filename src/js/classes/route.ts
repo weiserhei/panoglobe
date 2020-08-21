@@ -13,19 +13,20 @@ import Controls from "./controls";
 import RouteManager from "./routeManager";
 
 export default class Route {
+    private animate: boolean;
+    private animationPace: number;
+
     public activeMarker: Marker;
     public marker: Array<Marker>;
     public visible: boolean;
     public showLabels1: boolean;
-    private animate: boolean;
-    public speed: number;
     public routeLine: RouteLine;
-
     public setActiveMarker: any;
     public setRunAnimation: any;
     public cycleNextActive: any;
     public cyclePrevActive: any;
     public spawn: () => void;
+    public runAnimation: () => void;
 
     constructor(
         scene: THREE.Scene,
@@ -44,7 +45,7 @@ export default class Route {
         this.visible = false;
         this.showLabels1 = true;
         this.animate = false;
-        this.speed = 0;
+        this.animationPace = 200;
 
         // const poi = this.routeData.filter((c) => c.adresse);
 
@@ -90,14 +91,109 @@ export default class Route {
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
 
+        this.runAnimation = function () {
+            const marker = this.marker[0];
+            // hide label
+            this.showLabels = false;
+            // show in label 1
+            // hide route
+            this.routeLine.setDrawProgress(0);
+            // this.setActiveMarker(marker);
+            // move camera to start
+            controls.moveIntoCenter(
+                marker.poi.lat,
+                marker.poi.lng,
+                1000,
+                undefined,
+                300,
+                () => {
+                    marker.showLabel();
+                }
+            );
+
+            // start draw route progress
+            this.routeLine.setDrawIndex(0);
+            const test = { drawIndex: 0 };
+            let lastActive: number = undefined;
+            // @ts-ignore
+            new TWEEN.Tween(test)
+                // @ts-ignore
+                .to(
+                    { drawIndex: routeData.length },
+                    routeData.length * this.animationPace
+                )
+                // .easing( TWEEN.Easing.Circular.InOut )
+                .onStart(() => {})
+                .onUpdate((value: any) => {
+                    this.routeLine.setDrawIndex(value.drawIndex);
+
+                    const result = this.marker.find((marker: Marker) => {
+                        return marker.index === Math.floor(value.drawIndex);
+                    });
+
+                    if (result === undefined) return;
+                    if (result.index === 0 && lastActive === undefined) {
+                        lastActive = 0;
+                        const next = this.getNext(result);
+                        controls.moveIntoCenter(
+                            next.poi.lat,
+                            next.poi.lng,
+                            1000,
+                            undefined,
+                            250,
+                            () => {
+                                // marker.showLabel();
+                            }
+                        );
+                    } else if (result.index > lastActive) {
+                        // debounce
+                        lastActive = result.index;
+                        // this.setActiveMarker(result);
+                        const tween = result.spawn();
+                        tween.start();
+                        result.showLabel();
+
+                        const next = this.getNext(result);
+                        if (!next) return;
+                        controls.moveIntoCenter(
+                            next.poi.lat,
+                            next.poi.lng,
+                            1000,
+                            undefined,
+                            300,
+                            () => {
+                                // marker.showLabel();
+                            }
+                        );
+                    }
+                })
+                // .repeat(Infinity)
+                .onComplete(() => {
+                    // not called when on repeat
+                    this.marker.forEach((marker: Marker) => {
+                        marker.showLabel(true);
+                    });
+                    this.routeLine.drawProgress = 1;
+                })
+                .delay(200)
+                // @ts-ignore
+                .start();
+        };
+        folder.add(this, "runAnimation");
+
         this.spawn = function () {
-            this.marker.forEach((m: Marker, index: number) => {
-                // drop marker delayed
-                const t = m.spawn();
-                t.delay(100 * (index + 2));
-                t.start();
-            });
+            console.log("route spawn");
             this.routeLine.drawProgress = 0;
+            this.marker.forEach((m: Marker, index: number) => {
+                m.showLabel(true);
+                // drop marker delayed
+                // const t = m.spawn();
+                // t.delay(100 * (index + 1));
+                // t.start();
+                m.spawn()
+                    .delay(100 * (index + 1))
+                    .start();
+            });
             const test = { drawProgress: 0 };
             // @ts-ignore
             new TWEEN.Tween(test)
@@ -118,6 +214,8 @@ export default class Route {
                 // @ts-ignore
                 .start();
         };
+
+        folder.add(this, "spawn");
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {

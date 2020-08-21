@@ -12,6 +12,8 @@ import {
     Vector2,
     Matrix4,
     Group,
+    DoubleSide,
+    FrontSide,
 } from "three";
 
 import Preloader from "../classes/preloader";
@@ -93,7 +95,6 @@ export default class Globus {
             // wireframe: true,
             // transparent: true,
             // opacity: 0,
-            // side: DoubleSide,
             // side: DoubleSide,
             color: Config.globus.material.color,
             specular: Config.globus.material.specular,

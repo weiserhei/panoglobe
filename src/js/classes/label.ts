@@ -1,38 +1,21 @@
 import TWEEN from "@tweenjs/tween.js";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import "./../../css/label.css";
-// import * as $ from "jquery";
+import $ from "jquery";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
-function spawn2(label: CSS2DObject, mesh: THREE.Mesh) {
-    label.position.y += 20;
-
-    return (
-        // @ts-ignore
-        new TWEEN.Tween(label.position)
-            // @ts-ignore
-            .to({ y: mesh.position.y }, 1500)
-            // .easing( TWEEN.Easing.Circular.InOut )
-            // .easing( TWEEN.Easing.Quintic.InOut )
-            // .easing(TWEEN.Easing.Cubic.InOut)
-            .easing(TWEEN.Easing.Bounce.Out)
-            // .easing(easing || Config.easing)
-            .onStart(() => {
-                // this.enabled = false;
-            })
-            // .repeat(Infinity)
-            .onComplete(() => {})
-        // @ts-ignore
-        // .start()
-    );
-}
+// function spawn2(label: CSS2DObject, mesh: THREE.Mesh) {
+//     return (
+//     );
+// }
 
 export default class Label {
     private visible: boolean;
     public domElement: HTMLElement;
     public animation: () => void;
     public getSpawnTween: () => any;
+    public css2dobject: CSS2DObject;
 
     constructor(text: string, scene: THREE.Scene, followMesh: THREE.Mesh) {
         this.visible = true;
@@ -60,16 +43,13 @@ export default class Label {
 
         domElement.appendChild(pinIcon.node[0]);
 
-        const css2dlabel = new CSS2DObject(domElement);
-        css2dlabel.position.copy(followMesh.position);
-        // css2dlabel.position.y += 5;
-        scene.add(css2dlabel);
-
-        // spawn(css2dlabel, followMesh);
+        this.css2dobject = new CSS2DObject(domElement);
+        this.css2dobject.position.copy(followMesh.position);
+        scene.add(this.css2dobject);
 
         // @ts-ignore
-        this.getSpawnTween = spawn2(css2dlabel, followMesh);
-
+        // this.getSpawnTween = spawn2(this.css2dobject, followMesh);
+        // css2dlabel.position.y -= 20;
         this.animation = function () {};
 
         // const boundingRect = this.box.getBoundingClientRect();
@@ -92,9 +72,15 @@ export default class Label {
     public setVisible(value: boolean): void {
         this.visible = value;
         if (value === true) {
-            this.domElement.style.visibility = "visible";
+            // this.domElement.style.visibility = "visible";
+            // this.domElement.style.display = "block";
+            $(this.domElement).css("display", "none").fadeIn();
+            this.domElement.classList.remove("d-none");
         } else {
-            this.domElement.style.visibility = "hidden";
+            // this.domElement.style.visibility = "hidden";
+            // this.domElement.style.display = "none";
+            // this.domElement.classList.add("d-none");
+            $(this.domElement).addClass("d-none");
         }
     }
 

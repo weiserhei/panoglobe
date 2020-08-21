@@ -95,36 +95,39 @@ export default class RouteManager {
                 // select last Marker on first route, and first marker on following routes
                 const index =
                     this.routes.length > 1 ? 0 : route.marker.length - 1;
-                const marker = route.marker[index];
-                // const marker = route.marker[0];
-                controls.moveIntoCenter(
-                    marker.poi.lat,
-                    marker.poi.lng,
-                    2000,
-                    undefined,
-                    undefined,
-                    function () {
-                        // build slider
-                        const poi: Array<number> = [];
-                        const adresses: Array<string> = [];
-                        calculatedRouteData.forEach(function (
-                            e: Poi,
-                            index: number
-                        ) {
-                            if (e.adresse) poi.push(index);
-                            adresses.push(e.adresse);
-                        });
-                        // let result = poi.map((a) => a.index);
+                const poi = route.marker[index].poi;
+                // controls.moveIntoCenter(
+                //     poi.lat,
+                //     poi.lng,
+                //     2000,
+                //     undefined,
+                //     undefined,
+                //     buildSlider
+                // );
 
-                        ui.createSlider(
-                            calculatedRouteData,
-                            route.routeLine,
-                            poi,
-                            adresses
-                        );
-                    }
-                );
-                this.spawn(route);
+                function buildSlider() {
+                    // build slider
+                    const poi: Array<number> = [];
+                    const adresses: Array<string> = [];
+                    calculatedRouteData.forEach(function (
+                        e: Poi,
+                        index: number
+                    ) {
+                        if (e.adresse) poi.push(index);
+                        adresses.push(e.adresse);
+                    });
+                    // let result = poi.map((a) => a.index);
+
+                    ui.createSlider(
+                        calculatedRouteData,
+                        route.routeLine,
+                        poi,
+                        adresses
+                    );
+                }
+
+                // this.spawn(route);
+                route.runAnimation();
 
                 return route;
             });
