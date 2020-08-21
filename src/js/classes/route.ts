@@ -17,7 +17,7 @@ export default class Route {
     public marker: Array<Marker>;
     public visible: boolean;
     public showLabels1: boolean;
-    public animate: boolean;
+    private animate: boolean;
     public speed: number;
     public routeLine: RouteLine;
 

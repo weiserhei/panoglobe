@@ -3,13 +3,9 @@ import $ from "jquery";
 import Route from "./route";
 import Controls from "./controls";
 import { calc3DPositions } from "../utils/panoutils";
-import MyFormatter from "../utils/sliderFormatter";
 import { getHeightData } from "../utils/panoutils";
 // import Config from "../../data/config";
-
-import noUiSlider from "nouislider";
-import "nouislider/distribute/nouislider.css";
-import "../../css/nouislider.css";
+import UserInterface from "./userInterface";
 
 import T_heightmap from "../../textures/heightmap_1440.jpg";
 import Marker from "./marker";
@@ -28,6 +24,7 @@ export default class RouteManager {
         globusradius: number,
         controls: Controls
     ) {
+        const ui = new UserInterface(container, controls);
         this.routes = [];
         this.activeMarker = null;
 
@@ -93,7 +90,8 @@ export default class RouteManager {
                 // select last Marker on first route, and first marker on following routes
                 const index =
                     this.routes.length > 1 ? 0 : route.marker.length - 1;
-                const marker = route.marker[index];
+                // const marker = route.marker[index];
+                const marker = route.marker[0];
                 controls.moveIntoCenter(
                     marker.poi.lat,
                     marker.poi.lng,
@@ -103,87 +101,22 @@ export default class RouteManager {
                     function () {
                         // build slider
                         const poi: Array<number> = [];
-                        const strings: Array<string> = [];
+                        const adresses: Array<string> = [];
                         calculatedRouteData.forEach(function (
                             e: Poi,
                             index: number
                         ) {
                             if (e.adresse) poi.push(index);
-                            strings.push(e.adresse);
+                            adresses.push(e.adresse);
                         });
                         // let result = poi.map((a) => a.index);
 
-                        const ui = document.createElement("div");
-                        ui.classList.add(
-                            "position-absolute",
-                            "fixed-bottom",
-                            "m-2",
-                            "mb-5",
-                            "m-md-5",
-                            "p-2"
+                        ui.createSlider(
+                            calculatedRouteData,
+                            route.routeLine,
+                            poi,
+                            adresses
                         );
-                        container.appendChild(ui);
-
-                        const sliderDomElement = document.createElement("div");
-                        const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
-                        ui.appendChild(sliderDomElement);
-                        if (slider.noUiSlider) {
-                            slider.noUiSlider.destroy();
-                        }
-                        noUiSlider.create(
-                            slider,
-                            {
-                                start: [strings.length],
-                                step: 1,
-                                connect: false,
-                                range: {
-                                    min: 0,
-                                    max: calculatedRouteData.length - 1,
-                                },
-                                pips: {
-                                    mode: "values",
-                                    values: poi,
-                                    stepped: true,
-                                    density: 100,
-                                    format: new MyFormatter(strings),
-                                },
-                            },
-                            // @ts-ignore
-                            true
-                        );
-                        slider.noUiSlider.on("set", function (value: any) {
-                            controls.moveIntoCenter(
-                                calculatedRouteData[Math.floor(value)].lat,
-                                calculatedRouteData[Math.floor(value)].lng,
-                                500
-                            );
-                        });
-
-                        slider.noUiSlider.on("slide", function (value: any) {
-                            route.routeLine.setDrawIndex(value);
-                        });
-
-                        var pips = slider.querySelectorAll(".noUi-value");
-
-                        function clickOnPip() {
-                            const value = Number(
-                                this.getAttribute("data-value")
-                            );
-                            slider.noUiSlider.set(value);
-                            route.routeLine.setDrawIndex(value);
-                            controls.moveIntoCenter(
-                                // routeData.gps[Math.floor(value)].lat,
-                                // routeData.gps[Math.floor(value)].lng,
-                                calculatedRouteData[Math.floor(value)].lat,
-                                calculatedRouteData[Math.floor(value)].lng,
-                                1000
-                            );
-                        }
-
-                        for (var i = 0; i < pips.length; i++) {
-                            // pips[i].style.cursor = "pointer";
-                            pips[i].addEventListener("click", clickOnPip);
-                        }
                     }
                 );
 
