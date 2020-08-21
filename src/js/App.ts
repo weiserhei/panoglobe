@@ -16,7 +16,8 @@ import Texture from "./classes/texture";
 import Globus from "./classes/globus";
 import LightManager from "./classes/lightManager";
 import RouteManager from "./classes/routeManager";
-// import Impact from "./classes/impact";
+import Route from "./classes/route";
+import Impact from "./classes/impact";
 
 import Config from "../data/config";
 
@@ -94,20 +95,21 @@ class App {
             controls
         );
 
-        RouteManager.load(Config.routes.urls.pop()).then((x: Array<Object>) => {
+        RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
             const route = routeManager.buildRoute(x, 0.9, folder);
-            // route.then((route) => {
-            //     route.showLabels = false;
-            // });
+            route.then((route) => {
+                // new Impact(globus, route);
+                // route.showLabels = false;
+            });
         });
 
         if (process.env.NODE_ENV === "development") {
             var obj = {
                 add: function () {
                     RouteManager.load(Config.routes.urls[0]).then(
-                        (x: Array<Object>) => {
+                        (x: RouteData) => {
                             const route = routeManager.buildRoute(x, 5, folder);
-                            route.then((route) => {
+                            route.then((route: Route) => {
                                 // route.showLabels = false;
                             });
                         }
@@ -130,11 +132,10 @@ class App {
             folder.add(obj, "add").name("Add Route Asien");
         }
 
-        const texture = new Texture(preloader.manager);
-        texture.load().then(() => {
-            globus.setTextures(texture.textures);
+        new Texture(preloader.manager).load().then((textureObject) => {
+            globus.setTextures(textureObject);
             // skybox.setTexture(texture.textures.uvtest);
-            skybox.setTexture(texture.textures["stars"]);
+            skybox.setTexture(textureObject["stars"]);
             animate();
         });
 

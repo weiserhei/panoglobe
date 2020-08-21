@@ -9,10 +9,6 @@ import Controls from "./controls";
 const markergeo = new SphereBufferGeometry(1, 8, 6);
 const markermesh = new Mesh(markergeo);
 
-// type Poi = {
-//     displacedPos: THREE.Vector3;
-// };
-
 export default class Marker {
     public mesh: THREE.Mesh;
     public setVisible: any;
@@ -26,7 +22,8 @@ export default class Marker {
         controls: Controls,
         public index: number,
         text: string,
-        scene: THREE.Scene
+        scene: THREE.Scene,
+        public color: THREE.Color
     ) {
         const meshVector = new Vector3();
         let ocluded = false;

@@ -15,15 +15,17 @@ import T6 from "../../textures/4k/Bump_4k.jpg";
 // Using promises to preload textures prevents issues when applying textures to materials
 // before the textures have loaded.
 export default class Texture {
-    constructor(manager) {
+    public textures: object;
+    public load: () => Promise<object>;
+    constructor(manager: THREE.LoadingManager) {
         // Prop that will contain all loaded textures
         this.textures = {};
 
-        this.load = function () {
-            const loader = new TextureLoader(manager);
-            const maxAnisotropy = Config.maxAnisotropy;
+        this.load = function (): Promise<object> {
+            const loader: THREE.TextureLoader = new TextureLoader(manager);
+            const maxAnisotropy: number = Config.maxAnisotropy;
             const imageFiles = Config.texture.imageFiles;
-            const promiseArray = [];
+            const promiseArray: Array<Promise<THREE.Texture>> = [];
             const t = [T1, T2, T3, T4, T5, T6];
 
             // loader.setPath("");
@@ -48,7 +50,7 @@ export default class Texture {
                                     new Error(
                                         xhr +
                                             "An error occurred loading while loading " +
-                                            t.image
+                                            texture
                                     )
                                 )
                         );
@@ -66,6 +68,7 @@ export default class Texture {
                             imageFiles[i][Object.keys(imageFiles[i])[0]];
                         this.textures[name] = textures[i];
                     }
+                    return this.textures;
                 },
                 (reason) => console.log(reason)
             );

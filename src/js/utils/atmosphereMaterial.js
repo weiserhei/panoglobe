@@ -4,7 +4,7 @@
  */
 import { ShaderMaterial, FrontSide, AdditiveBlending } from "three";
 
-export default class AtmosphereMaterial {
+export default class AtmosphereMaterial extends ShaderMaterial {
     constructor(color) {
         var vertexShader = [
             "varying vec3 vNormal;",

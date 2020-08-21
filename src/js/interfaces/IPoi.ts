@@ -1,11 +1,8 @@
-interface Poi {
+interface Poi extends ICoordinate {
     displacedPos: THREE.Vector3;
-    adresse: string;
+    pos: THREE.Vector3;
     countryname?: string;
     displaceHeight: number;
-    externerlink: string;
-    lat: number;
-    lng: number;
     hopDistance: number;
 }
 

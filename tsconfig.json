@@ -4,6 +4,7 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "allowJs": true,
+        "resolveJsonModule": true,
         // Allow default imports from modules with no default export (tween.js)
         // "allowSyntheticDefaultImports": true
         "esModuleInterop": true,

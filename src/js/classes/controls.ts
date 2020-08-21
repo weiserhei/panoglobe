@@ -1,13 +1,15 @@
 import TWEEN from "@tweenjs/tween.js";
 import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import Config from "./../../data/config";
+import Config from "../../data/config";
 // import { createNoisyEasing, createStepEasing } from "./../utils/easings";
 // var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
 
 // Controls based on orbit controls
 export default class Controls {
-    constructor(camera, container) {
+    public threeControls: OrbitControls;
+    public moveIntoCenter: any;
+    constructor(public camera: THREE.Camera, container: HTMLElement) {
         const controls = new OrbitControls(camera, container);
         this.threeControls = controls;
         this.camera = camera;
@@ -28,12 +30,12 @@ export default class Controls {
         controls.enablePan = cc.enablePan;
 
         this.moveIntoCenter = function tween(
-            lat,
-            lng,
-            time,
-            easing,
-            distance,
-            callback
+            lat: number,
+            lng: number,
+            time: number,
+            easing: any,
+            distance: number,
+            callback?: () => void
         ) {
             const phi = ((90 - lat) * Math.PI) / 180;
             const theta = (-lng * Math.PI) / 180;
@@ -54,6 +56,7 @@ export default class Controls {
             );
 
             new TWEEN.Tween(this.camera.position)
+                // @ts-ignore
                 .to(position, time || 2000)
                 // .easing( TWEEN.Easing.Circular.InOut )
                 // .easing( TWEEN.Easing.Quintic.InOut )
@@ -67,6 +70,7 @@ export default class Controls {
                         callback();
                     }
                 })
+                // @ts-ignore
                 .start();
         };
 
@@ -90,7 +94,7 @@ export default class Controls {
         );
     }
 
-    set enabled(value) {
+    set enabled(value: boolean) {
         this.threeControls.enabled = value;
         this.threeControls.enableZoom = value;
         this.threeControls.enableRotate = value;

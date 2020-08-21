@@ -179,9 +179,9 @@ export default {
             // color:0xffc600,
             // color: 16754688,
             color: "hsl(41, 95%, 30%)",
-            // groundHColor: 0xffc600,
-            // groundHColor: 16754688,
-            groundHColor: "hsl(41, 95%, 30%)",
+            // groundColor: 0xffc600,
+            // groundColor: 16754688,
+            groundColor: "hsl(41, 95%, 30%)",
             // intensity: 1.3
         },
     },

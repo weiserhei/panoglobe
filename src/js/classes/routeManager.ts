@@ -1,9 +1,10 @@
 import { ImageLoader } from "three";
 import $ from "jquery";
 import Route from "./route";
-import { calc3DPositions } from "./../utils/panoutils";
-import MyFormatter from "./../utils/sliderFormatter";
-import { getHeightData } from "./../utils/panoutils";
+import Controls from "./controls";
+import { calc3DPositions } from "../utils/panoutils";
+import MyFormatter from "../utils/sliderFormatter";
+import { getHeightData } from "../utils/panoutils";
 // import Config from "../../data/config";
 
 import noUiSlider from "nouislider";
@@ -11,9 +12,22 @@ import "nouislider/distribute/nouislider.css";
 import "../../css/nouislider.css";
 
 import T_heightmap from "../../textures/heightmap_1440.jpg";
+import Marker from "./marker";
 
 export default class RouteManager {
-    constructor(scene, container, globusradius, controls) {
+    public routes: Array<Route>;
+    public activeMarker: Marker;
+    public buildRoute: (
+        routeData: RouteData,
+        phase: number,
+        folder: any
+    ) => Promise<Route>;
+    constructor(
+        scene: THREE.Scene,
+        container: HTMLElement,
+        globusradius: number,
+        controls: Controls
+    ) {
         this.routes = [];
         this.activeMarker = null;
 
@@ -35,10 +49,11 @@ export default class RouteManager {
         );
         container.appendChild(ui);
 
-        const slider = document.createElement("div");
-        ui.appendChild(slider);
+        const sliderDomElement = document.createElement("div");
+        ui.appendChild(sliderDomElement);
+        const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
 
-        this.buildRoute = function (routeData, phase, folder) {
+        this.buildRoute = function (routeData, phase, folder): Promise<Route> {
             return heightData.then((data) => {
                 let calculatedRouteData = calc3DPositions(
                     routeData.gps,
@@ -51,10 +66,9 @@ export default class RouteManager {
                 //     (Config.routes.lineSegments + 1);
                 const max = calculatedRouteData.length - 1;
 
-                const poi = [];
-                const strings = [];
-                calculatedRouteData.forEach(function (e, index) {
-                    // e.index = index;
+                const poi: Array<number> = [];
+                const strings: Array<string> = [];
+                calculatedRouteData.forEach(function (e: Poi, index: number) {
                     if (e.adresse) poi.push(index);
                     strings.push(e.adresse);
                 });
@@ -82,16 +96,18 @@ export default class RouteManager {
                             format: mf,
                         },
                     },
+                    // @ts-ignore
                     true
                 );
-                slider.noUiSlider.on("set", function (value) {
+                slider.noUiSlider.on("set", function (value: any) {
                     controls.moveIntoCenter(
                         calculatedRouteData[Math.floor(value)].lat,
                         calculatedRouteData[Math.floor(value)].lng,
                         500
                     );
                 });
-                slider.noUiSlider.on("slide", function (value) {
+
+                slider.noUiSlider.on("slide", function (value: any) {
                     route.routeLine.setDrawIndex(value);
                 });
 
@@ -168,33 +184,9 @@ export default class RouteManager {
                 return route;
             });
         };
-
-        this.setActiveMarker = function (route, marker) {
-            if (route.activeMarker === marker) {
-                // current marker is active => toggle
-                marker.setActive(false);
-                route.activeMarker = null;
-                this.activeMarker = null;
-                return;
-            } else if (this.activeMarker != undefined) {
-                // the manager disables ALL active Markers
-                // this.routes.forEach((r) => {
-                //     if (r.activeMarker != undefined) {
-                //         r.activeMarker.setActive(false);
-                //         r.activeMarker = null;
-                //     }
-                // });
-                // some other marker is active, turn off then turn new one on
-                this.activeMarker.setActive(false);
-                marker.setActive(true);
-            } else {
-                marker.setActive(true);
-            }
-            this.activeMarker = marker;
-        };
     }
 
-    static load(url) {
+    static load(url: string) {
         // load datalist
         if (url) {
             return $.getJSON(url, {
@@ -220,7 +212,31 @@ export default class RouteManager {
     //   return this.activeMarker;
     // }
 
-    update(delta, camera) {
+    public setActiveMarker(route: Route, marker: Marker) {
+        if (route.activeMarker === marker) {
+            // current marker is active => toggle
+            marker.setActive(false);
+            route.activeMarker = null;
+            this.activeMarker = null;
+            return;
+        } else if (this.activeMarker != undefined) {
+            // the manager disables ALL active Markers
+            // this.routes.forEach((r) => {
+            //     if (r.activeMarker != undefined) {
+            //         r.activeMarker.setActive(false);
+            //         r.activeMarker = null;
+            //     }
+            // });
+            // some other marker is active, turn off then turn new one on
+            this.activeMarker.setActive(false);
+            marker.setActive(true);
+        } else {
+            marker.setActive(true);
+        }
+        this.activeMarker = marker;
+    }
+
+    public update(delta: number, camera: THREE.Camera) {
         this.routes.forEach((route) => {
             route.update(delta, camera);
         });

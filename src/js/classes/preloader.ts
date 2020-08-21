@@ -4,28 +4,26 @@ import "./../../css/loading.css";
 import "./../../css/progressbar.css";
 import "./../../css/spinner.css";
 
-function getProgressColor(progress) {
-    let color = "";
+function getProgressColor(progress: number): string {
     const colors = [
-        [5, "#f63a0f"],
-        [25, "#f27011"],
+        [20, "#f63a0f"],
+        [30, "#f27011"],
         [50, "#f2b01e"],
         [75, "#f2d31b"],
         [100, "#86e01e"],
     ];
-    colors.forEach((step) => {
-        if (progress >= step[0]) {
-            color = step[1];
-        }
-    });
-    return color;
+    return String(colors.filter((x) => x[0] >= progress)[0][1]);
 }
 
 export default class Preloader {
-    constructor(container) {
+    public manager: THREE.LoadingManager;
+    public textureLoader: THREE.TextureLoader;
+    private zIndex: number;
+    private inline: boolean;
+    constructor(container: HTMLElement) {
         this.manager = new LoadingManager();
         this.textureLoader = new TextureLoader(this.manager);
-        this.zIndex = container.style.zIndex;
+        this.zIndex = parseInt(container.style.zIndex);
         this.inline = false; // overlay style
 
         // const c =  document.getElementsByClassName("preloader");
@@ -91,15 +89,15 @@ export default class Preloader {
         };
     }
 
-    modifyCSS(container, progressbarContainer) {
-        container.style.zIndex = this.zIndex;
+    modifyCSS(container: HTMLElement, progressbarContainer: HTMLElement) {
+        container.style.zIndex = String(this.zIndex);
         container.style.background =
             "radial-gradient(ellipse at center, rgba(10, 10, 10, 1) 30%,rgba(0, 0, 0, 0.5) 100%)";
         // hide progress bar
         progressbarContainer.style.display = "none";
     }
 
-    setInline(value) {
+    setInline(value: boolean) {
         this.inline = value;
         if (value) {
             this.zIndex = 998;

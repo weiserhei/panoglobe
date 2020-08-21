@@ -10,14 +10,17 @@ import Config from "../../data/config";
 
 // Sets up and places all lights in scene
 export default class LightManager {
-    constructor(scene, camera) {
-        this.scene = scene;
-        this.camera = camera;
+    public night: boolean;
+    public hemiLight: THREE.HemisphereLight;
+    public directionalLight: THREE.DirectionalLight;
+    public directionalLightHelper: THREE.CameraHelper;
+    public spotLight: THREE.SpotLight;
+    public spotLightHelper: THREE.SpotLightHelper;
+    public ambientLight: THREE.AmbientLight;
+    public pointLight: THREE.PointLight;
+    constructor(private scene: THREE.Scene, private camera: THREE.Camera) {
         this.night = false;
-        this.init();
-    }
 
-    init() {
         // Ambient
         // this.ambientLight = new THREE.AmbientLight(Config.ambientLight.color);
         // this.ambientLight.visible = Config.ambientLight.enabled;
@@ -99,7 +102,7 @@ export default class LightManager {
         this.directionalLightHelper.visible = true;
 
         // MOONLIGHT
-        this.spotlight = new SpotLight(
+        this.spotLight = new SpotLight(
             Config.spotlight.color,
             Config.spotlight.intensity,
             Config.spotlight.distance,
@@ -107,28 +110,28 @@ export default class LightManager {
             Config.spotlight.decay
         );
 
-        this.spotlight.position.set(
+        this.spotLight.position.set(
             Config.spotlight.x,
             Config.spotlight.y,
             Config.spotlight.z
         );
 
-        this.spotlight.target.position.set(
+        this.spotLight.target.position.set(
             Config.spotlight.targetx,
             Config.spotlight.targety,
             Config.spotlight.targetz
         );
 
-        this.spotLightHelper = new SpotLightHelper(this.spotlight);
+        this.spotLightHelper = new SpotLightHelper(this.spotLight);
 
         // move light wih camera
         // this.camera.add(this.directionalLight);
     }
 
-    setNight(value) {
+    setNight(value: boolean) {
         this.night = value;
 
-        this.spotlight.visible = !value;
+        this.spotLight.visible = !value;
 
         if (value) {
             this.directionalLight.intensity =
@@ -178,15 +181,15 @@ export default class LightManager {
     // this.spotlight.position.set(camera.position.x, camera.position.y, camera.position.z);
     // }
 
-    place(lightName) {
+    place(lightName: string) {
         switch (lightName) {
             case "ambient":
                 this.scene.add(this.ambientLight);
                 break;
 
             case "spot":
-                this.scene.add(this.spotlight);
-                this.scene.add(this.spotlight.target);
+                this.scene.add(this.spotLight);
+                this.scene.add(this.spotLight.target);
                 // this.scene.add(this.spotLightHelper);
                 break;
 

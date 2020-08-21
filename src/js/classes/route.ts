@@ -3,8 +3,8 @@
  * create the Route
  */
 
-// import { Color } from "three";
-// import { makeColorGradient } from "./../utils/colors";
+import { Color } from "three";
+import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
 import Config from "../../data/config";
@@ -38,7 +38,7 @@ export default class Route {
         this.activeMarker = null;
 
         const steps = 1.2; // how fast change the color (0 = fast)
-        // const frequency = 1 / (steps * this.routeData.length);
+        const frequency = 1 / (steps * this.routeData.length);
         this.marker = [];
         this.visible = false;
         this.showLabels1 = true;
@@ -59,9 +59,9 @@ export default class Route {
                 this.marker.length + 1
             }</small> ${name}`;
 
-            // const color = new Color(
-            //     makeColorGradient(index, frequency, undefined, undefined, phase)
-            // );
+            const color = new Color(
+                makeColorGradient(index, frequency, undefined, undefined, phase)
+            );
 
             // CREATE MARKER
             const marker = new Marker(
@@ -70,7 +70,8 @@ export default class Route {
                 controls,
                 index,
                 text,
-                scene
+                scene,
+                color
             );
             this.marker.push(marker);
             // scene.add(marker.mesh);
