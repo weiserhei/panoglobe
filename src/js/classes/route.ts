@@ -103,7 +103,6 @@ export default class Route {
         this.routeAnimation = function (value: any) {
             const index = Math.floor(value.index);
             this.routeLine.setDrawIndex(value.index);
-            this.mover.update(this.animationDrawIndex.index);
 
             const result = this.marker.find((marker: Marker) => {
                 return marker.index === index;
@@ -261,14 +260,16 @@ export default class Route {
                 // .easing(easing || Config.easing)
                 .onStart(() => {
                     this.animationDrawIndex.index = 0;
+                    this.mover.moving(true);
                 })
                 .onUpdate((value: any) => {
                     // this.routeLine.drawProgress = value.drawProgress;
                     this.routeLine.setDrawIndex(value.index);
-                    this.mover.update(this.animationDrawIndex.index);
                 })
                 // .repeat(Infinity)
-                .onComplete(() => {})
+                .onComplete(() => {
+                    this.mover.moving(false);
+                })
                 .delay(200)
                 // @ts-ignore
                 .start();
@@ -394,6 +395,8 @@ export default class Route {
     }
 
     public update(delta: number, camera: THREE.Camera) {
+        this.mover.update(this.animationDrawIndex.index, camera);
+
         this.marker.forEach((marker) => {
             marker.update(camera, delta);
         });

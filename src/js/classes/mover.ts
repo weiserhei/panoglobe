@@ -10,23 +10,17 @@ import {
     Color,
     MeshPhongMaterial,
 } from "three";
-import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import {
-    faMapMarker,
-    faMapMarkerAlt,
-    faCircle,
-    faCircleNotch,
-} from "@fortawesome/free-solid-svg-icons";
+import HtmlMover from "./htmlMover";
+
 import Config from "../../data/config";
 
 export default class Mover {
     private tempVector: THREE.Vector3;
     private mesh: THREE.Group;
     private outlineMesh: THREE.Mesh;
-    private css2dobject: CSS2DObject;
+    private htmlMover: HtmlMover;
     constructor(
         private scene: THREE.Scene,
         private positions: Array<THREE.Vector3>,
@@ -42,21 +36,13 @@ export default class Mover {
 
         this.tempVector = new Vector3();
 
-        const i = icon(faMapMarkerAlt, {
-            // const i = icon(faCircleNotch, {
-            styles: {
-                color: "#fff",
-                // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
-                filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
-            },
-            classes: ["fa-lg", "mt-n3"],
-        });
-        // @ts-ignore
-        this.css2dobject = new CSS2DObject(i.node[0]);
-        // domElement.style.top = "-1.2em";
-        // domElement.appendChild(pinIcon.node[0]);
-        // this.css2dobject = new CSS2DObject(i.node[0]);
+        this.htmlMover = new HtmlMover(scene);
 
+        // async
+        this.mesh_mover(scene, folder);
+    }
+
+    private mesh_mover = function (scene: THREE.Scene, folder: any) {
         new MTLLoader()
             .setPath("./models/van/")
             .load("Van.mtl", (materials) => {
@@ -82,42 +68,41 @@ export default class Mover {
                                 );
                             });
 
-                            scene.add(object);
-
                             const geometry = new RingBufferGeometry(1.7, 2, 18);
                             // geometry.applyMatrix4(
                             //     new Matrix4().makeRotationX(Math.PI / 2)
                             // );
-                            // geometry.applyMatrix4(
-                            //     new Matrix4().makeRotationZ(Math.PI)
-                            // );
                             const x = new Mesh(
                                 geometry,
                                 // new MeshPhongMaterial({ color: 0xff5555 })
-                                new MeshPhongMaterial({ color: 0x000000 })
+                                new MeshPhongMaterial({
+                                    color: 0x000000,
+                                    side: DoubleSide,
+                                })
                                 // new MeshNormalMaterial({ side: DoubleSide })
                             );
-                            (x.material as MeshPhongMaterial).side = DoubleSide;
                             object.add(x);
                             this.outlineMesh = x;
                             this.mesh = object;
-
-                            // this.css2dobject.position.copy(followMesh.position);
-                            // this.mesh.add(this.css2dobject);
-                            scene.add(this.css2dobject);
-                            console.log(
-                                // @ts-ignore
-                                this.css2dobject.element.style
-                            );
-
-                            folder.add(object, "visible");
+                            scene.add(this.mesh);
+                            this.mesh.visible = false;
+                            folder.add(this.mesh, "visible");
                         }
                         // onProgress, onError
                     );
             });
+    };
+
+    public moving(value: boolean) {
+        this.htmlMover.moving(value);
+        // if (value === true) {
+        //     // set pen
+        // } else {
+        //     // set marker
+        // }
     }
 
-    public update(index: number) {
+    public update(index: number, camera: THREE.Camera) {
         const indexes = { bigIndex: 0, bigIndex2: 0 };
         // if (routeData === undefined) {
         //     return;
@@ -147,20 +132,21 @@ export default class Mover {
         this.mesh.position.copy(point);
         this.mesh.lookAt(point2);
         this.outlineMesh.lookAt(new Vector3(0, 0, 0));
-        (this.outlineMesh.material as MeshPhongMaterial).color.fromArray(
+
+        const currentColor = new Color().fromArray(
             this.colors,
             indexes.bigIndex * 3
         );
+        (this.outlineMesh.material as MeshPhongMaterial).color.copy(
+            currentColor
+        );
 
-        this.css2dobject.position.copy(point);
-        // @ts-ignore
-        // const rgb = `rgb(${this.colors[indexes.bigIndex * 3]}, ${
-        //     this.colors[indexes.bigIndex * 3 + 1]
-        // }, ${this.colors[indexes.bigIndex * 3 + 2]})`;
-        const c = new Color()
-            .fromArray(this.colors, indexes.bigIndex * 3)
-            .getStyle();
-        this.css2dobject.element.style.color = c;
+        // this.mesh.getWorldPosition(meshVector);
+        const eye = camera.position.clone().sub(point);
+        const dot = eye.normalize().dot(point.clone().normalize());
+        const ocluded = dot < 0.0; // IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
+
+        this.htmlMover.update(ocluded, dot, point, currentColor);
         // this.car.position.copy(pos);
         // this.car.lookAt(scene.position);
     }
