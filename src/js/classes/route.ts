@@ -52,12 +52,14 @@ export default class Route {
         private manager: RouteManager,
         folder: any
     ) {
-        folder
-            .add({ visible: true }, "visible")
-            .name("Route visible")
-            .onChange((value: boolean) => {
-                this.isVisible = value;
-            });
+        if (process.env.NODE_ENV === "development") {
+            folder
+                .add({ visible: true }, "visible")
+                .name("Route visible")
+                .onChange((value: boolean) => {
+                    this.isVisible = value;
+                });
+        }
 
         const steps = 1.2; // how fast change the color (0 = fast)
         const frequency = 1 / (steps * this.routeData.length);
