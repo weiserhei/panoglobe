@@ -47,10 +47,10 @@ export default class RouteManager {
                     data,
                     globusradius + 0.0
                 );
-
-                const folderCustom = folder.addFolder(routeData.meta.name);
-                folderCustom.open();
-
+                if (process.env.NODE_ENV === "development") {
+                    var folderCustom = folder.addFolder(routeData.meta.name);
+                    folderCustom.open();
+                }
                 const route = new Route(
                     scene,
                     container,
