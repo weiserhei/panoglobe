@@ -4,10 +4,25 @@ import Marker from "./marker";
 import Route from "./route";
 import Controls from "./controls";
 
+import { icon, Icon } from "@fortawesome/fontawesome-svg-core";
+import {
+    faPlayCircle,
+    faStopCircle,
+    faStop,
+    faPlay,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default class RouteAnimation {
     private animationPace: number = 100;
     private animationDrawIndex: any;
     private lastActive: number | undefined;
+
+    private playText: (text: string) => string;
+    private stopText: (text: string) => string;
+    private spawnUI: any;
+    private drawUI: any;
+    private tweenSpawn: any = null;
+    private tweenDraw: any = null;
 
     constructor(
         private route: Route,
@@ -18,11 +33,36 @@ export default class RouteAnimation {
         folder: any
     ) {
         if (process.env.NODE_ENV === "development") {
+            this.playText = function (text) {
+                const ico = icon(faPlayCircle, {
+                    classes: ["mx-2"],
+                }).html;
+                return `${ico} ${text}`;
+            };
+            this.stopText = function (text) {
+                const ico = icon(faStopCircle, {
+                    classes: ["mx-2", "text-danger"],
+                }).html;
+                return `${ico} ${text}`;
+            };
+
             const folderCustom = folder.addFolder("Animation");
             folderCustom.open();
             folderCustom.add(this, "animationPace").min(10).max(300).step(10);
-            folderCustom.add(this, "spawn");
-            folderCustom.add(this, "draw");
+
+            const self = this;
+            this.spawnUI = folderCustom
+                .add(this, "spawn")
+                .name(this.playText("Spawn"))
+                .onChange(function () {
+                    this.name(self.stopText("Spawn"));
+                });
+            this.drawUI = folderCustom
+                .add(this, "draw")
+                .name(this.playText("Draw"))
+                .onChange(function () {
+                    this.name(self.stopText("Draw"));
+                });
         }
         this.animationDrawIndex = { index: 0 };
     }
@@ -45,7 +85,7 @@ export default class RouteAnimation {
                     next.poi.lng,
                     1000,
                     undefined,
-                    250,
+                    200,
                     () => {
                         // marker.showLabel();
                     }
@@ -66,12 +106,16 @@ export default class RouteAnimation {
                 next.poi.lng,
                 1000,
                 undefined,
-                300
+                200
             );
         }
     }
 
     public draw() {
+        if (this.tweenDraw && this.tweenDraw.isPlaying()) {
+            this.tweenDraw.stop();
+            return;
+        }
         // disable active marker if any
         if (this.route.activeMarker) {
             this.route.setActiveMarker(this.route.activeMarker);
@@ -87,7 +131,7 @@ export default class RouteAnimation {
         this.animationDrawIndex.index = 0;
         const marker = this.marker[0];
 
-        const t = new TWEEN.Tween(this.animationDrawIndex)
+        this.tweenDraw = new TWEEN.Tween(this.animationDrawIndex)
             // @ts-ignore
             .to(
                 { index: this.routeData.length },
@@ -96,6 +140,7 @@ export default class RouteAnimation {
             // .easing( TWEEN.Easing.Circular.InOut )
             .onStart(() => {
                 this.mover.moving(true);
+                this.drawUI.name(this.stopText("Draw"));
             })
             .onUpdate((value: any) => {
                 this.drawUpdate(value);
@@ -123,6 +168,17 @@ export default class RouteAnimation {
                 );
                 marker.showLabel(true);
             })
+            .onStop(() => {
+                this.marker.forEach((marker: Marker) => {
+                    marker.showLabel(true);
+                });
+                // this.routeLine.drawProgress = 1;
+                this.lastActive = undefined;
+                this.mover.moving(false);
+                this.drawUI.name(this.playText("Draw"));
+                this.tweenSpawn = null;
+                this.route.setDrawIndex(this.routeData.length);
+            })
             .onComplete(() => {
                 // not called when on repeat
                 this.marker.forEach((marker: Marker) => {
@@ -131,6 +187,8 @@ export default class RouteAnimation {
                 // this.routeLine.drawProgress = 1;
                 this.lastActive = undefined;
                 this.mover.moving(false);
+                this.drawUI.name(this.playText("Draw"));
+                this.tweenSpawn = null;
 
                 this.controls.moveIntoCenter(
                     this.marker[this.marker.length - 1].poi.lat,
@@ -155,12 +213,21 @@ export default class RouteAnimation {
                 // fade in label 1
                 marker.showLabel(true);
                 // @ts-ignore
-                t.start();
+                this.tweenDraw.start();
             }
         );
     }
 
     public spawn() {
+        if (this.tweenSpawn && this.tweenSpawn.isPlaying()) {
+            this.tweenSpawn.stop();
+            return;
+        }
+        // else if (this.tweenSpawn) {
+        //     console.log("???", this.tweenSpawn);
+        //     this.tweenSpawn.resume();
+        //     return;
+        // }
         this.route.setDrawIndex(0);
         this.animationDrawIndex.index = 0;
         this.marker.forEach((m: Marker, index: number) => {
@@ -175,7 +242,7 @@ export default class RouteAnimation {
         });
         // @ts-ignore
         // new TWEEN.Tween({ drawProgress: 0 })
-        new TWEEN.Tween(this.animationDrawIndex)
+        this.tweenSpawn = new TWEEN.Tween(this.animationDrawIndex)
             // @ts-ignore
             // .to({ drawProgress: 1 }, 3000)
             .to(
@@ -190,13 +257,22 @@ export default class RouteAnimation {
             .onStart(() => {
                 this.animationDrawIndex.index = 0;
                 this.mover.moving(true);
+                this.spawnUI.name(this.stopText("Spawn"));
             })
             .onUpdate((value: any) => {
                 this.route.setDrawIndex(value.index);
             })
             // .repeat(Infinity)
+            .onStop(() => {
+                this.mover.moving(false);
+                this.spawnUI.name(this.playText("Spawn"));
+                this.tweenSpawn = null;
+                this.route.setDrawIndex(this.routeData.length);
+            })
             .onComplete(() => {
                 this.mover.moving(false);
+                this.spawnUI.name(this.playText("Spawn"));
+                this.tweenSpawn = null;
             })
             .delay(200)
             // @ts-ignore

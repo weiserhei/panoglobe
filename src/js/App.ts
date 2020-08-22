@@ -19,6 +19,9 @@ import RouteManager from "./classes/routeManager";
 import Route from "./classes/route";
 // import Impact from "./classes/impact";
 
+// todo
+// clipping plane for depthTest:false borders
+
 import Config from "../data/config";
 
 if (!WEBGL.isWebGLAvailable()) {
@@ -90,12 +93,15 @@ class App {
             controls
         );
 
+        const routes: Array<Route> = [];
+
         RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
             const route = routeManager.buildRoute(x, 0.9, folder);
-            // route.then((route) => {
-            //     // new Impact(globus, route);
-            //     // route.showLabels = false;
-            // });
+            route.then((route) => {
+                routes.push(route);
+                // new Impact(globus, route);
+                // route.showLabels = false;
+            });
         });
 
         if (process.env.NODE_ENV === "development") {
@@ -106,6 +112,22 @@ class App {
                             const route = routeManager.buildRoute(x, 5, folder);
                             route.then((route: Route) => {
                                 // route.showLabels = false;
+                                folder.remove(button);
+                                routes.push(route);
+
+                                const x = {};
+                                x[routes[0].name] = routes[0].name;
+                                x[route.name] = route.name;
+
+                                folder
+                                    .add(x, route.name, x)
+                                    .name("Route select")
+                                    .onChange((x) => {
+                                        const selection = routes.find(
+                                            (r) => r.name === x
+                                        );
+                                        routeManager.activeRoute = selection;
+                                    });
                             });
                         }
                     );
@@ -124,7 +146,7 @@ class App {
                 //     }
                 // );
             };
-            folder.add(obj, "add").name("Add Route Asien");
+            const button = folder.add(obj, "add").name("Add Route Asien");
         }
 
         globus.setTextures(textures);

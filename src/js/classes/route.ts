@@ -2,8 +2,7 @@
  * Route Class
  * create the Route
  */
-import TWEEN from "@tweenjs/tween.js";
-import { Color, Vector3 } from "three";
+import { Color } from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
@@ -15,9 +14,6 @@ import Mover from "./mover";
 import RouteAnimation from "./routeAnimation";
 
 export default class Route {
-    private animate: boolean;
-    private animationPace: number;
-    private routeAnimation: (value: any) => void;
     private mover: Mover;
     private animationDrawIndex: any;
     private animationHandler: RouteAnimation;
@@ -27,9 +23,9 @@ export default class Route {
     public visible: boolean;
     public showLabels1: boolean;
     public routeLine: RouteLine;
-    public setActiveMarker: any;
-    public cycleNextActive: any;
-    public cyclePrevActive: any;
+    public setActiveMarker: (marker: Marker) => void;
+    public cycleNextActive: (marker: Marker) => void;
+    public cyclePrevActive: (marker: Marker) => void;
 
     public setDrawIndex(value: number): void {
         // todo check if value is in range
@@ -44,6 +40,7 @@ export default class Route {
     }
 
     constructor(
+        public name: string,
         scene: THREE.Scene,
         container: HTMLElement,
         public routeData: Array<Poi>,
@@ -66,8 +63,6 @@ export default class Route {
         this.marker = [];
         this.visible = false;
         this.showLabels1 = true;
-        this.animate = false;
-        this.animationPace = 100;
         this.animationDrawIndex = { index: 0 };
 
         // const poi = this.routeData.filter((c) => c.adresse);
