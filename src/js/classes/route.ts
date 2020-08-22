@@ -103,6 +103,8 @@ export default class Route {
         const positions = this.routeLine.vertices;
         const colors = this.routeLine.colorArray;
         this.mover = new Mover(scene, positions, colors, folder);
+        this.mover.moving(false);
+        this.setDrawIndex(routeData.length);
 
         let lastActive: number | undefined = undefined;
         this.routeAnimation = function (value: any) {
@@ -237,8 +239,10 @@ export default class Route {
                 }
             );
         };
-        folder.add(this, "animationPace").min(10).max(300).step(10);
-        folder.add(this, "runAnimation");
+        if (process.env.NODE_ENV === "development") {
+            folder.add(this, "animationPace").min(10).max(300).step(10);
+            folder.add(this, "runAnimation");
+        }
 
         this.spawn = function () {
             this.routeLine.drawProgress = 0;
@@ -257,7 +261,7 @@ export default class Route {
                 // .to({ drawProgress: 1 }, 3000)
                 .to(
                     { index: routeData.length },
-                    (routeData.length * this.animationPace) / 10
+                    (routeData.length * (this.animationPace / 3)) / 10
                 )
                 // .easing( TWEEN.Easing.Circular.InOut )
                 // .easing( TWEEN.Easing.Quintic.InOut )
@@ -280,8 +284,9 @@ export default class Route {
                 // @ts-ignore
                 .start();
         };
-
-        folder.add(this, "spawn");
+        if (process.env.NODE_ENV === "development") {
+            folder.add(this, "spawn");
+        }
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {

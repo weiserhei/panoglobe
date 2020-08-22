@@ -96,14 +96,14 @@ export default class RouteManager {
                 const index =
                     this.routes.length > 1 ? 0 : route.marker.length - 1;
                 const poi = route.marker[index].poi;
-                // controls.moveIntoCenter(
-                //     poi.lat,
-                //     poi.lng,
-                //     2000,
-                //     undefined,
-                //     undefined,
-                //     buildSlider
-                // );
+                controls.moveIntoCenter(
+                    poi.lat,
+                    poi.lng,
+                    2000,
+                    undefined,
+                    undefined,
+                    buildSlider
+                );
 
                 function buildSlider() {
                     // build slider
@@ -123,7 +123,7 @@ export default class RouteManager {
                     // let result = poi.map((a) => a.index);
                     ui.createSlider(calculatedRouteData, route, poi, labels);
                 }
-                buildSlider();
+                // buildSlider();
 
                 this.spawn(route);
                 // route.runAnimation();
