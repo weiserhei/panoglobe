@@ -67,15 +67,13 @@ export default class Label {
     public setVisible(value: boolean): void {
         this.visible = value;
         if (value === true) {
-            // this.domElement.style.visibility = "visible";
-            // this.domElement.style.display = "block";
-            $(this.domElement).css("display", "none").fadeIn();
-            this.domElement.classList.remove("d-none");
+            this.css2dobject.visible = true;
+            this.visible = false;
+            $(this.domElement).fadeIn(400, () => {
+                this.visible = true;
+            });
         } else {
-            // this.domElement.style.visibility = "hidden";
-            // this.domElement.style.display = "none";
-            // this.domElement.classList.add("d-none");
-            $(this.domElement).addClass("d-none");
+            this.css2dobject.visible = false;
         }
     }
 
@@ -83,12 +81,14 @@ export default class Label {
         // overlay is visible
         if (this.visible) {
             if (!ocluded) {
+                // this.css2dobject.visible = true;
                 this.domElement.style.opacity = String(1);
-                // $(this.box).fadeIn(200);
+                // $(this.domElement).fadeIn(200);
             } else {
+                // this.css2dobject.visible = false;
                 // HIDE EACH BLOB+LABEL IF CAMERA CANT SEE IT (I.E. WHEN IT IS BEHIND THE GLOBE)
                 this.domElement.style.opacity = String(1 + dot * 4);
-                // $(this.box).fadeOut(200);
+                // $(this.domElement).fadeOut(200);
             }
         }
     }

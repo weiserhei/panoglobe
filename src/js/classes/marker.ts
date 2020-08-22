@@ -73,7 +73,9 @@ export default class Marker {
 
         this.setVisible = function (value: boolean) {
             label.setVisible(value);
-            infoBox.isVisible = value;
+            if (value === false) {
+                infoBox.isVisible = value;
+            }
         };
         this.setActive = function (value: boolean) {
             // do not call me, im getting called by the managers

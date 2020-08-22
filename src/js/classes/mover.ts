@@ -37,14 +37,12 @@ export default class Mover {
         this.tempVector = new Vector3();
         this.htmlMover = new HtmlMover(scene);
         if (process.env.NODE_ENV === "development") {
-            const x = {
-                toggle: false,
-                add: () => {
-                    this.htmlMover.visible = x.toggle;
-                    x.toggle = !x.toggle;
-                },
-            };
-            folder.add(x, "add").name("Toggle 2D Guide");
+            folder
+                .add({ visible: true }, "visible")
+                .name("2D Guide")
+                .onChange((value: boolean) => {
+                    this.htmlMover.visible = value;
+                });
         }
         // async
         this.mesh_mover(scene, folder);
@@ -107,6 +105,10 @@ export default class Mover {
 
     public moving(value: boolean) {
         this.htmlMover.moving(value);
+    }
+
+    public setVisible(value: boolean) {
+        this.htmlMover.visible = value;
     }
 
     public update(index: number, camera: THREE.Camera) {

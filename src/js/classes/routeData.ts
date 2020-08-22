@@ -3,7 +3,11 @@ interface IRouteData {
     gps: Array<Coordinate>;
 }
 
+interface IMeta {
+    name: string;
+}
+
 class RouteData implements IRouteData {
-    public meta: object;
+    public meta: IMeta;
     public gps: Array<Coordinate>;
 }

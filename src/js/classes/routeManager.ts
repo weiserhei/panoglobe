@@ -48,6 +48,9 @@ export default class RouteManager {
                     globusradius + 0.0
                 );
 
+                const folderCustom = folder.addFolder(routeData.meta.name);
+                folderCustom.open();
+
                 const route = new Route(
                     scene,
                     container,
@@ -55,7 +58,7 @@ export default class RouteManager {
                     phase,
                     controls,
                     this,
-                    folder
+                    folderCustom
                 );
                 this.routes.push(route);
 
@@ -126,7 +129,7 @@ export default class RouteManager {
                 // buildSlider();
 
                 this.spawn(route);
-                // route.runAnimation();
+                // route.draw();
 
                 return route;
             });

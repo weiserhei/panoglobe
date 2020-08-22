@@ -12,6 +12,7 @@ import Config from "../../data/config";
 import Controls from "./controls";
 import RouteManager from "./routeManager";
 import Mover from "./mover";
+import RouteAnimation from "./routeAnimation";
 
 export default class Route {
     private animate: boolean;
@@ -19,6 +20,7 @@ export default class Route {
     private routeAnimation: (value: any) => void;
     private mover: Mover;
     private animationDrawIndex: any;
+    private animationHandler: RouteAnimation;
 
     public activeMarker: Marker | null;
     public marker: Array<Marker>;
@@ -26,27 +28,36 @@ export default class Route {
     public showLabels1: boolean;
     public routeLine: RouteLine;
     public setActiveMarker: any;
-    public setRunAnimation: any;
     public cycleNextActive: any;
     public cyclePrevActive: any;
-    public spawn: () => void;
-    public runAnimation: () => void;
 
-    public setDrawIndex(value: number) {
+    public setDrawIndex(value: number): void {
         // todo check if value is in range
         this.routeLine.setDrawIndex(value);
         this.animationDrawIndex.index = value;
     }
+    public spawn(): void {
+        this.animationHandler.spawn();
+    }
+    public drawAnimation(): void {
+        this.animationHandler.draw();
+    }
+
     constructor(
         scene: THREE.Scene,
         container: HTMLElement,
         public routeData: Array<Poi>,
         phase: number,
         controls: Controls,
-        manager: RouteManager,
+        private manager: RouteManager,
         folder: any
     ) {
-        this.activeMarker = null;
+        folder
+            .add({ visible: true }, "visible")
+            .name("Route visible")
+            .onChange((value: boolean) => {
+                this.isVisible = value;
+            });
 
         const steps = 1.2; // how fast change the color (0 = fast)
         const frequency = 1 / (steps * this.routeData.length);
@@ -106,187 +117,14 @@ export default class Route {
         this.mover.moving(false);
         this.setDrawIndex(routeData.length);
 
-        let lastActive: number | undefined = undefined;
-        this.routeAnimation = function (value: any) {
-            const index = Math.floor(value.index);
-            this.routeLine.setDrawIndex(value.index);
-
-            const result = this.marker.find((marker: Marker) => {
-                return marker.index === index;
-            });
-
-            if (result === undefined) return;
-            if (result.index === 0 && lastActive === undefined) {
-                lastActive = 0;
-                const next = this.getNext(result);
-                if (next) {
-                    controls.moveIntoCenter(
-                        next.poi.lat,
-                        next.poi.lng,
-                        1000,
-                        undefined,
-                        250,
-                        () => {
-                            // marker.showLabel();
-                        }
-                    );
-                }
-            } else if (result.index > lastActive) {
-                // debounce
-                lastActive = result.index;
-                // this.setActiveMarker(result);
-                const tween = result.spawn();
-                tween.start();
-                result.showLabel(true);
-
-                const next = this.getNext(result);
-                if (!next) return;
-                controls.moveIntoCenter(
-                    next.poi.lat,
-                    next.poi.lng,
-                    1000,
-                    undefined,
-                    300
-                );
-            }
-        };
-
-        this.runAnimation = function () {
-            // disable active marker if any
-            if (this.activeMarker) {
-                this.setActiveMarker(this.activeMarker);
-            }
-            // hide label
-            this.marker.forEach((marker: Marker) => {
-                // marker.showLabel(false);
-                marker.setVisible(false);
-            });
-            // slow down tween: https://github.com/tweenjs/tween.js/issues/105#issuecomment-34570228
-            // hide route
-            this.routeLine.setDrawIndex(0);
-            this.animationDrawIndex.index = 0;
-            const marker = this.marker[0];
-
-            const t = new TWEEN.Tween(this.animationDrawIndex)
-                // @ts-ignore
-                .to(
-                    { index: routeData.length },
-                    routeData.length * this.animationPace * 2
-                )
-                // .easing( TWEEN.Easing.Circular.InOut )
-                .onStart(() => {
-                    this.mover.moving(true);
-                })
-                .onUpdate((value: any) => {
-                    this.routeAnimation(value);
-                })
-                // .repeat(Infinity)
-                .repeatDelay(3000)
-                .onRepeat(() => {
-                    lastActive = undefined;
-                    if (this.activeMarker) {
-                        this.setActiveMarker(this.activeMarker);
-                    }
-                    this.routeLine.drawProgress = 0;
-                    // hide label
-                    this.marker.forEach((marker: Marker) => {
-                        marker.setVisible(false);
-                    });
-                    // move camera to start
-                    controls.moveIntoCenter(
-                        marker.poi.lat,
-                        marker.poi.lng,
-                        2000,
-                        undefined,
-                        300,
-                        () => {}
-                    );
-                    marker.showLabel(true);
-                })
-                .onComplete(() => {
-                    // not called when on repeat
-                    this.marker.forEach((marker: Marker) => {
-                        marker.showLabel(true);
-                    });
-                    this.routeLine.drawProgress = 1;
-                    lastActive = undefined;
-                    this.mover.moving(false);
-
-                    controls.moveIntoCenter(
-                        this.marker[this.marker.length - 1].poi.lat,
-                        this.marker[this.marker.length - 1].poi.lng,
-                        2000,
-                        undefined,
-                        600
-                    );
-                })
-                .delay(2000);
-            // @ts-ignore
-            // .start();
-
-            // move camera to start
-            controls.moveIntoCenter(
-                marker.poi.lat,
-                marker.poi.lng,
-                2000,
-                undefined,
-                300,
-                () => {
-                    // show in label 1
-                    marker.showLabel(true);
-                    // @ts-ignore
-                    t.start();
-                }
-            );
-        };
-        if (process.env.NODE_ENV === "development") {
-            folder.add(this, "animationPace").min(10).max(300).step(10);
-            folder.add(this, "runAnimation");
-        }
-
-        this.spawn = function () {
-            this.routeLine.drawProgress = 0;
-            this.animationDrawIndex.index = 0;
-            this.marker.forEach((m: Marker, index: number) => {
-                m.showLabel(true);
-                // drop marker delayed
-                m.spawn()
-                    .delay(100 * (index + 1))
-                    .start();
-            });
-            // @ts-ignore
-            // new TWEEN.Tween({ drawProgress: 0 })
-            new TWEEN.Tween(this.animationDrawIndex)
-                // @ts-ignore
-                // .to({ drawProgress: 1 }, 3000)
-                .to(
-                    { index: routeData.length },
-                    (routeData.length * (this.animationPace / 3)) / 10
-                )
-                // .easing( TWEEN.Easing.Circular.InOut )
-                // .easing( TWEEN.Easing.Quintic.InOut )
-                // .easing(TWEEN.Easing.Cubic.InOut)
-                .easing(TWEEN.Easing.Circular.Out)
-                // .easing(easing || Config.easing)
-                .onStart(() => {
-                    this.animationDrawIndex.index = 0;
-                    this.mover.moving(true);
-                })
-                .onUpdate((value: any) => {
-                    // this.routeLine.drawProgress = value.drawProgress;
-                    this.routeLine.setDrawIndex(value.index);
-                })
-                // .repeat(Infinity)
-                .onComplete(() => {
-                    this.mover.moving(false);
-                })
-                .delay(200)
-                // @ts-ignore
-                .start();
-        };
-        if (process.env.NODE_ENV === "development") {
-            folder.add(this, "spawn");
-        }
+        this.animationHandler = new RouteAnimation(
+            this,
+            this.mover,
+            this.marker,
+            this.routeData,
+            controls,
+            folder
+        );
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {
@@ -296,8 +134,8 @@ export default class Route {
             //     return;
             // }
 
-            if (manager !== undefined) {
-                manager.setActiveMarker(this, marker);
+            if (this.manager !== undefined) {
+                this.manager.setActiveMarker(this, marker);
                 return;
             }
 
@@ -320,7 +158,7 @@ export default class Route {
             // this.activeMarker = this.marker[nextIndex];
             // this.marker[currentIndex].setActive(false);
             // this.marker[nextIndex].setActive(true);
-            manager.setActiveMarker(this, nextMarker);
+            this.manager.setActiveMarker(this, nextMarker);
         };
 
         this.cyclePrevActive = function (marker: Marker) {
@@ -334,7 +172,7 @@ export default class Route {
             // this.activeMarker = this.marker[prevIndex];
             // this.marker[currentIndex].setActive(false);
             // this.marker[prevIndex].setActive(true);
-            manager.setActiveMarker(this, prevMarker);
+            this.manager.setActiveMarker(this, prevMarker);
         };
     }
 
@@ -367,9 +205,13 @@ export default class Route {
 
     set isVisible(value) {
         this.visible = value;
+        if (this.activeMarker) {
+            this.manager.setActiveMarker(this, this.activeMarker);
+        }
         this.marker.forEach((marker) => {
             marker.setVisible(value);
         });
+        this.mover.setVisible(value);
         this.routeLine.line.visible = value;
     }
 
@@ -383,12 +225,4 @@ export default class Route {
         // if (this.animate === true) {
         // }
     }
-
-    // get runAnimation() {
-    //     return this.animate;
-    // }
-
-    // set pauseAnimation(value: boolean) {
-    //     this.animate = !value;
-    // }
 }
