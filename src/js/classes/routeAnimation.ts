@@ -140,7 +140,9 @@ export default class RouteAnimation {
             // .easing( TWEEN.Easing.Circular.InOut )
             .onStart(() => {
                 this.mover.moving(true);
-                this.drawUI.name(this.stopText("Draw"));
+                if (process.env.NODE_ENV === "development") {
+                    this.drawUI.name(this.stopText("Draw"));
+                }
             })
             .onUpdate((value: any) => {
                 this.drawUpdate(value);
@@ -187,7 +189,9 @@ export default class RouteAnimation {
                 // this.routeLine.drawProgress = 1;
                 this.lastActive = undefined;
                 this.mover.moving(false);
-                this.drawUI.name(this.playText("Draw"));
+                if (process.env.NODE_ENV === "development") {
+                    this.drawUI.name(this.playText("Draw"));
+                }
                 this.tweenSpawn = null;
 
                 this.controls.moveIntoCenter(
@@ -257,7 +261,9 @@ export default class RouteAnimation {
             .onStart(() => {
                 this.animationDrawIndex.index = 0;
                 this.mover.moving(true);
-                this.spawnUI.name(this.stopText("Spawn"));
+                if (process.env.NODE_ENV === "development") {
+                    this.spawnUI.name(this.stopText("Spawn"));
+                }
             })
             .onUpdate((value: any) => {
                 this.route.setDrawIndex(value.index);
@@ -265,13 +271,17 @@ export default class RouteAnimation {
             // .repeat(Infinity)
             .onStop(() => {
                 this.mover.moving(false);
-                this.spawnUI.name(this.playText("Spawn"));
+                if (process.env.NODE_ENV === "development") {
+                    this.spawnUI.name(this.playText("Spawn"));
+                }
                 this.tweenSpawn = null;
                 this.route.setDrawIndex(this.routeData.length);
             })
             .onComplete(() => {
                 this.mover.moving(false);
-                this.spawnUI.name(this.playText("Spawn"));
+                if (process.env.NODE_ENV === "development") {
+                    this.spawnUI.name(this.playText("Spawn"));
+                }
                 this.tweenSpawn = null;
             })
             .delay(200)
