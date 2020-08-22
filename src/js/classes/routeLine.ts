@@ -56,6 +56,10 @@ export default class RouteLine {
     private positions: Float32Array;
     private colors: Float32Array;
 
+    get colorArray(): Float32Array {
+        return this.colors;
+    }
+
     set drawProgress(value: number) {
         this.setDrawProgress(value);
     }

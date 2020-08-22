@@ -3,7 +3,7 @@
  * create the Route
  */
 import TWEEN from "@tweenjs/tween.js";
-import { Color } from "three";
+import { Color, Vector3 } from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
@@ -11,11 +11,14 @@ import Config from "../../data/config";
 
 import Controls from "./controls";
 import RouteManager from "./routeManager";
+import Mover from "./mover";
 
 export default class Route {
     private animate: boolean;
     private animationPace: number;
     private routeAnimation: (value: any) => void;
+    private mover: Mover;
+    private animationDrawIndex: any;
 
     public activeMarker: Marker;
     public marker: Array<Marker>;
@@ -47,6 +50,7 @@ export default class Route {
         this.showLabels1 = true;
         this.animate = false;
         this.animationPace = 100;
+        this.animationDrawIndex = { index: 0 };
 
         // const poi = this.routeData.filter((c) => c.adresse);
 
@@ -91,11 +95,15 @@ export default class Route {
         // this.routeLine.setDrawCount(this.routeLine.numberVertices);
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
+        const positions = this.routeLine.vertices;
+        const colors = this.routeLine.colorArray;
+        this.mover = new Mover(scene, positions, colors, folder);
 
         let lastActive: number = undefined;
         this.routeAnimation = function (value: any) {
-            const index = Math.floor(value.drawIndex);
-            this.routeLine.setDrawIndex(value.drawIndex);
+            const index = Math.floor(value.index);
+            this.routeLine.setDrawIndex(value.index);
+            this.mover.update(this.animationDrawIndex.index);
 
             const result = this.marker.find((marker: Marker) => {
                 return marker.index === index;
@@ -148,13 +156,14 @@ export default class Route {
             // slow down tween: https://github.com/tweenjs/tween.js/issues/105#issuecomment-34570228
             // hide route
             this.routeLine.setDrawIndex(0);
+            this.animationDrawIndex.index = 0;
             const marker = this.marker[0];
 
-            const t = new TWEEN.Tween({ drawIndex: 0 })
+            const t = new TWEEN.Tween(this.animationDrawIndex)
                 // @ts-ignore
                 .to(
-                    { drawIndex: routeData.length },
-                    routeData.length * this.animationPace
+                    { index: routeData.length },
+                    routeData.length * this.animationPace * 2
                 )
                 // .easing( TWEEN.Easing.Circular.InOut )
                 .onStart(() => {})
@@ -225,6 +234,7 @@ export default class Route {
         this.spawn = function () {
             console.log("route spawn");
             this.routeLine.drawProgress = 0;
+            this.animationDrawIndex.index = 0;
             this.marker.forEach((m: Marker, index: number) => {
                 m.showLabel(true);
                 // drop marker delayed
@@ -235,19 +245,27 @@ export default class Route {
                     .delay(100 * (index + 1))
                     .start();
             });
-            const test = { drawProgress: 0 };
             // @ts-ignore
-            new TWEEN.Tween(test)
+            // new TWEEN.Tween({ drawProgress: 0 })
+            new TWEEN.Tween(this.animationDrawIndex)
                 // @ts-ignore
-                .to({ drawProgress: 1 }, 3000)
+                // .to({ drawProgress: 1 }, 3000)
+                .to(
+                    { index: routeData.length },
+                    (routeData.length * this.animationPace) / 10
+                )
                 // .easing( TWEEN.Easing.Circular.InOut )
                 // .easing( TWEEN.Easing.Quintic.InOut )
                 // .easing(TWEEN.Easing.Cubic.InOut)
                 .easing(TWEEN.Easing.Circular.Out)
                 // .easing(easing || Config.easing)
-                .onStart(() => {})
+                .onStart(() => {
+                    this.animationDrawIndex.index = 0;
+                })
                 .onUpdate((value: any) => {
-                    this.routeLine.drawProgress = value.drawProgress;
+                    // this.routeLine.drawProgress = value.drawProgress;
+                    this.routeLine.setDrawIndex(value.index);
+                    this.mover.update(this.animationDrawIndex.index);
                 })
                 // .repeat(Infinity)
                 .onComplete(() => {})

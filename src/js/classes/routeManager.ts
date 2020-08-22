@@ -126,8 +126,8 @@ export default class RouteManager {
                     );
                 }
 
-                // this.spawn(route);
-                route.runAnimation();
+                this.spawn(route);
+                // route.runAnimation();
 
                 return route;
             });
