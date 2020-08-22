@@ -48,6 +48,11 @@ export default class HtmlMover {
         scene.add(this.css2dobject);
     }
 
+    set visible(value: boolean) {
+        this.css2dobject.visible = value;
+        this.css2dobject2.visible = value;
+    }
+
     public moving(value: boolean) {
         if (value == true) {
             // $(this.css2dobject.element).removeClass("d-none");

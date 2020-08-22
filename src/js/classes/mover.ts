@@ -37,6 +37,14 @@ export default class Mover {
         this.tempVector = new Vector3();
 
         this.htmlMover = new HtmlMover(scene);
+        const x = {
+            toggle: false,
+            add: () => {
+                this.htmlMover.visible = x.toggle;
+                x.toggle = !x.toggle;
+            },
+        };
+        folder.add(x, "add").name("Toggle 2D Guide");
 
         // async
         this.mesh_mover(scene, folder);
@@ -86,7 +94,7 @@ export default class Mover {
                             this.mesh = object;
                             scene.add(this.mesh);
                             this.mesh.visible = false;
-                            folder.add(this.mesh, "visible");
+                            folder.add(this.mesh, "visible").name("3D Guide");
                         }
                         // onProgress, onError
                     );
