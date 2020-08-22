@@ -165,7 +165,9 @@ export default class Route {
                     routeData.length * this.animationPace * 2
                 )
                 // .easing( TWEEN.Easing.Circular.InOut )
-                .onStart(() => {})
+                .onStart(() => {
+                    this.mover.moving(true);
+                })
                 .onUpdate((value: any) => {
                     this.routeAnimation(value);
                 })
@@ -199,6 +201,7 @@ export default class Route {
                     });
                     this.routeLine.drawProgress = 1;
                     lastActive = undefined;
+                    this.mover.moving(false);
 
                     controls.moveIntoCenter(
                         this.marker[this.marker.length - 1].poi.lat,
