@@ -20,7 +20,7 @@ export default class Route {
     private mover: Mover;
     private animationDrawIndex: any;
 
-    public activeMarker: Marker;
+    public activeMarker: Marker | null;
     public marker: Array<Marker>;
     public visible: boolean;
     public showLabels1: boolean;
@@ -32,6 +32,11 @@ export default class Route {
     public spawn: () => void;
     public runAnimation: () => void;
 
+    public setDrawIndex(value: number) {
+        // todo check if value is in range
+        this.routeLine.setDrawIndex(value);
+        this.animationDrawIndex.index = value;
+    }
     constructor(
         scene: THREE.Scene,
         container: HTMLElement,
@@ -99,7 +104,7 @@ export default class Route {
         const colors = this.routeLine.colorArray;
         this.mover = new Mover(scene, positions, colors, folder);
 
-        let lastActive: number = undefined;
+        let lastActive: number | undefined = undefined;
         this.routeAnimation = function (value: any) {
             const index = Math.floor(value.index);
             this.routeLine.setDrawIndex(value.index);
@@ -112,23 +117,25 @@ export default class Route {
             if (result.index === 0 && lastActive === undefined) {
                 lastActive = 0;
                 const next = this.getNext(result);
-                controls.moveIntoCenter(
-                    next.poi.lat,
-                    next.poi.lng,
-                    1000,
-                    undefined,
-                    250,
-                    () => {
-                        // marker.showLabel();
-                    }
-                );
+                if (next) {
+                    controls.moveIntoCenter(
+                        next.poi.lat,
+                        next.poi.lng,
+                        1000,
+                        undefined,
+                        250,
+                        () => {
+                            // marker.showLabel();
+                        }
+                    );
+                }
             } else if (result.index > lastActive) {
                 // debounce
                 lastActive = result.index;
                 // this.setActiveMarker(result);
                 const tween = result.spawn();
                 tween.start();
-                result.showLabel();
+                result.showLabel(true);
 
                 const next = this.getNext(result);
                 if (!next) return;
@@ -192,7 +199,7 @@ export default class Route {
                         300,
                         () => {}
                     );
-                    marker.showLabel();
+                    marker.showLabel(true);
                 })
                 .onComplete(() => {
                     // not called when on repeat
@@ -224,7 +231,7 @@ export default class Route {
                 300,
                 () => {
                     // show in label 1
-                    marker.showLabel();
+                    marker.showLabel(true);
                     // @ts-ignore
                     t.start();
                 }
@@ -234,15 +241,11 @@ export default class Route {
         folder.add(this, "runAnimation");
 
         this.spawn = function () {
-            console.log("route spawn");
             this.routeLine.drawProgress = 0;
             this.animationDrawIndex.index = 0;
             this.marker.forEach((m: Marker, index: number) => {
                 m.showLabel(true);
                 // drop marker delayed
-                // const t = m.spawn();
-                // t.delay(100 * (index + 1));
-                // t.start();
                 m.spawn()
                     .delay(100 * (index + 1))
                     .start();
@@ -299,38 +302,6 @@ export default class Route {
 
             this.activeMarker = marker;
             marker.setActive(true);
-        };
-
-        this.setRunAnimation = function (value: boolean) {
-            this.animate = false;
-            this.showLabels = !value;
-            this.drawCount = 0;
-
-            if (value === false) {
-                // stop animation
-                this.routeLine.drawCount = 0;
-                this.routeLine.drawFull();
-
-                if (this.activeMarker !== null) {
-                    this.activeMarker.active = false;
-                }
-            } else {
-                // this._routeLine.drawFull();
-                this.routeLine.drawCount = 0;
-
-                this.controls.moveIntoCenter(
-                    this.pois[0].lat,
-                    this.pois[0].lng,
-                    1000,
-                    undefined,
-                    undefined,
-                    () => {
-                        // this._routeData[ 0 ].marker.active = true;
-                        // setTimeout(() => { this._animate = true; }, 500);
-                        this.animate = true;
-                    }
-                );
-            }
         };
 
         this.cycleNextActive = function (marker: Marker) {

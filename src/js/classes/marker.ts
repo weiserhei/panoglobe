@@ -11,9 +11,9 @@ const markermesh = new Mesh(markergeo);
 
 export default class Marker {
     public mesh: THREE.Mesh;
-    public setVisible: any;
-    public addInfoBox: any;
-    public setActive: any;
+    public setVisible: (value: boolean) => void;
+    public addInfoBox: (parentDomNode: HTMLElement) => void;
+    public setActive: (value: boolean) => void;
     public update: (camera: THREE.Camera, delta: number) => void;
     public spawn: () => any;
     public showLabel: (value: boolean) => void;
@@ -29,7 +29,7 @@ export default class Marker {
     ) {
         const meshVector = new Vector3();
         let ocluded = false;
-        let infoBox: InfoBox = null;
+        let infoBox: InfoBox;
         let active = false;
 
         let mesh = markermesh.clone();

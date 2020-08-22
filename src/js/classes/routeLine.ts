@@ -47,16 +47,16 @@ export default class RouteLine {
     // todo
     // public line: Line | Line2;
     public line: any;
-    public curve: THREE.Curve<Vector3>;
+    public curve: THREE.Curve<Vector3> | undefined;
     public vertices: Array<Vector3>;
     public drawCount: number;
     public currentPositionVec: THREE.Vector;
     public nextPositionVec: THREE.Vector;
     public colorWheel: number;
-    private positions: Float32Array;
-    private colors: Float32Array;
+    private positions: Float32Array | undefined;
+    private colors: Float32Array | undefined;
 
-    get colorArray(): Float32Array {
+    get colorArray(): Float32Array | undefined {
         return this.colors;
     }
 
@@ -95,7 +95,6 @@ export default class RouteLine {
 
     constructor(routeData: Array<Poi>, steps: number, phase: number) {
         this.line = undefined;
-        this.curve = undefined;
         this.vertices = getVertices(routeData);
         this.drawCount = 0;
         this.currentPositionVec = new Vector3();

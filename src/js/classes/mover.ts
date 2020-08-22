@@ -18,14 +18,14 @@ import Config from "../../data/config";
 
 export default class Mover {
     private tempVector: THREE.Vector3;
-    private mesh: THREE.Group;
-    private outlineMesh: THREE.Mesh;
+    private mesh: THREE.Group | undefined;
+    private outlineMesh: THREE.Mesh | undefined;
     private htmlMover: HtmlMover;
     constructor(
-        private scene: THREE.Scene,
+        scene: THREE.Scene,
         private positions: Array<THREE.Vector3>,
         private colors: Float32Array,
-        private folder: any
+        folder: any
     ) {
         // this.mesh = new Mesh(
         //     new BoxBufferGeometry(1, 1, 2),
@@ -35,17 +35,17 @@ export default class Mover {
         // this.mesh.position.copy(positions[positions.length - 1]);
 
         this.tempVector = new Vector3();
-
         this.htmlMover = new HtmlMover(scene);
-        const x = {
-            toggle: false,
-            add: () => {
-                this.htmlMover.visible = x.toggle;
-                x.toggle = !x.toggle;
-            },
-        };
-        folder.add(x, "add").name("Toggle 2D Guide");
-
+        if (process.env.NODE_ENV === "development") {
+            const x = {
+                toggle: false,
+                add: () => {
+                    this.htmlMover.visible = x.toggle;
+                    x.toggle = !x.toggle;
+                },
+            };
+            folder.add(x, "add").name("Toggle 2D Guide");
+        }
         // async
         this.mesh_mover(scene, folder);
     }
@@ -94,7 +94,11 @@ export default class Mover {
                             this.mesh = object;
                             scene.add(this.mesh);
                             this.mesh.visible = false;
-                            folder.add(this.mesh, "visible").name("3D Guide");
+                            if (process.env.NODE_ENV === "development") {
+                                folder
+                                    .add(this.mesh, "visible")
+                                    .name("3D Guide");
+                            }
                         }
                         // onProgress, onError
                     );
@@ -103,18 +107,11 @@ export default class Mover {
 
     public moving(value: boolean) {
         this.htmlMover.moving(value);
-        // if (value === true) {
-        //     // set pen
-        // } else {
-        //     // set marker
-        // }
     }
 
     public update(index: number, camera: THREE.Camera) {
         const indexes = { bigIndex: 0, bigIndex2: 0 };
-        // if (routeData === undefined) {
-        //     return;
-        // }
+
         // let index = Math.floor(self.animationDrawIndex.index);
         // if (index < 1) {
         //     index = 1;
@@ -128,26 +125,28 @@ export default class Mover {
             indexes.bigIndex = this.positions.length - 1;
         }
         var point = this.positions[indexes.bigIndex];
-        indexes.bigIndex2 = (indexes.bigIndex + 5) % this.positions.length;
-        var point2 = this.positions[indexes.bigIndex2];
-        // var point2 = routeData[index % routeData.length].displacedPos;
-        // let angleEnd = point.angleTo(point2);
-        var upNormal = this.tempVector
-            .subVectors(new Vector3(0, 0, 0), point.clone())
-            .normalize();
-        if (!this.mesh) return;
-        this.mesh.up = upNormal;
-        this.mesh.position.copy(point);
-        this.mesh.lookAt(point2);
-        this.outlineMesh.lookAt(new Vector3(0, 0, 0));
-
         const currentColor = new Color().fromArray(
             this.colors,
             indexes.bigIndex * 3
         );
-        (this.outlineMesh.material as MeshPhongMaterial).color.copy(
-            currentColor
-        );
+
+        if (this.mesh && this.outlineMesh) {
+            indexes.bigIndex2 = (indexes.bigIndex + 5) % this.positions.length;
+            var point2 = this.positions[indexes.bigIndex2];
+            // var point2 = routeData[index % routeData.length].displacedPos;
+            // let angleEnd = point.angleTo(point2);
+            var upNormal = this.tempVector
+                .subVectors(new Vector3(0, 0, 0), point.clone())
+                .normalize();
+            if (!this.mesh) return;
+            this.mesh.up = upNormal;
+            this.mesh.position.copy(point);
+            this.mesh.lookAt(point2);
+            this.outlineMesh.lookAt(new Vector3(0, 0, 0));
+            (this.outlineMesh.material as MeshPhongMaterial).color.copy(
+                currentColor
+            );
+        }
 
         // this.mesh.getWorldPosition(meshVector);
         const eye = camera.position.clone().sub(point);
@@ -155,7 +154,5 @@ export default class Mover {
         const ocluded = dot < 0.0; // IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
 
         this.htmlMover.update(ocluded, dot, point, currentColor);
-        // this.car.position.copy(pos);
-        // this.car.lookAt(scene.position);
     }
 }

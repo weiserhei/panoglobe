@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "strict": false,
         "target": "es6",
         "moduleResolution": "node",
         "sourceMap": true,
@@ -10,6 +11,7 @@
         "esModuleInterop": true,
         // Gives error if there are implied "<any>" types.
         "noImplicitAny": true,
+        "noImplicitThis": false,
         // Allows you to access non-constant properties, such as object[keyVar]
         "suppressImplicitAnyIndexErrors": true
     },

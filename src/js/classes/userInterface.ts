@@ -5,12 +5,12 @@ import "nouislider/distribute/nouislider.css";
 import "../../css/nouislider.css";
 import MyFormatter from "../utils/sliderFormatter";
 import Controls from "./controls";
-import RouteLine from "./routeLine";
+import Route from "./route";
 
 export default class UserInterface {
     public createSlider: (
         calculatedRouteData: Array<Poi>,
-        routeLine: RouteLine,
+        route: Route,
         poi: Array<number>,
         adresses: Array<string>
     ) => void;
@@ -31,9 +31,9 @@ export default class UserInterface {
 
         this.createSlider = function (
             calculatedRouteData: Array<Poi>,
-            routeLine: RouteLine,
+            route: Route,
             poi: Array<number>,
-            adresses: Array<string>
+            labels: Array<string>
         ) {
             const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
             $(ui).hide().fadeIn();
@@ -46,7 +46,7 @@ export default class UserInterface {
             noUiSlider.create(
                 slider,
                 {
-                    start: [adresses.length],
+                    start: [labels.length],
                     step: 1,
                     connect: false,
                     range: {
@@ -58,7 +58,7 @@ export default class UserInterface {
                         values: poi,
                         stepped: true,
                         density: 100,
-                        format: new MyFormatter(adresses),
+                        format: new MyFormatter(labels),
                     },
                 },
                 // @ts-ignore
@@ -73,7 +73,7 @@ export default class UserInterface {
             });
 
             slider.noUiSlider.on("slide", function (value: any) {
-                routeLine.setDrawIndex(value);
+                route.setDrawIndex(value);
             });
 
             var pips = slider.querySelectorAll(".noUi-value");
@@ -81,7 +81,7 @@ export default class UserInterface {
             function clickOnPip() {
                 const value = Number(this.getAttribute("data-value"));
                 slider.noUiSlider.set(value);
-                routeLine.setDrawIndex(value);
+                route.setDrawIndex(value);
                 controls.moveIntoCenter(
                     // routeData.gps[Math.floor(value)].lat,
                     // routeData.gps[Math.floor(value)].lng,

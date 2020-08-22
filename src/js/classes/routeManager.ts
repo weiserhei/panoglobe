@@ -12,7 +12,7 @@ import Marker from "./marker";
 
 export default class RouteManager {
     public routes: Array<Route>;
-    public activeMarker: Marker;
+    public activeMarker: Marker | null;
     public buildRoute: (
         routeData: RouteData,
         phase: number,
@@ -108,23 +108,22 @@ export default class RouteManager {
                 function buildSlider() {
                     // build slider
                     const poi: Array<number> = [];
-                    const adresses: Array<string> = [];
+                    const labels: Array<string> = [];
                     calculatedRouteData.forEach(function (
                         e: Poi,
                         index: number
                     ) {
-                        if (e.adresse) poi.push(index);
-                        adresses.push(e.adresse);
+                        if (e.adresse) {
+                            poi.push(index);
+                            labels.push(e.adresse);
+                        } else {
+                            labels.push("");
+                        }
                     });
                     // let result = poi.map((a) => a.index);
-
-                    ui.createSlider(
-                        calculatedRouteData,
-                        route.routeLine,
-                        poi,
-                        adresses
-                    );
+                    ui.createSlider(calculatedRouteData, route, poi, labels);
                 }
+                buildSlider();
 
                 this.spawn(route);
                 // route.runAnimation();
