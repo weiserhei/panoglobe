@@ -136,26 +136,21 @@ export default class RouteManager {
         };
     }
 
-    static load(url: string) {
+    static load(url: string | undefined) {
         // load datalist
-        if (url) {
-            return $.getJSON(url, {
-                format: "json",
+        return $.getJSON(url, {
+            format: "json",
+        })
+            .done(() => {
+                console.log("Route has been loaded");
+                // this.buildRoute(data, phase, folder);
             })
-                .done(() => {
-                    console.log("Route has been loaded");
-                    // this.buildRoute(data, phase, folder);
-                })
-                .fail(() => {
-                    alert("Sorry! An Error occured while loading the route :(");
-                });
-            // .always(function() {
-            // alert( "complete" );
-            // });
-        } else {
-            // IF NO JSON OBJECT GIVEN
-            alert("Call to loadRoute without providing a Link to a datalist");
-        }
+            .fail(() => {
+                alert("Sorry! An Error occured while loading the route :(");
+            });
+        // .always(function() {
+        // alert( "complete" );
+        // });
     }
 
     // get activeMarker() {

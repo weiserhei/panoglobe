@@ -106,7 +106,7 @@ export default class InfoBox {
 
     public update(
         camera: THREE.Camera,
-        followMesh: THREE.Mesh,
+        positionVector: THREE.Vector3,
         ocluded: boolean,
         active: boolean
     ) {
@@ -119,7 +119,7 @@ export default class InfoBox {
 
         if (this.isVisible) {
             // overlay is visible
-            this.screenVector.copy(followMesh.position).project(camera);
+            this.screenVector.copy(positionVector).project(camera);
 
             const posx =
                 ((1 + this.screenVector.x) * this.parentDomNode.offsetWidth) /

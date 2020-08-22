@@ -20,7 +20,7 @@ export default class Impacts {
         for (let i = 0; i < maxImpactAmount; i += 1) {
             impacts.push({
                 impactPosition: new Vector3().copy(
-                    route.marker[i].mesh.position
+                    route.marker[i].poi.displacedPos
                 ),
                 color: route.marker[i].color,
                 // impactPosition: new Vector3().setFromSphericalCoords(
@@ -105,7 +105,7 @@ export default class Impacts {
                                     materialShader.uniforms.impacts.value[
                                         i
                                     ].impactPosition.copy(
-                                        route.marker[i].mesh.position
+                                        route.marker[i].poi.displacedPos
                                     ),
                                     // setFromSphericalCoords(
                                     //   Config.globus.radius,

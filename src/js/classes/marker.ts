@@ -1,4 +1,4 @@
-import { SphereBufferGeometry, Vector3, Mesh } from "three";
+import { Vector3 } from "three";
 import TWEEN from "@tweenjs/tween.js";
 import $ from "jquery";
 import InfoBox from "./infobox";
@@ -6,17 +6,18 @@ import Label from "./label";
 import Route from "./route";
 import Controls from "./controls";
 
-const markergeo = new SphereBufferGeometry(1, 8, 6);
-const markermesh = new Mesh(markergeo);
-
 export default class Marker {
-    public mesh: THREE.Mesh;
     public setVisible: (value: boolean) => void;
     public addInfoBox: (parentDomNode: HTMLElement) => void;
     public setActive: (value: boolean) => void;
-    public update: (camera: THREE.Camera, delta: number) => void;
     public spawn: () => any;
     public showLabel: (value: boolean) => void;
+
+    private position: THREE.Vector3;
+    private label: Label;
+    private infoBox: InfoBox;
+    private active: boolean = false;
+    private ocluded: boolean = false;
 
     constructor(
         public poi: Poi,
@@ -27,28 +28,18 @@ export default class Marker {
         scene: THREE.Scene,
         public color: THREE.Color
     ) {
-        const meshVector = new Vector3();
-        let ocluded = false;
-        let infoBox: InfoBox;
-        let active = false;
-
-        let mesh = markermesh.clone();
-        // mesh.material = markermesh.material.clone();
-        mesh.position.copy(poi.displacedPos.clone()); // place mesh
-        // mesh.lookAt( globe.mesh.position );
-
-        this.mesh = mesh;
-        const label = new Label(text, scene, this.mesh);
+        this.position = this.poi.displacedPos.clone();
+        this.label = new Label(text, scene, this.poi.displacedPos);
 
         function handleInteraction(evt: Event) {
             evt.preventDefault();
             route.setActiveMarker(this);
         }
-        label.domElement.addEventListener(
+        this.label.domElement.addEventListener(
             "touchstart",
             handleInteraction.bind(this)
         );
-        label.domElement.addEventListener(
+        this.label.domElement.addEventListener(
             "click",
             handleInteraction.bind(this)
         );
@@ -57,7 +48,7 @@ export default class Marker {
             controls.threeControls.enabled = true;
         }
 
-        label.domElement.addEventListener(
+        this.label.domElement.addEventListener(
             "mousedown",
             function () {
                 controls.threeControls.enabled = false;
@@ -68,31 +59,31 @@ export default class Marker {
         );
 
         this.showLabel = function (value = true) {
-            label.setVisible(value);
+            this.label.setVisible(value);
         };
 
         this.setVisible = function (value: boolean) {
-            label.setVisible(value);
+            this.label.setVisible(value);
             if (value === false) {
-                infoBox.isVisible = value;
+                this.infoBox.isVisible = value;
             }
         };
         this.setActive = function (value: boolean) {
             // do not call me, im getting called by the managers
-            active = value;
+            this.active = value;
             if (value) {
                 route.activeMarker = this;
             } else {
                 route.activeMarker = null;
             }
-            if (infoBox !== null) {
-                infoBox.isVisible = value;
+            if (this.infoBox !== null) {
+                this.infoBox.isVisible = value;
             }
             // respect route setting on showing labels or not
-            if (route.showLabels && label !== undefined) {
-                label.setVisible(!value);
-            } else if (label !== undefined) {
-                label.setVisible(false);
+            if (route.showLabels && this.label !== undefined) {
+                this.label.setVisible(!value);
+            } else if (this.label !== undefined) {
+                this.label.setVisible(false);
             }
         };
 
@@ -100,36 +91,36 @@ export default class Marker {
             let nextMarker = route.getNext(this);
             let previousMarker = route.getPrev(this);
 
-            infoBox = new InfoBox(parentDomNode, controls, poi);
+            this.infoBox = new InfoBox(parentDomNode, controls, poi);
 
             // close label on X click
-            infoBox.closeButton.addEventListener("click", () => {
+            this.infoBox.closeButton.addEventListener("click", () => {
                 // route toggle Active if Active
                 route.setActiveMarker(this);
             });
 
             if (nextMarker === undefined) {
-                infoBox.nextButton.className = "d-none";
+                this.infoBox.nextButton.className = "d-none";
             }
             if (previousMarker === undefined) {
-                infoBox.prevButton.className = "d-none";
+                this.infoBox.prevButton.className = "d-none";
             }
-            infoBox.nextButton.addEventListener("click", () => {
+            this.infoBox.nextButton.addEventListener("click", () => {
                 route.cycleNextActive(this);
             });
-            infoBox.prevButton.addEventListener("click", () => {
+            this.infoBox.prevButton.addEventListener("click", () => {
                 route.cyclePrevActive(this);
             });
         };
 
         this.spawn = function () {
             // label.animation();
-            label.css2dobject.position.y += 20;
+            this.label.css2dobject.position.y += 20;
             return (
                 // @ts-ignore
-                new TWEEN.Tween(label.css2dobject.position)
+                new TWEEN.Tween(this.label.css2dobject.position)
                     // @ts-ignore
-                    .to({ y: this.mesh.position.y }, 1500)
+                    .to({ y: this.poi.displacedPos.y }, 1500)
                     // .easing( TWEEN.Easing.Circular.InOut )
                     // .easing( TWEEN.Easing.Quintic.InOut )
                     // .easing(TWEEN.Easing.Cubic.InOut)
@@ -142,30 +133,33 @@ export default class Marker {
             // @ts-ignore
             // .start()
         };
+    }
 
-        this.update = function (camera: THREE.Camera, delta) {
-            // Like Sketchfab
-            // https://manu.ninja/webgl-three-js-annotations
-            this.mesh.getWorldPosition(meshVector);
-            const eye = camera.position.clone().sub(meshVector);
-            const dot = eye.normalize().dot(meshVector.normalize());
-            ocluded = dot < 0.0; // IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
+    public update(camera: THREE.Camera, delta: number) {
+        // Like Sketchfab
+        // https://manu.ninja/webgl-three-js-annotations
+        const eye = camera.position.clone().sub(this.position);
+        const dot = eye.normalize().dot(this.position.normalize());
+        this.ocluded = dot < 0.0; // IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
 
-            // alternative from like Sketchfab
-            // const meshDistance = camera.position.distanceTo(
-            //     new Vector3(0, 0, 0)
-            // );
-            // const spriteDistance = camera.position.distanceTo(meshVector);
-            // const ocluded = spriteDistance > meshDistance;
+        // alternative from like Sketchfab
+        // const meshDistance = camera.position.distanceTo(
+        //     new Vector3(0, 0, 0)
+        // );
+        // const spriteDistance = camera.position.distanceTo(meshVector);
+        // const ocluded = spriteDistance > meshDistance;
 
-            if (label !== null) {
-                label.update(ocluded, dot);
-            }
-            if (infoBox !== null) {
-                // if ( this._infoBox !== undefined && this.active === true ) {
-                infoBox.update(camera, this.mesh, ocluded, active);
-            }
-        };
+        if (this.label !== null) {
+            this.label.update(this.ocluded, dot);
+        }
+        if (this.infoBox !== null) {
+            this.infoBox.update(
+                camera,
+                this.poi.displacedPos,
+                this.ocluded,
+                this.active
+            );
+        }
     }
 
     // askGoogle(lat, lon) {

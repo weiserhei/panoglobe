@@ -99,7 +99,6 @@ export default class Route {
                 color
             );
             this.marker.push(marker);
-            // scene.add(marker.mesh);
         });
 
         this.marker.forEach((m) => {

@@ -9,10 +9,13 @@ export default class Label {
     private visible: boolean;
     public domElement: HTMLElement;
     public animation: () => void;
-    public getSpawnTween: () => any;
     public css2dobject: CSS2DObject;
 
-    constructor(text: string, scene: THREE.Scene, followMesh: THREE.Mesh) {
+    constructor(
+        text: string,
+        scene: THREE.Scene,
+        positionVector: THREE.Vector3
+    ) {
         this.visible = true;
         // this._box = document.createElement('div');
         // this._box.className = "htmlLabel badge badge-dark";
@@ -39,7 +42,7 @@ export default class Label {
         domElement.appendChild(pinIcon.node[0]);
 
         this.css2dobject = new CSS2DObject(domElement);
-        this.css2dobject.position.copy(followMesh.position);
+        this.css2dobject.position.copy(positionVector);
         scene.add(this.css2dobject);
 
         // @ts-ignore
