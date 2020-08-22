@@ -39,9 +39,19 @@ export default class Marker {
 
         this.mesh = mesh;
         const label = new Label(text, scene, this.mesh);
-        label.domElement.addEventListener("click", () => {
+
+        function handleInteraction(evt: Event) {
+            evt.preventDefault();
             route.setActiveMarker(this);
-        });
+        }
+        label.domElement.addEventListener(
+            "touchstart",
+            handleInteraction.bind(this)
+        );
+        label.domElement.addEventListener(
+            "click",
+            handleInteraction.bind(this)
+        );
 
         function handleMouseUp() {
             controls.threeControls.enabled = true;
