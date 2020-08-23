@@ -1,4 +1,4 @@
-import { ImageLoader } from "three";
+import { ImageLoader, CatmullRomCurve3 } from "three";
 import $ from "jquery";
 import Route from "./route";
 import Controls from "./controls";
@@ -17,6 +17,7 @@ export default class RouteManager {
     private heightData: Promise<Array<Array<Number>>>;
     private ui: UserInterface;
     private _activeRoute: Route;
+    // private sfc: SFC;
 
     constructor(
         private scene: THREE.Scene,

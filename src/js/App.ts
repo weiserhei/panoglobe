@@ -1,7 +1,14 @@
 import "./../css/style.css";
 import "./../scss/main.scss";
 
-import { Scene, Color, FogExp2, Clock } from "three";
+import {
+    Scene,
+    Color,
+    FogExp2,
+    Clock,
+    CatmullRomCurve3,
+    MeshLambertMaterial,
+} from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import TWEEN from "@tweenjs/tween.js";
@@ -17,6 +24,8 @@ import Globus from "./classes/globus";
 import LightManager from "./classes/lightManager";
 import RouteManager from "./classes/routeManager";
 import Route from "./classes/route";
+import SFC from "./classes/splineFollowCamera";
+
 // import Impact from "./classes/impact";
 
 // todo
@@ -31,6 +40,7 @@ if (!WEBGL.isWebGLAvailable()) {
 }
 
 class App {
+    private sfc: SFC;
     constructor(textures: object) {
         const container = document.createElement("div");
         document.body.appendChild(container);
@@ -101,6 +111,17 @@ class App {
                 routes.push(route);
                 // new Impact(globus, route);
                 // route.showLabels = false;
+
+                const poi: Array<any> = [];
+                route.routeData.forEach(function (e: Poi, index: number) {
+                    if (e.adresse) {
+                        // poi.push(e.displacedPos);
+                        poi.push(e.pos);
+                    }
+                    // poi.push(e.pos);
+                });
+                const x = new CatmullRomCurve3(poi);
+                this.sfc = new SFC(scene, undefined, route, x);
             });
         });
 
@@ -147,16 +168,41 @@ class App {
                 // );
             };
             const button = folder.add(obj, "add").name("Add Route Asien");
+            const temp = camera.threeCamera;
+
+            folder
+                .add({ visible: false }, "visible")
+                .name("Spline Follow Camera")
+                .onChange((value: boolean) => {
+                    if (value) {
+                        camera.threeCamera = this.sfc.splineCamera;
+                    } else {
+                        camera.threeCamera = temp;
+                    }
+                });
+
+            folder
+                .add({ visible: false }, "visible")
+                .name("Spline Visible")
+                .onChange((value: boolean) => {
+                    (this.sfc.mesh
+                        .material as MeshLambertMaterial).visible = value;
+                });
         }
 
         globus.setTextures(textures);
         // skybox.setTexture(texture.textures.uvtest);
         skybox.setTexture(textures["stars"]);
+        const self = this;
         animate();
 
         function animate(): void {
             requestAnimationFrame(animate);
             update(clock.getDelta());
+            // if (self.sfc) {
+            if (self.sfc) self.sfc.render();
+            // camera.threeCamera = self.sfc.splineCamera;
+            // }
             labelRenderer.render(scene, camera.threeCamera);
             renderer.render(scene, camera.threeCamera);
         }

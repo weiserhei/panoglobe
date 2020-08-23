@@ -7,6 +7,10 @@ import MyFormatter from "../utils/sliderFormatter";
 import Controls from "./controls";
 import Route from "./route";
 
+// todo
+// hide slider in bottom
+// only show a hint to bring it up
+
 export default class UserInterface {
     public createSlider: (
         calculatedRouteData: Array<Poi>,

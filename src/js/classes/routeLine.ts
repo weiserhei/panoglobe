@@ -47,7 +47,7 @@ export default class RouteLine {
     // todo
     // public line: Line | Line2;
     public line: any;
-    public curve: THREE.Curve<Vector3> | undefined;
+    public curve: THREE.CatmullRomCurve3 | undefined;
     public vertices: Array<Vector3>;
     public drawCount: number;
     public currentPositionVec: THREE.Vector;
@@ -274,10 +274,11 @@ export default class RouteLine {
         window.addEventListener(
             "resize",
             () => {
-                // line.material.resolution.set(
-                //     window.innerWidth,
-                //     window.innerHeight
-                // );
+                // @ts-ignore
+                line.material.resolution.set(
+                    window.innerWidth,
+                    window.innerHeight
+                );
             },
             false
         );
