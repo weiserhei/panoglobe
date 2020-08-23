@@ -193,9 +193,9 @@ class App {
         globus.setTextures(textures);
         // skybox.setTexture(texture.textures.uvtest);
         skybox.setTexture(textures["stars"]);
+
         const self = this;
         animate();
-
         function animate(): void {
             requestAnimationFrame(animate);
             update(clock.getDelta());

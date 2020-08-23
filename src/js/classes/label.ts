@@ -2,8 +2,8 @@ import TWEEN from "@tweenjs/tween.js";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import "./../../css/label.css";
 import $ from "jquery";
-import { icon } from "@fortawesome/fontawesome-svg-core";
-import { faMapPin } from "@fortawesome/free-solid-svg-icons";
+// import { icon } from "@fortawesome/fontawesome-svg-core";
+// import { faMapPin } from "@fortawesome/free-solid-svg-icons";
 
 export default class Label {
     private visible: boolean;
@@ -23,24 +23,22 @@ export default class Label {
         this.domElement = domElement;
         // domElement.className = "htmlLabel btn btn-sm btn-dark";
         domElement.className =
-            "htmlLabel btn btn-link shadow-none text-white font-weight-bold";
+            "htmlLabel btn btn-link shadow-none text-white font-weight-bold panotest";
         domElement.style.textShadow = "0 0 6px #000";
         // this._box.style.textDecoration = "none";
         // offset label from center to compensate height
         domElement.style.top = "-1.2em";
         domElement.innerHTML = text;
 
-        const pinIcon = icon(faMapPin, {
-            styles: {
-                color: "#ffffff",
-                filter: "drop-shadow(0px 0px 1px rgba(0,0,0))",
-            },
-            // classes: ["fa-lg"],
-            classes: ["d-block mx-auto"],
-        });
+        // const pinIcon = icon(faMapPin, {
+        //     styles: {
+        //         // color: "#ffffff",
+        //         filter: "drop-shadow(0px 0px 1px rgba(0,0,0))",
+        //     },
+        //     classes: ["d-block mx-auto fa-lg"],
+        // });
 
-        domElement.appendChild(pinIcon.node[0]);
-
+        // domElement.appendChild(pinIcon.node[0]);
         this.css2dobject = new CSS2DObject(domElement);
         this.css2dobject.position.copy(positionVector);
         scene.add(this.css2dobject);
