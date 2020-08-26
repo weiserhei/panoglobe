@@ -13,6 +13,7 @@ import {
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
 import HtmlMover from "./htmlMover";
+import Marker from "./marker";
 
 import Config from "../../data/config";
 
@@ -25,6 +26,8 @@ export default class Mover {
         scene: THREE.Scene,
         private positions: Array<THREE.Vector3>,
         private colors: Float32Array,
+        private routeData: Array<Poi>,
+        private marker: Array<Marker>,
         folder: any
     ) {
         // this.mesh = new Mesh(
@@ -119,11 +122,18 @@ export default class Mover {
         }
         const safeIndex = Math.floor(index);
 
+        const progressIndex =
+            (this.routeData.length / this.positions.length) * index;
+
+        if (progressIndex < this.marker[1].index + 7) {
+            this.htmlMover.setFlying(true);
+            // this.htmlMover.setFlying(false);
+        } else {
+            this.htmlMover.setFlying(false);
+        }
+
         var point = this.positions[safeIndex];
-        const currentColor = new Color().fromArray(
-            this.colors,
-            safeIndex * 3
-        );
+        const currentColor = new Color().fromArray(this.colors, safeIndex * 3);
 
         if (this.mesh && this.outlineMesh) {
             const forwardPoint = (safeIndex + 5) % this.positions.length;

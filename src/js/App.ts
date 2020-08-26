@@ -69,7 +69,7 @@ class App {
         if (process.env.NODE_ENV === "development") {
             const gui = new dat.GUI({ autoPlace: false });
             var folder = gui.addFolder("GUI");
-            folder.open();
+            // folder.open();
             container.insertBefore(gui.domElement, labelRenderer.domElement);
             // labelRenderer.domElement.appendChild(gui.domElement);
             gui.domElement.classList.add(
@@ -110,7 +110,7 @@ class App {
         const routes: Array<Route> = [];
 
         RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
-            const route = routeManager.buildRoute(x, 0.9, folder);
+            const route = routeManager.buildRoute(x, -0.2, folder);
             route.then((route) => {
                 routes.push(route);
                 // new Impact(globus, route);

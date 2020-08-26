@@ -65,8 +65,8 @@ export default class RouteManager {
             // select last Marker on first route, and first marker on following routes
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
 
-            this.spawnRoute(route);
-            // route.drawAnimation();
+            // this.spawnRoute(route);
+            route.drawAnimation();
 
             return route;
         });

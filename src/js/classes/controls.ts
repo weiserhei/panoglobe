@@ -22,6 +22,15 @@ export default class Controls {
             .start();
     }
 
+    public tweenTarget(target: THREE.Vector3, time: number) {
+        return (
+            // @ts-ignore
+            new TWEEN.Tween(this.threeControls.target)
+                // @ts-ignore
+                .to(target, time)
+        );
+    }
+
     constructor(public camera: THREE.Camera, container: HTMLElement) {
         const controls = new OrbitControls(camera, container);
         this.threeControls = controls;

@@ -14,9 +14,9 @@ import {
 import { CatmullRomCurve3, Vector3 } from "three";
 
 export default class RouteAnimation {
-    private animationPace: number = 10;
+    private animationPace: number = 1;
     private animationDrawIndex: any;
-    private lastActive: number;
+    private lastActive: number | undefined;
 
     private playText: (text: string) => string;
     private stopText: (text: string) => string;
@@ -49,7 +49,7 @@ export default class RouteAnimation {
 
             const folderCustom = folder.addFolder("Animation");
             folderCustom.open();
-            folderCustom.add(this, "animationPace").min(10).max(300).step(10);
+            folderCustom.add(this, "animationPace").min(0).max(10);
 
             const self = this;
             this.spawnUI = folderCustom
@@ -72,7 +72,7 @@ export default class RouteAnimation {
         this.route.setDrawCount(value.index);
         this.animationDrawIndex.index = value.index;
 
-        const forecast = 10;
+        const forecast = 5;
 
         const progressIndex =
             (this.routeData.length / this.route.routeLine.numberVertices) *
@@ -87,7 +87,7 @@ export default class RouteAnimation {
         this.controls.threeControls.target = p;
 
         if (result === undefined) return;
-
+        // if (Math.floor(value.index) >= 0 && this.lastActive === undefined) {
         if (result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
@@ -104,21 +104,6 @@ export default class RouteAnimation {
             );
         }
 
-        // if (result.index === 0 && this.lastActive === undefined) {
-        //     this.lastActive = 0;
-        //     const next = this.route.getNext(result);
-        //     if (next) {
-        //         this.controls.moveIntoCenter(
-        //             next.poi.lat,
-        //             next.poi.lng,
-        //             1000,
-        //             undefined,
-        //             200,
-        //             () => {
-        //                 // marker.showLabel();
-        //             }
-        //         );
-        //     }
         // } else if (result.index > this.lastActive) {
         //     // debounce
         //     this.lastActive = result.index;
@@ -157,6 +142,7 @@ export default class RouteAnimation {
         // hide route
         this.route.setDrawIndex(0);
         this.animationDrawIndex.index = 0;
+        this.mover.setVisible(false);
         const marker = this.marker[0];
         const points = this.route.routeLine.curve.getPoints(20);
         this.simplifiedRoute = new CatmullRomCurve3(points);
@@ -165,7 +151,7 @@ export default class RouteAnimation {
             // @ts-ignore
             .to(
                 { index: this.route.routeLine.numberVertices },
-                this.route.routeLine.numberVertices / (this.animationPace / 300)
+                this.route.routeLine.numberVertices / (this.animationPace / 30)
             )
             // .easing( TWEEN.Easing.Circular.InOut )
             .onStart(() => {
@@ -181,7 +167,7 @@ export default class RouteAnimation {
             // .repeat(Infinity)
             .repeatDelay(3000)
             .onRepeat(() => {
-                this.lastActive = 0;
+                this.lastActive = undefined;
                 if (this.route.activeMarker) {
                     this.route.setActiveMarker(this.route.activeMarker);
                 }
@@ -229,17 +215,19 @@ export default class RouteAnimation {
                 this.controls.moveIntoCenter(
                     this.marker[this.marker.length - 1].poi.lat,
                     this.marker[this.marker.length - 1].poi.lng,
-                    2000,
+                    3000,
                     undefined,
                     600
                 );
             })
-            .delay(1000);
+            .delay(500);
         // @ts-ignore
         // .start();
 
         // fade in label 1
         marker.showLabel(true);
+        // @ts-ignore
+        this.controls.tweenTarget(new Vector3(), 1000).start();
         // move camera to start
         this.controls.moveIntoCenter(
             marker.poi.lat,
@@ -248,6 +236,7 @@ export default class RouteAnimation {
             undefined,
             300,
             () => {
+                this.mover.setVisible(true);
                 // @ts-ignore
                 this.tweenDraw.start();
             }
@@ -283,7 +272,7 @@ export default class RouteAnimation {
             // .to({ drawProgress: 1 }, 3000)
             .to(
                 { index: this.route.routeLine.numberVertices },
-                this.route.routeLine.numberVertices / (this.animationPace / 10)
+                this.route.routeLine.numberVertices / this.animationPace
             )
             // .easing( TWEEN.Easing.Circular.InOut )
             // .easing( TWEEN.Easing.Quintic.InOut )

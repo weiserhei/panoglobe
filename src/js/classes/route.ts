@@ -70,7 +70,7 @@ export default class Route {
                 });
         }
 
-        const steps = 1.2; // how fast change the color (0 = fast)
+        const steps = 1.8; // how fast change the color (0 = fast)
         const frequency = 1 / (steps * this.routeData.length);
         this.marker = [];
         this.visible = false;
@@ -151,7 +151,14 @@ export default class Route {
         // this.routeLine.drawPoi(this.marker[1].index);
         const positions = this.routeLine.vertices;
         const colors = this.routeLine.colorArray;
-        this.mover = new Mover(scene, positions, colors, folder);
+        this.mover = new Mover(
+            scene,
+            positions,
+            colors,
+            this.routeData,
+            this.marker,
+            folder
+        );
         this.mover.moving(false);
         this.setDrawIndex(routeData.length);
 
