@@ -24,22 +24,32 @@ import Config from "../../data/config";
 function getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
     const vertices: Array<THREE.Vector3> = [];
     routeData.forEach((element, index) => {
+
         if (index > 0) {
+
+            const prevHop = routeData[index-1].hopDistance;
+            const thisHop = element.hopDistance;
+            const length = thisHop-prevHop;
+            const numLineSegments = Math.ceil(length / Config.routes.lineSegments)
+            // const numLineSegments = Config.routes.lineSegments
+
+            // console.log(thisHop-prevHop, numLineSegments);
+
             const curve = createSphereArc(
                 routeData[index - 1].displacedPos,
                 element.displacedPos
             );
             // curve.getPoints returns Type Vector instead of Vector3
             // @ts-ignore
-            vertices.push(...curve.getPoints(Config.routes.lineSegments));
+            vertices.push(...curve.getPoints(numLineSegments));
         }
+
     });
 
     // vertices.map((v) => {
     //     return new Vector3(v.x, v.y, v.z);
     // });
 
-    // console.log(vertices);
     return vertices;
 }
 
@@ -83,14 +93,16 @@ export default class RouteLine {
         // );
     }
     public setDrawCount(number: number) {
-        this.drawCount = number;
-        // this.drawCount = number % this.numberVertices;
-        this.line.geometry.instanceCount = number - 1;
+        // when draw count too big, start looping
+        this.drawCount = number-1 % this.numberVertices;
+        this.line.geometry.instanceCount = this.drawCount;
     }
     public setDrawIndex(number: number) {
-        this.drawCount = number * (Config.routes.lineSegments + 1);
+        // this.drawCount = number * (Config.routes.lineSegments + 1);
         // this.drawCount = number % this.numberVertices;
+        this.drawCount = number;
         this.line.geometry.instanceCount = this.drawCount;
+        // this.line.geometry.maxInstancedCount = this.drawCount;
     }
 
     constructor(routeData: Array<Poi>, steps: number, phase: number) {
@@ -156,7 +168,6 @@ export default class RouteLine {
         const frequency = 1 / (steps * numberVertices);
 
         this.colorWheel = (this.colorWheel + 3) % numberVertices;
-        // console.log(colorWheel);
         // this.positions = new Float32Array( numberVertices * 3 ); // 3 vertices per point
         this.colors = new Float32Array(numberVertices * 3);
         // this.colors.forEach((vertice, i) => {
@@ -250,7 +261,6 @@ export default class RouteLine {
         }
         // remove possible NaN points
         this.vertices = vertices.filter((el) => !isNaN(el.x));
-        // console.log(this.vertices);
 
         this.build(this.vertices, steps, phase);
         const geometry = new LineGeometry();

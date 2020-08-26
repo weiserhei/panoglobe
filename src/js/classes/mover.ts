@@ -112,29 +112,22 @@ export default class Mover {
     }
 
     public update(index: number, camera: THREE.Camera) {
-        const indexes = { bigIndex: 0, bigIndex2: 0 };
-
-        // let index = Math.floor(self.animationDrawIndex.index);
-        // if (index < 1) {
-        //     index = 1;
-        // }
-        // const pos = routeData[index - 1].displacedPos;
-        indexes.bigIndex = Math.floor(index * (Config.routes.lineSegments + 1));
-        if (indexes.bigIndex < 0) {
-            indexes.bigIndex = 0;
-        } else if (indexes.bigIndex >= this.positions.length) {
-            // console.log(bigIndex);
-            indexes.bigIndex = this.positions.length - 1;
+        if (index < 0) {
+            index = 0;
+        } else if (index >= this.positions.length) {
+            index = this.positions.length - 1;
         }
-        var point = this.positions[indexes.bigIndex];
+        const safeIndex = Math.floor(index);
+
+        var point = this.positions[safeIndex];
         const currentColor = new Color().fromArray(
             this.colors,
-            indexes.bigIndex * 3
+            safeIndex * 3
         );
 
         if (this.mesh && this.outlineMesh) {
-            indexes.bigIndex2 = (indexes.bigIndex + 5) % this.positions.length;
-            var point2 = this.positions[indexes.bigIndex2];
+            const forwardPoint = (safeIndex + 5) % this.positions.length;
+            var point2 = this.positions[forwardPoint];
             // var point2 = routeData[index % routeData.length].displacedPos;
             // let angleEnd = point.angleTo(point2);
             var upNormal = this.tempVector

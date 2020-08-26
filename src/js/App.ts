@@ -8,6 +8,7 @@ import {
     Clock,
     CatmullRomCurve3,
     MeshLambertMaterial,
+    ImageLoader,
 } from "three";
 import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
@@ -25,6 +26,7 @@ import LightManager from "./classes/lightManager";
 import RouteManager from "./classes/routeManager";
 import Route from "./classes/route";
 import SFC from "./classes/splineFollowCamera";
+import { getHeightData } from "./utils/panoutils";
 
 // import Impact from "./classes/impact";
 
@@ -38,10 +40,11 @@ if (!WEBGL.isWebGLAvailable()) {
     document.body.appendChild(warning);
     throw new Error(warning.innerHTML);
 }
+import T_heightmap from "../textures/heightmap_1440.jpg";
 
 class App {
     private sfc: SFC;
-    constructor(textures: object) {
+    constructor(textures: object, heightData: Promise<Array<Array<Number>>>) {
         const container = document.createElement("div");
         document.body.appendChild(container);
 
@@ -100,7 +103,8 @@ class App {
             scene,
             container,
             Config.globus.radius,
-            controls
+            controls,
+            heightData
         );
 
         const routes: Array<Route> = [];
@@ -120,8 +124,9 @@ class App {
                     }
                     // poi.push(e.pos);
                 });
-                const x = new CatmullRomCurve3(poi);
-                this.sfc = new SFC(scene, undefined, route, x);
+                poi.push(route.routeData[route.routeData.length - 1].pos);
+                const poiRoute = new CatmullRomCurve3(poi);
+                this.sfc = new SFC(scene, undefined, route, poiRoute);
             });
         });
 
@@ -223,5 +228,10 @@ loadContainer.id = "loadcontainer";
 document.body.appendChild(loadContainer);
 const preloader = new Preloader(loadContainer);
 new Texture(preloader.manager).load().then((textureObject) => {
-    new App(textureObject);
+    const heightData = new Promise((resolve) => {
+        return new ImageLoader().load(T_heightmap, resolve);
+    }).then((image) => {
+        return getHeightData(image, 20);
+    });
+    new App(textureObject, heightData);
 });

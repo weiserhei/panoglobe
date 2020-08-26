@@ -9,6 +9,19 @@ import Config from "../../data/config";
 export default class Controls {
     public threeControls: OrbitControls;
     public moveIntoCenter: any;
+
+    public resetTarget() {
+        // @ts-ignore
+        new TWEEN.Tween(this.threeControls.target)
+            .to(Config.controls.target, 800)
+            .onStart(() => {
+                this.enabled = false;
+            })
+            .onComplete(() => {})
+            // @ts-ignore
+            .start();
+    }
+
     constructor(public camera: THREE.Camera, container: HTMLElement) {
         const controls = new OrbitControls(camera, container);
         this.threeControls = controls;

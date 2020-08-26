@@ -1,20 +1,17 @@
-import { ImageLoader, CatmullRomCurve3 } from "three";
 import $ from "jquery";
 import Route from "./route";
 import Controls from "./controls";
 import { calc3DPositions } from "../utils/panoutils";
-import { getHeightData } from "../utils/panoutils";
 import UserInterface from "./userInterface";
 // import Config from "../../data/config";
 
-import T_heightmap from "../../textures/heightmap_1440.jpg";
 import Marker from "./marker";
 
 export default class RouteManager {
     public routes: Array<Route>;
     public activeMarker: Marker | null;
 
-    private heightData: Promise<Array<Array<Number>>>;
+    // private heightData: Promise<Array<Array<Number>>>;
     private ui: UserInterface;
     private _activeRoute: Route;
     // private sfc: SFC;
@@ -23,18 +20,12 @@ export default class RouteManager {
         private scene: THREE.Scene,
         private container: HTMLElement,
         private globusradius: number,
-        private controls: Controls
+        private controls: Controls,
+        private heightData: Promise<Array<Array<Number>>>
     ) {
         this.ui = new UserInterface(container, controls);
         this.routes = [];
         this.activeMarker = null;
-
-        this.heightData = new Promise((resolve) => {
-            return new ImageLoader().load(T_heightmap, resolve);
-        }).then((image) => {
-            const scaleDivider = 20;
-            return getHeightData(image, scaleDivider);
-        });
     }
 
     public buildRoute(

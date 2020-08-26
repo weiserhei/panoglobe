@@ -15,8 +15,8 @@ export default {
     duration: 500,
     routes: {
         linewidth: 3, // error on 2.0 width wtf lol
-        lineSegments: 7,
-        segmentMultiplicator: 2,
+        lineSegments: 20,
+        segmentMultiplicator: 1,
         urls: [
             "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist",
             "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist",

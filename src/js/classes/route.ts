@@ -2,7 +2,13 @@
  * Route Class
  * create the Route
  */
-import { Color } from "three";
+import {
+    Color,
+    CatmullRomCurve3,
+    TubeBufferGeometry,
+    MeshLambertMaterial,
+    Mesh,
+} from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
@@ -16,8 +22,10 @@ import RouteAnimation from "./routeAnimation";
 export default class Route {
     private mover: Mover;
     private animationDrawIndex: any;
+    private animationDrawCount: any;
     private animationHandler: RouteAnimation;
 
+    public poiRoute: CatmullRomCurve3;
     public activeMarker: Marker | null;
     public marker: Array<Marker>;
     public visible: boolean;
@@ -27,6 +35,10 @@ export default class Route {
     public cycleNextActive: (marker: Marker) => void;
     public cyclePrevActive: (marker: Marker) => void;
 
+    public setDrawCount(value: number): void {
+        this.routeLine.setDrawCount(value);
+        this.animationDrawCount.index = value;
+    }
     public setDrawIndex(value: number): void {
         // todo check if value is in range
         this.routeLine.setDrawIndex(value);
@@ -64,6 +76,7 @@ export default class Route {
         this.visible = false;
         this.showLabels1 = true;
         this.animationDrawIndex = { index: 0 };
+        this.animationDrawCount = { index: 0 };
 
         // const poi = this.routeData.filter((c) => c.adresse);
 
@@ -103,6 +116,35 @@ export default class Route {
 
         this.routeLine = new RouteLine(routeData, steps, phase);
         scene.add(this.routeLine.line);
+
+        // const poi: Array<any> = [];
+        // this.routeData.forEach(function (e: Poi, index: number) {
+        //     if (e.adresse) {
+        //         // poi.push(e.displacedPos);
+        //         poi.push(e.displacedPos);
+        //     } else if (index % 20 === 0) {
+        //         poi.push(e.displacedPos);
+        //     }
+        // });
+        // poi.push(this.routeData[this.routeData.length - 1].pos);
+        // this.poiRoute = new CatmullRomCurve3(poi);
+
+        const points = this.routeLine.curve.getPoints(20);
+        const simplifiedRoute = new CatmullRomCurve3(points);
+        const tubeGeometry = new TubeBufferGeometry(
+            simplifiedRoute,
+            200,
+            1,
+            3,
+            false
+        );
+        const material = new MeshLambertMaterial({
+            color: 0xff00ff,
+            depthTest: false,
+            visible: true,
+        });
+        const mesh = new Mesh(tubeGeometry, material);
+        // scene.add(mesh);
 
         // this.routeLine.setDrawCount(this.routeLine.numberVertices);
         // this.routeLine.setDrawProgress(1);
@@ -212,7 +254,7 @@ export default class Route {
     }
 
     public update(delta: number, camera: THREE.Camera) {
-        this.mover.update(this.animationDrawIndex.index, camera);
+        this.mover.update(this.animationDrawCount.index, camera);
 
         this.marker.forEach((marker) => {
             marker.update(camera, delta);
