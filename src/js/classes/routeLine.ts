@@ -24,15 +24,17 @@ import Config from "../../data/config";
 function getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
     const vertices: Array<THREE.Vector3> = [];
     routeData.forEach((element, index) => {
-
+        element.segments = 0;
         if (index > 0) {
-
-            const prevHop = routeData[index-1].hopDistance;
+            const prevHop = routeData[index - 1].hopDistance;
             const thisHop = element.hopDistance;
-            const length = thisHop-prevHop;
-            const numLineSegments = Math.ceil(length / Config.routes.lineSegments)
+            const length = thisHop - prevHop;
+            const numLineSegments = Math.ceil(
+                length / Config.routes.lineSegments
+            );
+            element.segments =
+                1 + numLineSegments + routeData[index - 1].segments;
             // const numLineSegments = Config.routes.lineSegments
-
             // console.log(thisHop-prevHop, numLineSegments);
 
             const curve = createSphereArc(
@@ -43,7 +45,6 @@ function getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
             // @ts-ignore
             vertices.push(...curve.getPoints(numLineSegments));
         }
-
     });
 
     // vertices.map((v) => {
@@ -92,20 +93,19 @@ export default class RouteLine {
         //     (routeData.length - 1) * (Config.routes.lineSegments + 1)
         // );
     }
-    public setDrawCount(number: number) {
+    public setDrawCount(value: number) {
         // when draw count too big, start looping
-        this.drawCount = number-1 % this.numberVertices;
+        this.drawCount = value - (1 % this.numberVertices);
         this.line.geometry.instanceCount = this.drawCount;
     }
-    public setDrawIndex(number: number) {
+    public setDrawIndex(value: number) {
         // this.drawCount = number * (Config.routes.lineSegments + 1);
         // this.drawCount = number % this.numberVertices;
-        this.drawCount = number;
+        this.drawCount = this.routeData[value].segments;
         this.line.geometry.instanceCount = this.drawCount;
-        // this.line.geometry.maxInstancedCount = this.drawCount;
     }
 
-    constructor(routeData: Array<Poi>, steps: number, phase: number) {
+    constructor(private routeData: Array<Poi>, steps: number, phase: number) {
         this.line = undefined;
         this.vertices = getVertices(routeData);
         this.drawCount = 0;

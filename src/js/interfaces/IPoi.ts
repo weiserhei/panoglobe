@@ -4,6 +4,7 @@ interface Poi extends ICoordinate {
     countryname?: string;
     displaceHeight: number;
     hopDistance: number;
+    segments: number;
 }
 
 // routeData:

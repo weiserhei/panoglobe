@@ -36,10 +36,12 @@ export default class Route {
     public cyclePrevActive: (marker: Marker) => void;
 
     public setDrawCount(value: number): void {
+        // drawCount == geometry length == routeData.length * routeSegments
         this.routeLine.setDrawCount(value);
         this.animationDrawCount.index = value;
     }
     public setDrawIndex(value: number): void {
+        // drawIndex == routeData[index]
         // todo check if value is in range
         this.routeLine.setDrawIndex(value);
         this.animationDrawIndex.index = value;
@@ -160,7 +162,7 @@ export default class Route {
             folder
         );
         this.mover.moving(false);
-        this.setDrawIndex(routeData.length);
+        // this.setDrawIndex(routeData.length);
 
         this.animationHandler = new RouteAnimation(
             this,

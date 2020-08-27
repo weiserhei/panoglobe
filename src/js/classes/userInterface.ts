@@ -77,6 +77,9 @@ export default class UserInterface {
             });
 
             slider.noUiSlider.on("slide", function (value: any) {
+                // const index =
+                //     (Math.floor(value) / calculatedRouteData.length) *
+                //     route.routeLine.numberVertices;
                 route.setDrawIndex(value);
             });
 
@@ -85,6 +88,14 @@ export default class UserInterface {
             function clickOnPip() {
                 const value = Number(this.getAttribute("data-value"));
                 slider.noUiSlider.set(value);
+                console.log(
+                    value,
+                    calculatedRouteData.length,
+                    route.routeLine.numberVertices
+                );
+                // const index =
+                //     (Math.floor(value) / calculatedRouteData.length) *
+                //     route.routeLine.numberVertices;
                 route.setDrawIndex(value);
                 controls.moveIntoCenter(
                     // routeData.gps[Math.floor(value)].lat,

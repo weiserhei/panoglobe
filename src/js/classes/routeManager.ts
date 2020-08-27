@@ -66,7 +66,23 @@ export default class RouteManager {
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
 
             // this.spawnRoute(route);
-            route.drawAnimation();
+            // route.drawAnimation();
+
+            const poi = route.marker[route.marker.length - 1].poi;
+            const buildSlider = () => {
+                const poi: Array<number> = [];
+                const labels: Array<string> = [];
+                route.routeData.forEach(function (e: Poi, index: number) {
+                    if (e.adresse) {
+                        poi.push(index);
+                        labels.push(e.adresse);
+                    } else {
+                        labels.push("");
+                    }
+                });
+                this.ui.createSlider(route.routeData, route, poi, labels);
+            };
+            buildSlider();
 
             return route;
         });
