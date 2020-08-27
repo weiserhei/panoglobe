@@ -109,26 +109,46 @@ class App {
 
         const routes: Array<Route> = [];
 
-        RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
-            const route = routeManager.buildRoute(x, -0.2, folder);
-            route.then((route) => {
-                routes.push(route);
-                // new Impact(globus, route);
-                // route.showLabels = false;
-
-                const poi: Array<any> = [];
-                route.routeData.forEach(function (e: Poi, index: number) {
-                    if (e.adresse) {
-                        // poi.push(e.displacedPos);
-                        poi.push(e.pos);
-                    }
-                    // poi.push(e.pos);
+        Config.routes.urls.forEach((url) => {
+            RouteManager.load(url).then((x: RouteData) => {
+                const route = routeManager.buildRoute(x, -0.2, folder);
+                route.then((route) => {
+                    routes.push(route);
+                    // const poi: Array<any> = [];
+                    // route.routeData.forEach(function (e: Poi, index: number) {
+                    //     if (e.adresse) {
+                    //         // poi.push(e.displacedPos);
+                    //         poi.push(e.pos);
+                    //     }
+                    //     // poi.push(e.pos);
+                    // });
+                    // poi.push(route.routeData[route.routeData.length - 1].pos);
+                    // const poiRoute = new CatmullRomCurve3(poi);
+                    // this.sfc = new SFC(scene, undefined, route, poiRoute);
                 });
-                poi.push(route.routeData[route.routeData.length - 1].pos);
-                const poiRoute = new CatmullRomCurve3(poi);
-                this.sfc = new SFC(scene, undefined, route, poiRoute);
             });
         });
+
+        // RouteManager.load(Config.routes.urls.pop()).then((x: RouteData) => {
+        //     const route = routeManager.buildRoute(x, -0.2, folder);
+        //     route.then((route) => {
+        //         routes.push(route);
+        //         // new Impact(globus, route);
+        //         // route.showLabels = false;
+
+        //         const poi: Array<any> = [];
+        //         route.routeData.forEach(function (e: Poi, index: number) {
+        //             if (e.adresse) {
+        //                 // poi.push(e.displacedPos);
+        //                 poi.push(e.pos);
+        //             }
+        //             // poi.push(e.pos);
+        //         });
+        //         poi.push(route.routeData[route.routeData.length - 1].pos);
+        //         const poiRoute = new CatmullRomCurve3(poi);
+        //         this.sfc = new SFC(scene, undefined, route, poiRoute);
+        //     });
+        // });
 
         if (process.env.NODE_ENV === "development") {
             var obj = {
@@ -200,7 +220,7 @@ class App {
         skybox.setTexture(textures["stars"]);
 
         const self = this;
-        animate();
+        // animate();
         function animate(): void {
             requestAnimationFrame(animate);
             update(clock.getDelta());

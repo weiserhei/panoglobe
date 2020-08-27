@@ -55,6 +55,8 @@ export default class RouteManager {
             );
             this.routes.push(route);
 
+            this.ui.addRoute(route);
+
             // Onload other route disable last active marker
             if (this.activeMarker !== null) {
                 this.activeMarker.setActive(false);
@@ -66,7 +68,7 @@ export default class RouteManager {
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
 
             // this.spawnRoute(route);
-            route.drawAnimation();
+            // route.drawAnimation();
 
             const poi = route.marker[route.marker.length - 1].poi;
             const buildSlider = () => {
@@ -80,7 +82,7 @@ export default class RouteManager {
                         labels.push("");
                     }
                 });
-                this.ui.createSlider(route.routeData, route, poi, labels);
+                // this.ui.createSlider(route.routeData, route, poi, labels);
             };
             buildSlider();
 
@@ -102,7 +104,7 @@ export default class RouteManager {
                     labels.push("");
                 }
             });
-            this.ui.createSlider(route.routeData, route, poi, labels);
+            // this.ui.createSlider(route.routeData, route, poi, labels);
         };
 
         this.controls.moveIntoCenter(

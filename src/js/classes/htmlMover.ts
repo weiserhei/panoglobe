@@ -16,20 +16,6 @@ import {
     faCar,
 } from "@fortawesome/free-solid-svg-icons";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { GeometryIdCount } from "three";
-
-function getIcon(i: IconDefinition) {
-    return icon(i, {
-        styles: {
-            color: "#fff",
-            // opacity: "0.5",
-            // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
-            filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
-        },
-        classes: ["fa-lg", "mt-n3"],
-        // classes: ["fa-2x", "mt-n3", "ml-2", "pl-2"],
-    });
-}
 
 export default class HtmlMover {
     private css2dobject: CSS2DObject;
