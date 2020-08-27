@@ -62,14 +62,14 @@ class App {
         const labelRenderer = new CSS2DRenderer();
         labelRenderer.setSize(window.innerWidth, window.innerHeight);
         labelRenderer.domElement.style.position = "absolute";
-        labelRenderer.domElement.style.top = "0px";
+        labelRenderer.domElement.style.top = "60px"; //navbar top height
         container.appendChild(labelRenderer.domElement);
         /*global process*/
         /*eslint no-undef: "error"*/
         if (process.env.NODE_ENV === "development") {
-            const gui = new dat.GUI({ autoPlace: false });
+            const gui = new dat.GUI({ autoPlace: false, closed: true });
             var folder = gui.addFolder("GUI");
-            // folder.open();
+            folder.open();
             container.insertBefore(gui.domElement, labelRenderer.domElement);
             // labelRenderer.domElement.appendChild(gui.domElement);
             gui.domElement.classList.add(
@@ -220,7 +220,7 @@ class App {
         skybox.setTexture(textures["stars"]);
 
         const self = this;
-        // animate();
+        animate();
         function animate(): void {
             requestAnimationFrame(animate);
             update(clock.getDelta());

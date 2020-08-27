@@ -180,7 +180,7 @@ export default class RouteAnimation {
                 this.mover.moving(false);
                 this.drawUI.name(this.playText("Draw"));
                 this.tweenSpawn = null;
-                // this.route.setDrawIndex(this.routeData.length);
+                this.route.setDrawCount(this.route.routeLine.numberVertices);
                 this.controls.resetTarget();
             })
             .onComplete(() => {

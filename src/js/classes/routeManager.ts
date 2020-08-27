@@ -23,9 +23,13 @@ export default class RouteManager {
         private controls: Controls,
         private heightData: Promise<Array<Array<Number>>>
     ) {
-        this.ui = new UserInterface(container, controls);
+        this.ui = new UserInterface(container, controls, this);
         this.routes = [];
         this.activeMarker = null;
+    }
+
+    public playDraw() {
+        this.activeRoute.animationHandler.draw();
     }
 
     public buildRoute(
@@ -67,7 +71,9 @@ export default class RouteManager {
             // select last Marker on first route, and first marker on following routes
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
 
-            // this.spawnRoute(route);
+            if (this.activeRoute === undefined) {
+                this.activeRoute = route;
+            }
             // route.drawAnimation();
 
             const poi = route.marker[route.marker.length - 1].poi;
@@ -82,16 +88,18 @@ export default class RouteManager {
                         labels.push("");
                     }
                 });
-                // this.ui.createSlider(route.routeData, route, poi, labels);
+                this.ui.createSlider(route.routeData, route, poi, labels);
             };
-            buildSlider();
+            // buildSlider();
 
             return route;
         });
     }
 
     private spawnRoute(route: Route): void {
+        // play animation
         route.spawn();
+        // build slider
         const poi = route.marker[route.marker.length - 1].poi;
         const buildSlider = () => {
             const poi: Array<number> = [];
@@ -112,12 +120,21 @@ export default class RouteManager {
             poi.lng,
             2000,
             undefined,
-            undefined,
-            buildSlider
+            undefined
+            // buildSlider
         );
     }
 
+    get activeRoute() {
+        return this._activeRoute;
+    }
     set activeRoute(route: Route) {
+        this._activeRoute = route;
+        this.routes.forEach((r) => {
+            r.isVisible = false;
+        });
+        route.isVisible = true;
+
         this.spawnRoute(route);
     }
 

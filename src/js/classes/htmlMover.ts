@@ -108,7 +108,7 @@ export default class HtmlMover {
     set visible(value: boolean) {
         this.css2dobject.visible = value;
         this.css2dobject2.visible = value;
-        this.css2dobject3.visible = value;
+        this.css2dobject3.visible = false;
     }
 
     public moving(value: boolean) {
@@ -138,20 +138,23 @@ export default class HtmlMover {
         this.css2dobject3.position.copy(position);
         this.css2dobject3.element.style.color = color.getStyle();
 
-        if (!ocluded) {
-            // @ts-ignore
-            this.css2dobject.element.style.opacity = String(1);
-            this.css2dobject2.element.style.opacity = String(1);
-            this.css2dobject3.element.style.opacity = String(1);
-            // $(this.i.node[0]).fadeIn(200);
-        } else {
-            // @ts-ignore
-            this.css2dobject.element.style.opacity = String(1 + dot * 4);
-            this.css2dobject2.element.style.opacity = String(1 + dot * 4);
-            this.css2dobject3.element.style.opacity = String(1 + dot * 4);
-            // @ts-ignore
-            // console.log("ocluded", ocluded, this.i.node[0].style);
-            // $(this.i.node[0]).fadeOut(200);
+        if (this.visible) {
+            console.log("a");
+            if (!ocluded) {
+                // @ts-ignore
+                this.css2dobject.element.style.opacity = String(1);
+                this.css2dobject2.element.style.opacity = String(1);
+                this.css2dobject3.element.style.opacity = String(1);
+                // $(this.i.node[0]).fadeIn(200);
+            } else {
+                // @ts-ignore
+                this.css2dobject.element.style.opacity = String(1 + dot * 4);
+                this.css2dobject2.element.style.opacity = String(1 + dot * 4);
+                this.css2dobject3.element.style.opacity = String(1 + dot * 4);
+                // @ts-ignore
+                // console.log("ocluded", ocluded, this.i.node[0].style);
+                // $(this.i.node[0]).fadeOut(200);
+            }
         }
     }
 }

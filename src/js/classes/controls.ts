@@ -14,10 +14,6 @@ export default class Controls {
         // @ts-ignore
         new TWEEN.Tween(this.threeControls.target)
             .to(Config.controls.target, 800)
-            .onStart(() => {
-                this.enabled = false;
-            })
-            .onComplete(() => {})
             // @ts-ignore
             .start();
     }

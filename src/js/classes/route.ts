@@ -23,7 +23,7 @@ export default class Route {
     private mover: Mover;
     private animationDrawIndex: any;
     private animationDrawCount: any;
-    private animationHandler: RouteAnimation;
+    public animationHandler: RouteAnimation;
 
     public poiRoute: CatmullRomCurve3;
     public activeMarker: Marker | null;

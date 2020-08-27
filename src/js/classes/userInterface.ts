@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
+import RouteManager from "./routeManager";
 
 // todo
 // hide slider in bottom
@@ -31,7 +32,7 @@ function playText(text: string) {
 
 function stopText(text: string) {
     const ico = icon(faStopCircle, {
-        classes: ["mx-2", "text-danger"],
+        classes: [],
     }).html;
     return `${ico} ${text}`;
 }
@@ -45,60 +46,71 @@ export default class UserInterface {
     ) => void;
 
     public addRoute(route: Route) {
-        let opt = new Option(route.name, route.name);
-        // this.optionselect.add(opt, null);
+        if (this.manager.routes.length > 1) {
+            route.isVisible = false;
+        } else {
+            this.manager.activeRoute = route;
+        }
 
-        const select: any = document.querySelector(`#${this.optionselect.id}`);
+        const select: any = document.querySelector(`#${this.routeSelect.id}`);
+        // const select = $(this.routeSelect)[0];
         select.options[select.options.length] = new Option(route.name);
-        select.onchange = function (x: any) {
-            // todo set current route as context
-            console.log(x.target.selectedIndex);
+        select.onchange = (x: any) => {
+            this.manager.activeRoute = this.manager.routes[
+                x.target.selectedIndex
+            ];
         };
     }
 
-    private optionselect: HTMLSelectElement;
+    private play() {
+        console.log("hello play", this.manager);
+        this.manager.activeRoute.animationHandler.draw();
+    }
 
-    constructor(private container: HTMLElement, private controls: Controls) {
-        this.optionselect = document.createElement("select");
-        this.optionselect.className = "custom-select";
-        this.optionselect.id = "inputGroupSelect01";
+    private routeSelect: HTMLSelectElement;
+    private navbar: HTMLElement;
 
-        const play = playText("Spawn");
-        const link = `<button class="btn btn-dark">${play}</button>`;
-        const navItems = [link];
+    constructor(
+        container: HTMLElement,
+        controls: Controls,
+        private manager: RouteManager
+    ) {
+        this.routeSelect = document.createElement("select");
+        this.routeSelect.className = "custom-select";
+        this.routeSelect.id = "inputGroupSelect01";
+
+        this.navbar = document.createElement("ul");
+        this.navbar.id = "navbar";
+        this.navbar.className = "navbar-nav mr-auto mt-2 mt-md-0 ml-md-4";
 
         const nav = document.createElement("nav");
-        container.appendChild(nav);
-        nav.style.zIndex = "10";
-        nav.className =
-            "navbar navbar-expand-md navbar-light bg-light position-absolute fixed-top d-flex";
+        // container.appendChild(nav);
+        container.prepend(nav);
+        nav.style.zIndex = "900";
+        nav.className = "navbar navbar-expand-md navbar-light bg-light";
 
         // <div class="row no-gutters align-items-center justify-content-between d-flex">
         nav.innerHTML = `
-            <div class="flex-shrink-1">
+            <div class="d-flex flex-nowrap flex-md-grow-0 flex-grow-1">
                 <a class="navbar-brand" href="#"><img class="img-fluid" src="${Logo}" style="height:30px"></a>
-            </div>
 
-            <div class="">
+                <div class="form-inline mr-2">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="inputGroupSelect01">Route</label>
                     </div>
-                    ${this.optionselect.outerHTML}
+                    ${this.routeSelect.outerHTML}
                 </div>
-            </div>
+                </div>
 
-            <div class="">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
-            </div>
         </div>
       
         <div class="collapse navbar-collapse" id="navbarsExample04">
-          <ul class="navbar-nav mr-auto mt-2 mt-md-0 ml-md-4">
+            ${this.navbar.outerHTML}
 
-            ${navItems}
             <!--
             <li class="nav-item d-flex align-items-center">
             <div class="custom-control custom-checkbox">
@@ -123,9 +135,33 @@ export default class UserInterface {
               </div>
             </li>
             -->
-          </ul>
           `;
         //   </div>
+
+        const nb: any = document.querySelector(`#${this.navbar.id}`);
+        const play = playText("Play");
+        const b = document.createElement("button");
+        b.className = "btn btn-dark";
+        b.innerHTML = play;
+        // b.onclick = route.animationHandler.draw.bind(route.animationHandler);
+        b.onclick = () => {
+            this.manager.playDraw();
+        };
+
+        const stop = stopText("");
+        const b2 = document.createElement("button");
+        b2.className = "btn btn-danger";
+        b2.innerHTML = stop;
+        // b2.onclick = route.animationHandler.draw.bind(route.animationHandler);
+        b2.onclick = () => {
+            this.manager.playDraw();
+        };
+        const group = document.createElement("div");
+        group.className = "btn-group";
+        group.setAttribute("role", "group");
+        group.appendChild(b2);
+        group.appendChild(b);
+        nb.appendChild(group);
 
         const ui = document.createElement("div");
         ui.classList.add(

@@ -120,13 +120,8 @@ export default class InfoBox {
         if (this.isVisible) {
             // overlay is visible
             this.screenVector.copy(positionVector).project(camera);
-
-            const posx =
-                ((1 + this.screenVector.x) * this.parentDomNode.offsetWidth) /
-                2;
-            const posy =
-                ((1 - this.screenVector.y) * this.parentDomNode.offsetHeight) /
-                2;
+            const posx = ((1 + this.screenVector.x) * window.innerWidth) / 2;
+            const posy = ((1 - this.screenVector.y) * window.innerHeight) / 2;
             const boundingRect = this.box.getBoundingClientRect();
 
             // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
@@ -134,7 +129,7 @@ export default class InfoBox {
                 "translate(" +
                 Math.floor(posx - boundingRect.width - 28) +
                 "px, " +
-                Math.floor(posy - 23) +
+                Math.floor(posy + 30) +
                 "px)";
             // this.style.left = (posx - boundingRect.width - 28) + 'px';
             // this.style.top = (posy - 23) + 'px';
