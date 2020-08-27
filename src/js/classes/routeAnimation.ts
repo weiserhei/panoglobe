@@ -72,11 +72,15 @@ export default class RouteAnimation {
         this.route.setDrawCount(value.index);
         this.animationDrawIndex.index = value.index;
 
-        const forecast = 5;
+        const forecast = 20;
 
-        const progressIndex =
-            (this.routeData.length / this.route.routeLine.numberVertices) *
-            value.index;
+        // const progressIndex =
+        //     (this.routeData.length / this.route.routeLine.numberVertices) *
+        //     value.index;
+        const progressIndex = this.route.routeLine.getIndexFromDrawcount(
+            value.index
+        );
+
         const result = this.marker.find((marker: Marker) => {
             return marker.index === Math.floor(progressIndex + forecast);
         });
@@ -103,25 +107,6 @@ export default class RouteAnimation {
                 200
             );
         }
-
-        // } else if (result.index > this.lastActive) {
-        //     // debounce
-        //     this.lastActive = result.index;
-        //     // this.setActiveMarker(result);
-        //     const tween = result.spawn();
-        //     tween.start();
-        //     result.showLabel(true);
-
-        //     const next = this.route.getNext(result);
-        //     if (!next) return;
-        //     this.controls.moveIntoCenter(
-        //         next.poi.lat,
-        //         next.poi.lng,
-        //         1000,
-        //         undefined,
-        //         200
-        //     );
-        // }
     }
 
     public draw() {
@@ -151,7 +136,7 @@ export default class RouteAnimation {
             // @ts-ignore
             .to(
                 { index: this.route.routeLine.numberVertices },
-                this.route.routeLine.numberVertices / (this.animationPace / 30)
+                this.route.routeLine.numberVertices / (this.animationPace / 45)
             )
             // .easing( TWEEN.Easing.Circular.InOut )
             .onStart(() => {

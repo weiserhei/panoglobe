@@ -13,6 +13,7 @@ import {
     Line,
     CatmullRomCurve3,
     Vector3,
+    Points,
 } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
@@ -20,39 +21,6 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { makeColorGradient, makeColorGradient2 } from "../utils/colors";
 import { createSphereArc } from "../utils/panoutils";
 import Config from "../../data/config";
-
-function getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
-    const vertices: Array<THREE.Vector3> = [];
-    routeData.forEach((element, index) => {
-        element.segments = 0;
-        if (index > 0) {
-            const prevHop = routeData[index - 1].hopDistance;
-            const thisHop = element.hopDistance;
-            const length = thisHop - prevHop;
-            const numLineSegments = Math.ceil(
-                length / Config.routes.lineSegments
-            );
-            element.segments =
-                1 + numLineSegments + routeData[index - 1].segments;
-            // const numLineSegments = Config.routes.lineSegments
-            // console.log(thisHop-prevHop, numLineSegments);
-
-            const curve = createSphereArc(
-                routeData[index - 1].displacedPos,
-                element.displacedPos
-            );
-            // curve.getPoints returns Type Vector instead of Vector3
-            // @ts-ignore
-            vertices.push(...curve.getPoints(numLineSegments));
-        }
-    });
-
-    // vertices.map((v) => {
-    //     return new Vector3(v.x, v.y, v.z);
-    // });
-
-    return vertices;
-}
 
 export default class RouteLine {
     // todo
@@ -64,6 +32,8 @@ export default class RouteLine {
     public currentPositionVec: THREE.Vector;
     public nextPositionVec: THREE.Vector;
     public colorWheel: number;
+    public gofuckyourself: any | undefined;
+
     private positions: Float32Array | undefined;
     private colors: Float32Array | undefined;
 
@@ -101,13 +71,26 @@ export default class RouteLine {
     public setDrawIndex(value: number) {
         // this.drawCount = number * (Config.routes.lineSegments + 1);
         // this.drawCount = number % this.numberVertices;
+        if (this.routeData[value] == undefined) {
+            return;
+        }
         this.drawCount = this.routeData[value].segments;
         this.line.geometry.instanceCount = this.drawCount;
+    }
+    public getIndexFromDrawcount(value: number): number {
+        const result = this.gfy.find((m: any) => {
+            return m === Math.floor(value);
+        });
+        if (result !== undefined) {
+            // console.log(result, this.gfy);
+        }
+        return this.gofuckyourself.indexOf(result);
     }
 
     constructor(private routeData: Array<Poi>, steps: number, phase: number) {
         this.line = undefined;
-        this.vertices = getVertices(routeData);
+        this.gofuckyourself = [];
+        this.vertices = this.getVertices(routeData);
         this.drawCount = 0;
         this.currentPositionVec = new Vector3();
         this.nextPositionVec = new Vector3();
@@ -126,8 +109,56 @@ export default class RouteLine {
         }
     }
 
+    get gfy(): Array<any> {
+        return this.gofuckyourself;
+    }
+
     get numberVertices(): number {
         return this.vertices.length;
+    }
+
+    private getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
+        const vertices: Array<THREE.Vector3> = [];
+        const WTF: any = [0];
+        routeData.forEach((element, index) => {
+            element.segments = 0;
+            if (index > 0) {
+                const prevHop = routeData[index - 1].hopDistance;
+                const thisHop = element.hopDistance;
+                const length = thisHop - prevHop;
+                const numLineSegments = Math.ceil(
+                    length / Config.routes.lineSegments
+                );
+                element.segments =
+                    1 + numLineSegments + routeData[index - 1].segments;
+                // const numLineSegments = Config.routes.lineSegments
+                // console.log(thisHop-prevHop, numLineSegments);
+
+                const curve = createSphereArc(
+                    routeData[index - 1].displacedPos,
+                    element.displacedPos
+                );
+                // curve.getPoints returns Type Vector instead of Vector3
+                // @ts-ignore
+                // const points = curve.getPoints(numLineSegments);
+                // points.forEach((p) => {
+                //     console.log(p);
+                //     // @ts-ignore
+                //     p.userData.index = index;
+                // });
+
+                // @ts-ignore
+                vertices.push(...curve.getPoints(numLineSegments));
+                WTF.push(element.segments);
+            }
+        });
+
+        // vertices.map((v) => {
+        //     return new Vector3(v.x, v.y, v.z);
+        // });
+
+        this.gofuckyourself = WTF;
+        return vertices;
     }
 
     update(speed = 1) {

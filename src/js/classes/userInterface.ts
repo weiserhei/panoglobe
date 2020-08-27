@@ -97,6 +97,7 @@ export default class UserInterface {
                 //     (Math.floor(value) / calculatedRouteData.length) *
                 //     route.routeLine.numberVertices;
                 route.setDrawIndex(value);
+                // route.setDrawCount(value.index);
                 controls.moveIntoCenter(
                     // routeData.gps[Math.floor(value)].lat,
                     // routeData.gps[Math.floor(value)].lng,
