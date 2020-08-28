@@ -12,11 +12,7 @@ export default class InfoBox {
     public nextButton: HTMLElement;
     public prevButton: HTMLElement;
     public closeButton: HTMLElement;
-    constructor(
-        private parentDomNode: HTMLElement,
-        controls: Controls,
-        city: Poi
-    ) {
+    constructor(parentDomNode: HTMLElement, controls: Controls, city: Poi) {
         this.visible = false;
         this.screenVector = new Vector3();
         this.box = document.createElement("div");

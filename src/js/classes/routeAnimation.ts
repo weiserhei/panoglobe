@@ -14,6 +14,9 @@ import {
 import { CatmullRomCurve3, Vector3 } from "three";
 
 export default class RouteAnimation {
+    public tweenSpawn: any = null;
+    public tweenDraw: any = null;
+
     private animationPace: number = 1;
     private animationDrawIndex: any;
     private lastActive: number | undefined;
@@ -22,8 +25,6 @@ export default class RouteAnimation {
     private stopText: (text: string) => string;
     private spawnUI: any;
     private drawUI: any;
-    private tweenSpawn: any = null;
-    private tweenDraw: any = null;
     private simplifiedRoute: THREE.CatmullRomCurve3;
     constructor(
         private route: Route,

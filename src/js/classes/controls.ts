@@ -30,7 +30,6 @@ export default class Controls {
     constructor(public camera: THREE.Camera, container: HTMLElement) {
         const controls = new OrbitControls(camera, container);
         this.threeControls = controls;
-        this.camera = camera;
         const cc = Config.controls;
 
         controls.target.set(cc.target.x, cc.target.y, cc.target.z);

@@ -32,6 +32,10 @@ export default class RouteManager {
         this.activeRoute.animationHandler.draw();
     }
 
+    public stopDraw() {
+        this.activeRoute.animationHandler.tweenDraw.stop();
+    }
+
     public buildRoute(
         routeData: RouteData,
         phase: number,
@@ -122,7 +126,7 @@ export default class RouteManager {
             poi.lng,
             2000,
             undefined,
-            undefined
+            650
             // buildSlider
         );
     }
@@ -131,7 +135,6 @@ export default class RouteManager {
         return this._activeRoute;
     }
     set activeRoute(route: Route) {
-        console.log("set active");
         this._activeRoute = route;
         this.routes.forEach((r) => {
             r.isVisible = false;

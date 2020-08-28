@@ -73,7 +73,7 @@ class App {
             const gui = new dat.GUI({ autoPlace: false, closed: true });
             var folder = gui.addFolder("GUI");
             folder.open();
-            // container.insertBefore(gui.domElement, labelRenderer.domElement);
+            container.insertBefore(gui.domElement, labelRenderer.domElement);
             // labelRenderer.domElement.appendChild(gui.domElement);
             gui.domElement.classList.add(
                 "ml-auto",
@@ -100,8 +100,7 @@ class App {
 
         const controls = new Controls(
             camera.threeCamera,
-            // labelRenderer.domElement
-            container
+            labelRenderer.domElement
         );
 
         const lightManager = new LightManager(

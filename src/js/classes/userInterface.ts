@@ -139,6 +139,8 @@ export default class UserInterface {
         b.innerHTML = play;
         // b.onclick = route.animationHandler.draw.bind(route.animationHandler);
         b.onclick = () => {
+            // @ts-ignore
+            $(".navbar-collapse").collapse("hide");
             this.manager.playDraw();
         };
 
@@ -148,7 +150,9 @@ export default class UserInterface {
         b2.innerHTML = stop;
         // b2.onclick = route.animationHandler.draw.bind(route.animationHandler);
         b2.onclick = () => {
-            this.manager.playDraw();
+            // @ts-ignore
+            $(".navbar-collapse").collapse("hide");
+            this.manager.stopDraw();
         };
         const group = document.createElement("div");
         group.className = "btn-group";
