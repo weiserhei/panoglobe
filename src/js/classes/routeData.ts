@@ -1,6 +1,6 @@
 interface IRouteData {
     meta: object;
-    gps: Array<Coordinate>;
+    gps: Coordinate[];
 }
 
 interface IMeta {
@@ -9,5 +9,5 @@ interface IMeta {
 
 class RouteData implements IRouteData {
     public meta: IMeta;
-    public gps: Array<Coordinate>;
+    public gps: Coordinate[];
 }

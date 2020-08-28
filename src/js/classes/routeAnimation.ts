@@ -93,12 +93,12 @@ export default class RouteAnimation {
             return marker.index === Math.floor(progressIndex + forecast);
         });
 
+        // -- flying transition
         if (
             progressIndex === 1 &&
             this.lastActive === 0 &&
             fly(this.marker[1])
         ) {
-            // flying transition
             this.lastActive = this.marker[1].index;
             this.mover.flying(false);
             const tween = this.marker[1].spawn();
@@ -112,9 +112,9 @@ export default class RouteAnimation {
                 )
                 .start();
         }
+        // -- flying transition
 
         if (result === undefined) return;
-        // if (Math.floor(value.index) >= 0 && this.lastActive === undefined) {
         if (result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
@@ -138,13 +138,11 @@ export default class RouteAnimation {
         this.marker.forEach((marker: Marker) => {
             marker.showLabel(true);
         });
-        // this.routeLine.drawProgress = 1;
         this.mover.moving(false);
         if (process.env.NODE_ENV === "development") {
             this.drawUI.name(playText("Draw"));
         }
-        this.route.setDrawCount(this.route.routeLine.numberVertices);
-
+        this.route.setDrawProgress(1);
         this.mover.flying(false);
 
         const lastActiveMarker = this.marker.find((marker: Marker) => {
@@ -196,10 +194,9 @@ export default class RouteAnimation {
         });
         // slow down tween: https://github.com/tweenjs/tween.js/issues/105#issuecomment-34570228
         // hide route
-        this.route.setDrawIndex(0);
+        this.route.setDrawProgress(0);
         this.animationDrawIndex.index = 0;
         this.mover.setVisible(false);
-        const marker = this.marker[0];
 
         const tweenRouteDraw = new TWEEN.Tween(
             this.animationDrawIndex,
@@ -279,6 +276,7 @@ export default class RouteAnimation {
         // .delay(500);
 
         // fade in label 1
+        const marker = this.marker[0];
         marker.showLabel(true);
 
         // tween camera to start

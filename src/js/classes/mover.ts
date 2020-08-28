@@ -13,31 +13,20 @@ import {
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
 import HtmlMover from "./htmlMover";
-import Marker from "./marker";
 
 import Config from "../../data/config";
 
 export default class Mover {
-    private tempVector: THREE.Vector3;
+    private tempVector: THREE.Vector3 = new Vector3();
     private mesh: THREE.Group | undefined;
     private outlineMesh: THREE.Mesh | undefined;
     private htmlMover: HtmlMover;
     constructor(
         scene: THREE.Scene,
-        private positions: Array<THREE.Vector3>,
+        private positions: THREE.Vector3[],
         private colors: Float32Array,
-        private routeData: Array<Poi>,
-        private marker: Array<Marker>,
         folder: any
     ) {
-        // this.mesh = new Mesh(
-        //     new BoxBufferGeometry(1, 1, 2),
-        //     new MeshNormalMaterial()
-        // );
-        // scene.add(this.mesh);
-        // this.mesh.position.copy(positions[positions.length - 1]);
-
-        this.tempVector = new Vector3();
         this.htmlMover = new HtmlMover(scene);
         this.htmlMover.setFlying(false);
         this.htmlMover.visible = false;

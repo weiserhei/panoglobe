@@ -8,13 +8,12 @@ import UserInterface from "./userInterface";
 import Marker from "./marker";
 
 export default class RouteManager {
-    public routes: Array<Route>;
-    public activeMarker: Marker | null;
+    public routes: Route[] = [];
+    public activeMarker: Marker | null = null;
 
     // private heightData: Promise<Array<Array<Number>>>;
     private ui: UserInterface;
     private _activeRoute: Route;
-    // private sfc: SFC;
 
     constructor(
         private scene: THREE.Scene,
@@ -24,8 +23,6 @@ export default class RouteManager {
         private heightData: Promise<Array<Array<Number>>>
     ) {
         this.ui = new UserInterface(container, controls, this);
-        this.routes = [];
-        this.activeMarker = null;
     }
 
     public playDraw() {
@@ -124,14 +121,7 @@ export default class RouteManager {
         };
 
         this.controls
-            .moveIntoCenter(
-                poi.lat,
-                poi.lng,
-                2000,
-                undefined,
-                650
-                // buildSlider
-            )
+            .moveIntoCenter(poi.lat, poi.lng, 2000, undefined, 650, buildSlider)
             .start();
     }
 

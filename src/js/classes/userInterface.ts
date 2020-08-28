@@ -39,10 +39,10 @@ function stopText(text: string) {
 
 export default class UserInterface {
     public createSlider: (
-        calculatedRouteData: Array<Poi>,
+        calculatedRouteData: Poi[],
         route: Route,
-        poi: Array<number>,
-        adresses: Array<string>
+        poi: number[],
+        adresses: string[]
     ) => void;
 
     public addRoute(route: Route) {
@@ -157,14 +157,15 @@ export default class UserInterface {
         nb.appendChild(group);
 
         const ui = document.createElement("div");
-        ui.classList.add(
-            "position-absolute",
-            "fixed-bottom",
-            "m-2",
-            "mb-5",
-            "m-md-5",
-            "p-2"
-        );
+        ui.classList.add("fixed-bottom", "m-5");
+        // ui.classList.add(
+        //     "position-absolute",
+        //     "fixed-bottom",
+        //     "m-2",
+        //     "mb-5",
+        //     "m-md-5",
+        //     "p-2"
+        // );
         container.appendChild(ui);
         let sliderInstance: any = undefined;
         const sliderDomElement = document.createElement("div");
@@ -206,18 +207,17 @@ export default class UserInterface {
                 true
             );
             slider.noUiSlider.on("set", function (value: any) {
-                controls.moveIntoCenter(
-                    calculatedRouteData[Math.floor(value)].lat,
-                    calculatedRouteData[Math.floor(value)].lng,
-                    500
-                );
+                controls
+                    .moveIntoCenter(
+                        calculatedRouteData[Math.floor(value)].lat,
+                        calculatedRouteData[Math.floor(value)].lng,
+                        500
+                    )
+                    .start();
             });
 
             slider.noUiSlider.on("slide", function (value: any) {
-                // const index =
-                //     (Math.floor(value) / calculatedRouteData.length) *
-                //     route.routeLine.numberVertices;
-                route.setDrawIndex(value);
+                route.setDrawIndex(Math.floor(value[0]));
             });
 
             var pips = slider.querySelectorAll(".noUi-value");
@@ -225,23 +225,20 @@ export default class UserInterface {
             function clickOnPip() {
                 const value = Number(this.getAttribute("data-value"));
                 slider.noUiSlider.set(value);
-                console.log(
-                    value,
-                    calculatedRouteData.length,
-                    route.routeLine.numberVertices
-                );
                 // const index =
                 //     (Math.floor(value) / calculatedRouteData.length) *
                 //     route.routeLine.numberVertices;
                 route.setDrawIndex(value);
                 // route.setDrawCount(value.index);
-                controls.moveIntoCenter(
-                    // routeData.gps[Math.floor(value)].lat,
-                    // routeData.gps[Math.floor(value)].lng,
-                    calculatedRouteData[Math.floor(value)].lat,
-                    calculatedRouteData[Math.floor(value)].lng,
-                    1000
-                );
+                controls
+                    .moveIntoCenter(
+                        // routeData.gps[Math.floor(value)].lat,
+                        // routeData.gps[Math.floor(value)].lng,
+                        calculatedRouteData[Math.floor(value)].lat,
+                        calculatedRouteData[Math.floor(value)].lng,
+                        1000
+                    )
+                    .start();
             }
 
             for (var i = 0; i < pips.length; i++) {

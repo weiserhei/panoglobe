@@ -8,7 +8,6 @@ import $ from "jquery";
 export default class Label {
     private visible: boolean;
     public domElement: HTMLElement;
-    public animation: () => void;
     public css2dobject: CSS2DObject;
 
     constructor(
@@ -46,7 +45,6 @@ export default class Label {
         // @ts-ignore
         // this.getSpawnTween = spawn2(this.css2dobject, followMesh);
         // css2dlabel.position.y -= 20;
-        this.animation = function () {};
 
         // const boundingRect = this.box.getBoundingClientRect();
         // const left = (0 - boundingRect.width + boundingRect.width / 2);

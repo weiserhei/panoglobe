@@ -25,14 +25,12 @@ import Config from "../../data/config";
 export default class RouteLine {
     // todo
     // public line: Line | Line2;
-    public line: any;
+    public line: any = undefined;
     public curve: THREE.CatmullRomCurve3 | undefined;
     public vertices: Array<Vector3>;
-    public drawCount: number;
-    public currentPositionVec: THREE.Vector;
-    public nextPositionVec: THREE.Vector;
-    public colorWheel: number;
-    public gofuckyourself: any | undefined;
+    public drawCount: number = 0;
+    public colorWheel: number = 0;
+    public segments: number[] = [0];
 
     private positions: Float32Array | undefined;
     private colors: Float32Array | undefined;
@@ -54,45 +52,35 @@ export default class RouteLine {
         this.line.geometry.instanceCount = range - 1;
     }
     public setDrawProgress(percent: number) {
-        // const normalizedProgress = this.drawCount / this.numberVertices;
-        const drawRamge = percent * this.numberVertices;
-        this.line.geometry.instanceCount = drawRamge;
-        // console.log(
-        //     this.numberVertices,
-        //     routeData.length,
-        //     (routeData.length - 1) * (Config.routes.lineSegments + 1)
-        // );
+        // normalized Progress: 0..1
+        this.drawCount = percent * this.numberVertices;
+        this.line.geometry.instanceCount = this.drawCount;
     }
     public setDrawCount(value: number) {
+        // Progress in geometry count: numberVertices
         // when draw count too big, start looping
         this.drawCount = value - (1 % this.numberVertices);
         this.line.geometry.instanceCount = this.drawCount;
     }
     public setDrawIndex(value: number) {
+        // Progress in routeData indices: routeData.length
         // this.drawCount = number * (Config.routes.lineSegments + 1);
         // this.drawCount = number % this.numberVertices;
-        if (this.routeData[value] == undefined) {
-            return;
-        }
+        if (this.routeData[value] == undefined) return;
+
         this.drawCount = this.routeData[value].segments;
         this.line.geometry.instanceCount = this.drawCount;
     }
+
     public getIndexFromDrawcount(value: number): number {
-        const result = this.gfy.find((m: any) => {
-            return m === Math.floor(value);
-        });
         // return index OR -1
-        return this.gofuckyourself.indexOf(result);
+        return this.segments.findIndex((segment: number) => {
+            return segment === Math.floor(value);
+        });
     }
 
     constructor(private routeData: Array<Poi>, steps: number, phase: number) {
-        this.line = undefined;
-        this.gofuckyourself = [];
         this.vertices = this.getVertices(routeData);
-        this.drawCount = 0;
-        this.currentPositionVec = new Vector3();
-        this.nextPositionVec = new Vector3();
-        this.colorWheel = 0;
 
         if (Config.routes.linewidth > 1) {
             this.line = this.getThickLine(
@@ -106,18 +94,12 @@ export default class RouteLine {
             this.line = this.getColoredBufferLine(steps, phase);
         }
     }
-
-    get gfy(): Array<any> {
-        return this.gofuckyourself;
-    }
-
     get numberVertices(): number {
         return this.vertices.length;
     }
 
     private getVertices(routeData: Array<Poi>): Array<THREE.Vector3> {
         const vertices: Array<THREE.Vector3> = [];
-        const WTF: any = [0];
         routeData.forEach((element, index) => {
             element.segments = 0;
             if (index > 0) {
@@ -129,8 +111,6 @@ export default class RouteLine {
                 );
                 element.segments =
                     1 + numLineSegments + routeData[index - 1].segments;
-                // const numLineSegments = Config.routes.lineSegments
-                // console.log(thisHop-prevHop, numLineSegments);
 
                 const curve = createSphereArc(
                     routeData[index - 1].displacedPos,
@@ -147,7 +127,7 @@ export default class RouteLine {
 
                 // @ts-ignore
                 vertices.push(...curve.getPoints(numLineSegments));
-                WTF.push(element.segments);
+                this.segments.push(element.segments);
             }
         });
 
@@ -155,36 +135,7 @@ export default class RouteLine {
         //     return new Vector3(v.x, v.y, v.z);
         // });
 
-        this.gofuckyourself = WTF;
         return vertices;
-    }
-
-    update(speed = 1) {
-        // this.updateColors(speed * 30);
-        // return;
-        // console.log( this.line.geometry.attributes.instanceStart.data.array )
-        // console.log( this.vertices[Math.floor(this.drawCount)] )
-        this.currentPositionVec = this.vertices[Math.floor(this.drawCount)];
-        this.nextPositionVec = this.vertices[
-            Math.floor(this.drawCount) + (3 % this.vertices.length)
-        ];
-        // drawCount must be all vertices
-        this.drawCount = (this.drawCount + speed) % this.numberVertices;
-
-        // http://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794#31411794
-        if (
-            this.line !== undefined &&
-            this.line.geometry instanceof LineGeometry
-        ) {
-            // Thick Line
-            // console.log(this._drawCount);
-            this.line.geometry.maxInstancedCount = this.drawCount - 1;
-        } else if (
-            this.line !== undefined &&
-            this.line.geometry instanceof BufferGeometry
-        ) {
-            this.line.geometry.setDrawRange(0, this.drawCount);
-        }
     }
 
     rainbow(delta: number) {

@@ -55,6 +55,9 @@ export default class Route {
         // todo check if value is in range
         this.routeLine.setDrawIndex(value);
     }
+    public setDrawProgress(value: number): void {
+        this.routeLine.setDrawProgress(value);
+    }
     public spawn(): void {
         this.animationHandler.spawn();
     }
@@ -160,14 +163,7 @@ export default class Route {
         // this.routeLine.drawPoi(this.marker[1].index);
         const positions = this.routeLine.vertices;
         const colors = this.routeLine.colorArray;
-        this.mover = new Mover(
-            scene,
-            positions,
-            colors,
-            this.routeData,
-            this.marker,
-            folder
-        );
+        this.mover = new Mover(scene, positions, colors, folder);
         this.mover.moving(false);
         // this.setDrawIndex(routeData.length);
 

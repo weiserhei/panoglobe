@@ -18,8 +18,10 @@ function getProgressColor(progress: number): string {
 export default class Preloader {
     public manager: THREE.LoadingManager;
     public textureLoader: THREE.TextureLoader;
+
     private zIndex: number;
     private inline: boolean;
+
     constructor(container: HTMLElement) {
         this.manager = new LoadingManager();
         this.textureLoader = new TextureLoader(this.manager);

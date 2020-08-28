@@ -24,14 +24,14 @@ export default class Texture {
             const loader: THREE.TextureLoader = new TextureLoader(manager);
             const maxAnisotropy: number = Config.maxAnisotropy;
             const imageFiles = Config.texture.imageFiles;
-            const promiseArray: Array<Promise<THREE.Texture>> = [];
+            const promises: Promise<THREE.Texture>[] = [];
             const t = [T1, T2, T3, T4, T5, T6];
 
             // loader.setPath("");
 
             t.forEach((texture) => {
                 // Add an individual Promise for each image in array
-                promiseArray.push(
+                promises.push(
                     new Promise((resolve, reject) => {
                         // Each Promise will attempt to load the image file
                         loader.load(
@@ -59,7 +59,7 @@ export default class Texture {
 
             // Iterate through all Promises in array and return another Promise when all have resolved
             // or console log reason when any reject
-            return Promise.all(promiseArray).then(
+            return Promise.all(promises).then(
                 (textures) => {
                     // Set the textures prop object to have name be the resolved texture
                     for (let i = 0; i < imageFiles.length; i += 1) {
