@@ -56,11 +56,6 @@ export default class UserInterface {
         };
     }
 
-    private play() {
-        console.log("hello play", this.manager);
-        this.manager.activeRoute.animationHandler.draw();
-    }
-
     private routeSelect: HTMLSelectElement;
     private navbar: HTMLElement;
 

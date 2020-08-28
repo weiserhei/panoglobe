@@ -18,8 +18,8 @@ export default {
         lineSegments: 20,
         segmentMultiplicator: 1,
         urls: [
-            // "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist",
             "https://relaunch.panoreisen.de/index.php?article_id=165&rex_geo_func=datalist",
+            "https://relaunch.panoreisen.de/index.php?article_id=7&rex_geo_func=datalist",
         ],
     },
     texture: {

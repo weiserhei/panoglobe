@@ -33,7 +33,10 @@ export default class RouteManager {
     }
 
     public stopDraw() {
-        if (this.activeRoute.animationHandler.tweenDraw !== null) {
+        if (
+            this.activeRoute !== undefined &&
+            this.activeRoute.animationHandler.tweenDraw !== null
+        ) {
             this.activeRoute.animationHandler.tweenDraw.stop();
         }
     }
@@ -137,6 +140,7 @@ export default class RouteManager {
         return this._activeRoute;
     }
     set activeRoute(route: Route) {
+        this.stopDraw();
         this._activeRoute = route;
         this.routes.forEach((r) => {
             r.isVisible = false;
@@ -188,8 +192,11 @@ export default class RouteManager {
     }
 
     public update(delta: number, camera: THREE.Camera) {
-        this.routes.forEach((route) => {
-            route.update(delta, camera);
-        });
+        if (this.activeRoute !== undefined) {
+            this.activeRoute.update(delta, camera);
+        }
+        // this.routes.forEach((route) => {
+        //     route.update(delta, camera);
+        // });
     }
 }

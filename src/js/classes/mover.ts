@@ -130,7 +130,7 @@ export default class Mover {
         if (progressIndex < this.marker[1].index + 7) {
             this.htmlMover.setFlying(true);
             // this.htmlMover.setFlying(false);
-        } else {
+        } else if (index < this.positions.length - 1) {
             this.htmlMover.setFlying(false);
         }
 
