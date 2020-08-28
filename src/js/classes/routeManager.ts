@@ -33,7 +33,9 @@ export default class RouteManager {
     }
 
     public stopDraw() {
-        this.activeRoute.animationHandler.tweenDraw.stop();
+        if (this.activeRoute.animationHandler.tweenDraw !== null) {
+            this.activeRoute.animationHandler.tweenDraw.stop();
+        }
     }
 
     public buildRoute(

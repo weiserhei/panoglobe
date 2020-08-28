@@ -25,6 +25,8 @@ export default class HtmlMover {
     private marker: Icon;
     private plane: Icon;
     private vehicle: Icon;
+    private _visible: boolean;
+    private _isFlying: boolean;
     constructor(scene: THREE.Scene) {
         this.marker = icon(faMapMarkerAlt, {
             styles: {
@@ -91,7 +93,7 @@ export default class HtmlMover {
                 // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
                 filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
             },
-            classes: ["fa-lg"],
+            classes: ["fa-lg", "mt-n1"],
             // classes: ["fa-lg", "mt-n1"],
             // classes: ["fa-2x", "mt-n3", "ml-2", "pl-2"],
         });
@@ -102,13 +104,15 @@ export default class HtmlMover {
 
     public setFlying(value: boolean) {
         this.visible = !value;
+        this._isFlying = value;
         this.css2dobject3.visible = value;
     }
 
     set visible(value: boolean) {
+        this._visible = value;
         this.css2dobject.visible = value;
         this.css2dobject2.visible = value;
-        this.css2dobject3.visible = false;
+        this.css2dobject3.visible = value;
     }
 
     public moving(value: boolean) {
@@ -138,8 +142,7 @@ export default class HtmlMover {
         this.css2dobject3.position.copy(position);
         this.css2dobject3.element.style.color = color.getStyle();
 
-        if (this.visible) {
-            console.log("a");
+        if (this._visible || this._isFlying) {
             if (!ocluded) {
                 // @ts-ignore
                 this.css2dobject.element.style.opacity = String(1);

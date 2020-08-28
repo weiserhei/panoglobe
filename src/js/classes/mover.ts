@@ -39,6 +39,7 @@ export default class Mover {
 
         this.tempVector = new Vector3();
         this.htmlMover = new HtmlMover(scene);
+        this.htmlMover.visible = true;
         this.htmlMover.setFlying(false);
         if (process.env.NODE_ENV === "development") {
             folder
@@ -127,10 +128,10 @@ export default class Mover {
             (this.routeData.length / this.positions.length) * index;
 
         if (progressIndex < this.marker[1].index + 7) {
-            // this.htmlMover.setFlying(true);
+            this.htmlMover.setFlying(true);
             // this.htmlMover.setFlying(false);
         } else {
-            // this.htmlMover.setFlying(false);
+            this.htmlMover.setFlying(false);
         }
 
         var point = this.positions[safeIndex];
