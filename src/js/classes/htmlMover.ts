@@ -106,17 +106,18 @@ export default class HtmlMover {
         this.visible = !value;
         this._isFlying = value;
         this.css2dobject3.visible = value;
+        $(this.css2dobject3.element).fadeToggle();
     }
 
     set visible(value: boolean) {
         this._visible = value;
         this.css2dobject.visible = value;
         this.css2dobject2.visible = value;
-        this.css2dobject3.visible = value;
+        this.css2dobject3.visible = false;
     }
 
     public moving(value: boolean) {
-        if (value == true) {
+        if (value === true) {
             // $(this.css2dobject.element).removeClass("d-none");
             // $(this.css2dobject2.element).addClass("d-none");
             $(this.css2dobject.element).fadeIn().removeClass("d-none");
@@ -126,7 +127,7 @@ export default class HtmlMover {
             // $(this.css2dobject2.element).removeClass("d-none");
             $(this.css2dobject.element).fadeOut().addClass("d-none");
             $(this.css2dobject2.element).fadeIn().removeClass("d-none");
-            this.setFlying(false);
+            // this.setFlying(false);
         }
     }
 

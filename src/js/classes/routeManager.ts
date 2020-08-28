@@ -47,7 +47,7 @@ export default class RouteManager {
             let calculatedRouteData: Array<Poi> = calc3DPositions(
                 routeData.gps,
                 data,
-                this.globusradius + 0.0
+                this.globusradius
             );
             if (process.env.NODE_ENV === "development") {
                 var folderCustom = folder.addFolder(routeData.meta.name);
@@ -142,7 +142,9 @@ export default class RouteManager {
         this.stopDraw();
         this._activeRoute = route;
         this.routes.forEach((r) => {
-            r.isVisible = false;
+            if (r !== route) {
+                r.isVisible = false;
+            }
         });
         route.isVisible = true;
 

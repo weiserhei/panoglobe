@@ -28,6 +28,10 @@ function stopText(text: string) {
 }
 // }
 
+function fly(marker: Marker): boolean {
+    return marker.poi.adresse === "Kanada";
+}
+
 export default class RouteAnimation {
     private tweenSpawn: any = null;
     private tweenDraw: any = null;
@@ -88,6 +92,27 @@ export default class RouteAnimation {
         const result = this.marker.find((marker: Marker) => {
             return marker.index === Math.floor(progressIndex + forecast);
         });
+
+        if (
+            progressIndex === 1 &&
+            this.lastActive === 0 &&
+            fly(this.marker[1])
+        ) {
+            // flying transition
+            this.lastActive = this.marker[1].index;
+            this.mover.flying(false);
+            const tween = this.marker[1].spawn();
+            this.marker[1].showLabel(true);
+            tween.start();
+            this.controls
+                .moveIntoCenter(
+                    this.marker[1].poi.lat,
+                    this.marker[1].poi.lng,
+                    1000
+                )
+                .start();
+        }
+
         if (result === undefined) return;
         // if (Math.floor(value.index) >= 0 && this.lastActive === undefined) {
         if (result.index > this.lastActive) {
@@ -119,6 +144,8 @@ export default class RouteAnimation {
             this.drawUI.name(playText("Draw"));
         }
         this.route.setDrawCount(this.route.routeLine.numberVertices);
+
+        this.mover.flying(false);
 
         const lastActiveMarker = this.marker.find((marker: Marker) => {
             return marker.index === this.lastActive;
@@ -156,6 +183,8 @@ export default class RouteAnimation {
             // this.tweenDraw.stop();
             return;
         }
+
+        this.tweenGroup.removeAll();
         // disable active marker if any
         if (this.route.activeMarker) {
             this.route.setActiveMarker(this.route.activeMarker);
@@ -184,6 +213,10 @@ export default class RouteAnimation {
             .onStart(() => {
                 // this.tweenDraw = tweenRouteDraw;
                 this.lastActive = 0;
+                // ugh please
+                if (fly(this.marker[1])) {
+                    this.mover.flying(true);
+                }
                 this.mover.moving(true);
                 if (process.env.NODE_ENV === "development") {
                     this.drawUI.name(stopText("Draw"));
@@ -321,7 +354,8 @@ export default class RouteAnimation {
                 if (process.env.NODE_ENV === "development") {
                     this.spawnUI.name(playText("Spawn"));
                 }
-                this.tweenSpawn = null;
+                this.tweenGroup.removeAll();
+                // this.tweenSpawn = null;
                 this.route.setDrawIndex(this.routeData.length);
             })
             .onComplete(() => {
@@ -329,9 +363,10 @@ export default class RouteAnimation {
                 if (process.env.NODE_ENV === "development") {
                     this.spawnUI.name(playText("Spawn"));
                 }
-                this.tweenSpawn = null;
+                this.tweenGroup.removeAll();
+                // this.tweenSpawn = null;
             })
-            .delay(200)
+            .delay(100)
             // @ts-ignore
             .start();
     }

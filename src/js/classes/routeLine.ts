@@ -81,9 +81,7 @@ export default class RouteLine {
         const result = this.gfy.find((m: any) => {
             return m === Math.floor(value);
         });
-        if (result !== undefined) {
-            // console.log(result, this.gfy);
-        }
+        // return index OR -1
         return this.gofuckyourself.indexOf(result);
     }
 

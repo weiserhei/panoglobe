@@ -39,8 +39,8 @@ export default class Mover {
 
         this.tempVector = new Vector3();
         this.htmlMover = new HtmlMover(scene);
-        this.htmlMover.visible = true;
         this.htmlMover.setFlying(false);
+        this.htmlMover.visible = false;
         if (process.env.NODE_ENV === "development") {
             folder
                 .add({ visible: true }, "visible")
@@ -111,6 +111,9 @@ export default class Mover {
     public moving(value: boolean) {
         this.htmlMover.moving(value);
     }
+    public flying(value: boolean) {
+        this.htmlMover.setFlying(value);
+    }
 
     public setVisible(value: boolean) {
         this.htmlMover.visible = value;
@@ -124,15 +127,8 @@ export default class Mover {
         }
         const safeIndex = Math.floor(index);
 
-        const progressIndex =
-            (this.routeData.length / this.positions.length) * index;
-
-        if (progressIndex < this.marker[1].index + 7) {
-            this.htmlMover.setFlying(true);
-            // this.htmlMover.setFlying(false);
-        } else if (index < this.positions.length - 1) {
-            this.htmlMover.setFlying(false);
-        }
+        // const progressIndex =
+        //     (this.routeData.length / this.positions.length) * index;
 
         var point = this.positions[safeIndex];
         const currentColor = new Color().fromArray(this.colors, safeIndex * 3);
