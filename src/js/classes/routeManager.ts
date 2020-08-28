@@ -74,28 +74,11 @@ export default class RouteManager {
             } else {
                 route.isVisible = false;
             }
-            // route.drawAnimation();
 
             // const lat = 48.78232, lng = 9.17702; // stgt
             // const lat = 19.432608, lng = -99.133209; // mexico
             // select last Marker on first route, and first marker on following routes
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
-
-            const poi = route.marker[route.marker.length - 1].poi;
-            const buildSlider = () => {
-                const poi: Array<number> = [];
-                const labels: Array<string> = [];
-                route.routeData.forEach(function (e: Poi, index: number) {
-                    if (e.adresse) {
-                        poi.push(index);
-                        labels.push(e.adresse);
-                    } else {
-                        labels.push("");
-                    }
-                });
-                this.ui.createSlider(route.routeData, route, poi, labels);
-            };
-            // buildSlider();
 
             return route;
         });
@@ -104,6 +87,8 @@ export default class RouteManager {
     private spawnRoute(route: Route): void {
         // play animation
         route.spawn();
+        // route.drawAnimation();
+
         // build slider
         const poi = route.marker[route.marker.length - 1].poi;
         const buildSlider = () => {
@@ -186,8 +171,5 @@ export default class RouteManager {
         if (this.activeRoute !== undefined) {
             this.activeRoute.update(delta, camera);
         }
-        // this.routes.forEach((route) => {
-        //     route.update(delta, camera);
-        // });
     }
 }

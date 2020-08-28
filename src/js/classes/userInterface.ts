@@ -1,13 +1,5 @@
 import $ from "jquery";
-
-import noUiSlider from "nouislider";
-import "nouislider/distribute/nouislider.css";
-import "../../css/nouislider.css";
-import MyFormatter from "../utils/sliderFormatter";
-import Controls from "./controls";
-import Route from "./route";
 import "bootstrap";
-
 import { icon, Icon } from "@fortawesome/fontawesome-svg-core";
 import {
     faPlayCircle,
@@ -16,8 +8,12 @@ import {
     faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 
-import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
+import Slider from "./slider";
+import Controls from "./controls";
+import Route from "./route";
+
 import RouteManager from "./routeManager";
+import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
 
 // todo
 // hide slider in bottom
@@ -38,32 +34,17 @@ function stopText(text: string) {
 }
 
 export default class UserInterface {
-    public createSlider: (
-        calculatedRouteData: Poi[],
-        route: Route,
-        poi: number[],
-        adresses: string[]
-    ) => void;
-
-    public addRoute(route: Route) {
-        const select: any = document.querySelector(`#${this.routeSelect.id}`);
-        // const select = $(this.routeSelect)[0];
-        select.options[select.options.length] = new Option(route.name);
-        select.onchange = (x: any) => {
-            this.manager.activeRoute = this.manager.routes[
-                x.target.selectedIndex
-            ];
-        };
-    }
-
     private routeSelect: HTMLSelectElement;
     private navbar: HTMLElement;
+    private slider: Slider;
 
     constructor(
         container: HTMLElement,
         controls: Controls,
         private manager: RouteManager
     ) {
+        this.slider = new Slider(container, controls);
+
         this.routeSelect = document.createElement("select");
         this.routeSelect.className = "custom-select";
         this.routeSelect.id = "inputGroupSelect01";
@@ -155,96 +136,25 @@ export default class UserInterface {
         group.appendChild(b2);
         group.appendChild(b);
         nb.appendChild(group);
+    }
 
-        const ui = document.createElement("div");
-        ui.classList.add("fixed-bottom", "m-5");
-        // ui.classList.add(
-        //     "position-absolute",
-        //     "fixed-bottom",
-        //     "m-2",
-        //     "mb-5",
-        //     "m-md-5",
-        //     "p-2"
-        // );
-        container.appendChild(ui);
-        let sliderInstance: any = undefined;
-        const sliderDomElement = document.createElement("div");
-        ui.appendChild(sliderDomElement);
-
-        this.createSlider = function (
-            calculatedRouteData: Array<Poi>,
-            route: Route,
-            poi: Array<number>,
-            labels: Array<string>
-        ) {
-            const slider = (sliderDomElement as unknown) as noUiSlider.Instance;
-            $(ui).hide().fadeIn();
-
-            if (sliderInstance) {
-                sliderInstance.noUiSlider.destroy();
-            }
-            sliderInstance = slider;
-
-            noUiSlider.create(
-                slider,
-                {
-                    start: [labels.length],
-                    step: 1,
-                    connect: false,
-                    range: {
-                        min: 0,
-                        max: calculatedRouteData.length - 1,
-                    },
-                    pips: {
-                        mode: "values",
-                        values: poi,
-                        stepped: true,
-                        density: 100,
-                        format: new MyFormatter(labels),
-                    },
-                },
-                // @ts-ignore
-                true
-            );
-            slider.noUiSlider.on("set", function (value: any) {
-                controls
-                    .moveIntoCenter(
-                        calculatedRouteData[Math.floor(value)].lat,
-                        calculatedRouteData[Math.floor(value)].lng,
-                        500
-                    )
-                    .start();
-            });
-
-            slider.noUiSlider.on("slide", function (value: any) {
-                route.setDrawIndex(Math.floor(value[0]));
-            });
-
-            var pips = slider.querySelectorAll(".noUi-value");
-
-            function clickOnPip() {
-                const value = Number(this.getAttribute("data-value"));
-                slider.noUiSlider.set(value);
-                // const index =
-                //     (Math.floor(value) / calculatedRouteData.length) *
-                //     route.routeLine.numberVertices;
-                route.setDrawIndex(value);
-                // route.setDrawCount(value.index);
-                controls
-                    .moveIntoCenter(
-                        // routeData.gps[Math.floor(value)].lat,
-                        // routeData.gps[Math.floor(value)].lng,
-                        calculatedRouteData[Math.floor(value)].lat,
-                        calculatedRouteData[Math.floor(value)].lng,
-                        1000
-                    )
-                    .start();
-            }
-
-            for (var i = 0; i < pips.length; i++) {
-                // pips[i].style.cursor = "pointer";
-                pips[i].addEventListener("click", clickOnPip);
-            }
+    public addRoute(route: Route) {
+        const select: any = document.querySelector(`#${this.routeSelect.id}`);
+        // const select = $(this.routeSelect)[0];
+        select.options[select.options.length] = new Option(route.name);
+        select.onchange = (x: any) => {
+            this.manager.activeRoute = this.manager.routes[
+                x.target.selectedIndex
+            ];
         };
+    }
+
+    public createSlider(
+        calculatedRouteData: Poi[],
+        route: Route,
+        poi: number[],
+        adresses: string[]
+    ) {
+        this.slider.createSlider(calculatedRouteData, route, poi, adresses);
     }
 }
