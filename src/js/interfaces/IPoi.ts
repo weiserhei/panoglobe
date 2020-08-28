@@ -1,4 +1,4 @@
-interface Poi extends ICoordinate {
+interface Poi extends Coordinate {
     displacedPos: THREE.Vector3;
     pos: THREE.Vector3;
     countryname?: string;
