@@ -263,7 +263,7 @@ const preloader = new Preloader(loadContainer);
 new Texture(preloader.manager).load().then((textureObject) => {
     const heightData = new Promise((resolve) => {
         return new ImageLoader().load(T_heightmap, resolve);
-    }).then((image) => {
+    }).then((image: CanvasImageSource) => {
         return getHeightData(image, 20);
     });
     new App(textureObject, heightData);

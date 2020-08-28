@@ -4,23 +4,23 @@
  * var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
  */
 
-function threeStepEasing(k) {
+function threeStepEasing(k: number) {
     return Math.floor(k * 3) / 3;
 }
 
-function createStepFunction(numSteps) {
-    return (k) => ~~(k * numSteps) / numSteps;
+function createStepFunction(numSteps: number) {
+    return (k: number) => ~~(k * numSteps) / numSteps;
 }
-function createStepEasing(numSteps, easeFn) {
-    return (k) => {
+function createStepEasing(numSteps: number, easeFn: any) {
+    return (k: number) => {
         let d = k * numSteps,
             fd = ~~d;
         return (easeFn(d - fd) + fd) / numSteps;
     };
 }
-function createNoisyEasing(randomProportion, easingFunction) {
+function createNoisyEasing(randomProportion: number, easingFunction: any) {
     let normalProportion = 1.0 - randomProportion;
-    return (k) =>
+    return (k: number) =>
         randomProportion * Math.random() + normalProportion * easingFunction(k);
 }
 

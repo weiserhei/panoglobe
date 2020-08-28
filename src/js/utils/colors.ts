@@ -1,7 +1,7 @@
 /* COLORS */
 // https://krazydad.com/tutorials/makecolors.php
 
-const byte2Hex = (n) => {
+const byte2Hex = (n: number) => {
     var nybHexString = "0123456789ABCDEF";
     return (
         String(nybHexString.substr((n >> 4) & 0x0f, 1)) +
@@ -23,13 +23,13 @@ const randomColorRoute = () => {
 };
 
 const makeColorGradient = (
-    i,
-    redFrequency,
-    grnFrequency,
-    bluFrequency,
-    phase1,
-    phase2,
-    phase3
+    i: number,
+    redFrequency?: number,
+    grnFrequency?: number,
+    bluFrequency?: number,
+    phase1?: number,
+    phase2?: number,
+    phase3?: number
 ) => {
     var center = 128;
     var width = 127;
@@ -50,13 +50,13 @@ const makeColorGradient = (
 };
 
 const makeColorGradient2 = (
-    i,
-    redFrequency,
-    grnFrequency,
-    bluFrequency,
-    phase1,
-    phase2,
-    phase3
+    i: number,
+    redFrequency?: number,
+    grnFrequency?: number,
+    bluFrequency?: number,
+    phase1?: number,
+    phase2?: number,
+    phase3?: number
 ) => {
     var center = 250;
     var width = 255;

@@ -41,7 +41,7 @@ export default class RouteManager {
         folder: any
     ): Promise<Route> {
         return this.heightData.then((data) => {
-            let calculatedRouteData: Array<Poi> = calc3DPositions(
+            let calculatedRouteData: Poi[] = calc3DPositions(
                 routeData.gps,
                 data,
                 this.globusradius

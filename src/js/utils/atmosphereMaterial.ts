@@ -2,10 +2,11 @@
  * from http://stemkoski.blogspot.fr/2013/07/shaders-in-threejs-glow-and-halo.html
  * @return {[type]} [description]
  */
-import { ShaderMaterial, FrontSide, AdditiveBlending } from "three";
+import { ShaderMaterial, FrontSide, AdditiveBlending, Color } from "three";
 
 export default class AtmosphereMaterial extends ShaderMaterial {
-    constructor(color) {
+    constructor(color: Color) {
+        super();
         var vertexShader = [
             "varying vec3 vNormal;",
             "void main(){",
@@ -33,15 +34,15 @@ export default class AtmosphereMaterial extends ShaderMaterial {
         return new ShaderMaterial({
             uniforms: {
                 coeficient: {
-                    type: "f",
+                    // type: "f",
                     value: 1.0,
                 },
                 power: {
-                    type: "f",
+                    // type: "f",
                     value: 2.0,
                 },
                 glowColor: {
-                    type: "c",
+                    // type: "c",
                     value: color,
                 },
             },
