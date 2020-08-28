@@ -8,43 +8,52 @@ import {
     TubeBufferGeometry,
     MeshLambertMaterial,
     Mesh,
+    Curve,
 } from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
+import Mover from "./mover";
+import RouteAnimation from "./routeAnimation";
+
 import Config from "../../data/config";
 
 import Controls from "./controls";
 import RouteManager from "./routeManager";
-import Mover from "./mover";
-import RouteAnimation from "./routeAnimation";
+
+function drawDebug(curve: CatmullRomCurve3, length: number) {
+    const tubeGeometry = new TubeBufferGeometry(curve, length, 1, 3, false);
+    const material = new MeshLambertMaterial({
+        color: 0xff00ff,
+        depthTest: false,
+        visible: true,
+    });
+    return new Mesh(tubeGeometry, material);
+}
 
 export default class Route {
     private mover: Mover;
-    private animationDrawIndex: any;
-    private animationDrawCount: any;
-    public animationHandler: RouteAnimation;
+    private _showLabels: boolean;
+    private visible: boolean;
 
+    public animationHandler: RouteAnimation;
     public poiRoute: CatmullRomCurve3;
     public activeMarker: Marker | null;
-    public marker: Array<Marker>;
-    public visible: boolean;
-    public showLabels1: boolean;
+    public marker: Array<Marker> = [];
     public routeLine: RouteLine;
     public setActiveMarker: (marker: Marker) => void;
     public cycleNextActive: (marker: Marker) => void;
     public cyclePrevActive: (marker: Marker) => void;
 
     public setDrawCount(value: number): void {
-        // drawCount == geometry length == routeData.length * routeSegments
+        // drawCount equals geometry length == routeData.length * individual routeSegments
+        // todo check if value is in range
         this.routeLine.setDrawCount(value);
-        this.animationDrawCount.index = value;
     }
     public setDrawIndex(value: number): void {
-        // drawIndex == routeData[index]
+        // drawIndex equals routeData[index]
         // todo check if value is in range
         this.routeLine.setDrawIndex(value);
-        this.animationDrawIndex.index = value;
     }
     public spawn(): void {
         this.animationHandler.spawn();
@@ -53,13 +62,33 @@ export default class Route {
         this.animationHandler.draw();
     }
 
+    get drawCount(): number {
+        return this.routeLine.drawCount;
+    }
+
+    public reset(): void {
+        // reset active Marker
+        // label visibility
+        // route line visibility
+        // mover visibility
+        this.isVisible = true;
+
+        // reset move into center
+        this.controls.moveIntoCenter().start();
+        // reset controls target
+        // reset route line draw distance
+        // reset mover icon shape
+        // reset mover icon position
+        // stop all tweens
+    }
+
     constructor(
         public name: string,
         scene: THREE.Scene,
         container: HTMLElement,
         public routeData: Array<Poi>,
         phase: number,
-        controls: Controls,
+        private controls: Controls,
         private manager: RouteManager,
         folder: any
     ) {
@@ -74,11 +103,6 @@ export default class Route {
 
         const steps = 1.8; // how fast change the color (0 = fast)
         const frequency = 1 / (steps * this.routeData.length);
-        this.marker = [];
-        this.visible = false;
-        this.showLabels1 = true;
-        this.animationDrawIndex = { index: 0 };
-        this.animationDrawCount = { index: 0 };
 
         // const poi = this.routeData.filter((c) => c.adresse);
 
@@ -131,23 +155,6 @@ export default class Route {
         // poi.push(this.routeData[this.routeData.length - 1].pos);
         // this.poiRoute = new CatmullRomCurve3(poi);
 
-        const points = this.routeLine.curve.getPoints(20);
-        const simplifiedRoute = new CatmullRomCurve3(points);
-        const tubeGeometry = new TubeBufferGeometry(
-            simplifiedRoute,
-            200,
-            1,
-            3,
-            false
-        );
-        const material = new MeshLambertMaterial({
-            color: 0xff00ff,
-            depthTest: false,
-            visible: true,
-        });
-        const mesh = new Mesh(tubeGeometry, material);
-        // scene.add(mesh);
-
         // this.routeLine.setDrawCount(this.routeLine.numberVertices);
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
@@ -172,6 +179,13 @@ export default class Route {
             controls,
             folder
         );
+
+        // draw simplified route for debug
+        // const mesh = drawDebug(
+        //     this.animationHandler.simplifiedRoute,
+        //     routeData.length
+        // );
+        // scene.add(mesh);
 
         this.setActiveMarker = function (marker: Marker) {
             // if (this.activeMarker === marker) {
@@ -236,11 +250,11 @@ export default class Route {
     }
 
     get showLabels() {
-        return this.showLabels1;
+        return this._showLabels;
     }
 
     set showLabels(value) {
-        this.showLabels1 = value;
+        this._showLabels = value;
         this.marker.forEach((marker) => {
             marker.showLabel(value);
         });
@@ -263,8 +277,8 @@ export default class Route {
     }
 
     public update(delta: number, camera: THREE.Camera) {
-        this.mover.update(this.animationDrawCount.index, camera);
-
+        this.mover.update(this.drawCount, camera);
+        this.animationHandler.update(delta);
         this.marker.forEach((marker) => {
             marker.update(camera, delta);
         });

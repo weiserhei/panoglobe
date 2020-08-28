@@ -29,15 +29,12 @@ export default class RouteManager {
     }
 
     public playDraw() {
-        this.activeRoute.animationHandler.draw();
+        this.activeRoute.drawAnimation();
     }
 
     public stopDraw() {
-        if (
-            this.activeRoute !== undefined &&
-            this.activeRoute.animationHandler.tweenDraw !== null
-        ) {
-            this.activeRoute.animationHandler.tweenDraw.stop();
+        if (this.activeRoute !== undefined) {
+            this.activeRoute.animationHandler.stopDraw();
         }
     }
 
@@ -123,17 +120,19 @@ export default class RouteManager {
                     labels.push("");
                 }
             });
-            // this.ui.createSlider(route.routeData, route, poi, labels);
+            this.ui.createSlider(route.routeData, route, poi, labels);
         };
 
-        this.controls.moveIntoCenter(
-            poi.lat,
-            poi.lng,
-            2000,
-            undefined,
-            650
-            // buildSlider
-        );
+        this.controls
+            .moveIntoCenter(
+                poi.lat,
+                poi.lng,
+                2000,
+                undefined,
+                650
+                // buildSlider
+            )
+            .start();
     }
 
     get activeRoute() {

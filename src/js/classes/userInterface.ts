@@ -70,7 +70,7 @@ export default class UserInterface {
 
         this.navbar = document.createElement("ul");
         this.navbar.id = "navbar";
-        this.navbar.className = "navbar-nav mr-auto mt-2 mt-md-0 ml-md-4";
+        this.navbar.className = "navbar-nav mr-auto mt-2 mt-md-0";
 
         const nav = document.createElement("nav");
         // container.appendChild(nav);

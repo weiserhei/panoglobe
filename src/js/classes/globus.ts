@@ -3,8 +3,8 @@ import {
     MeshBasicMaterial,
     MeshPhongMaterial,
     // MeshPhysicalMaterial,
-    // MeshStandardMaterial,
-    // CubeTextureLoader
+    MeshStandardMaterial,
+    CubeTextureLoader,
     IcosahedronBufferGeometry,
     Color,
     BackSide,
@@ -18,8 +18,6 @@ import {
 
 import Preloader from "../classes/preloader";
 import Config from "../../data/config";
-// import { Water } from 'three-full';
-// import { Water2 } from 'three-full';
 import { drawThreeGeo } from "../utils/threeGeoJSON";
 import AtmosphereMaterial from "../utils/atmosphereMaterial";
 
@@ -33,12 +31,13 @@ function getClouds(geometry: THREE.IcosahedronBufferGeometry): THREE.Mesh {
         blending: AdditiveBlending,
     });
 
-    const cloudSphere = new Mesh(geometry.clone(), cloudMaterial);
-    cloudSphere.scale.multiplyScalar(1.035);
+    const cloudSphere = new Mesh(geometry, cloudMaterial);
+    // const cloudSphere = new Mesh(geometry.clone(), cloudMaterial);
+    cloudSphere.scale.multiplyScalar(1.005);
 
     cloudSphere.matrixAutoUpdate = false;
     cloudSphere.updateMatrix();
-
+    // for borders
     cloudSphere.renderOrder = 1;
 
     return cloudSphere;
@@ -77,13 +76,14 @@ function getOuterGlow(geometry: THREE.IcosahedronBufferGeometry) {
 
 // Class that creates the globe
 export default class Globus {
-    public material: THREE.MeshPhongMaterial;
+    // public material: THREE.MeshPhongMaterial;
+    public material: any;
     public mesh: THREE.Mesh;
     public clouds: THREE.Mesh;
     public borderlines: THREE.Group;
     public setNight: (value: boolean) => void;
     public textures: object;
-    constructor(private scene: THREE.Scene, preloader: Preloader) {
+    constructor(scene: THREE.Scene, preloader: Preloader) {
         const geometry = new IcosahedronBufferGeometry(
             Config.globus.radius,
             Config.globus.detail
@@ -105,8 +105,8 @@ export default class Globus {
         });
 
         this.mesh = new Mesh(geometry, this.material);
-        this.mesh.castShadow = true;
-        this.mesh.receiveShadow = true;
+        // this.mesh.castShadow = true;
+        // this.mesh.receiveShadow = true;
         // this.mesh.matrixAutoUpdate = false;
         // this.mesh.updateMatrix();
 
@@ -121,9 +121,8 @@ export default class Globus {
             this.mesh.add(this.clouds);
         }
 
-        this.scene.add(this.mesh);
+        scene.add(this.mesh);
 
-        // borderlines.renderOrder = 2;
         const borderlines = new Group();
         this.mesh.add(borderlines);
         // borderlines.visible = false;
@@ -142,6 +141,7 @@ export default class Globus {
             borderlines
         );
         borderlines.rotation.set(0, Math.PI / 2, 0);
+        // borderlines.renderOrder = 0;
 
         //  $.getJSON("./data/countries_states.geojson", function(data) {
         //     const materialOptions = { transparent: true, opacity: 0.5, color: 'white' };
@@ -191,7 +191,7 @@ export default class Globus {
         this.borderlines.visible = value;
     }
 
-    setTextures(textures: object) {
+    setTextures(textures: any) {
         this.textures = textures;
 
         this.material.map = textures[Config.globus.material.map];
@@ -217,31 +217,31 @@ export default class Globus {
         }
 
         // var loader = new CubeTextureLoader();
-        // loader.setPath( './textures/cube/MilkyWay/' );
-        // loader.setPath( './textures/cube/skyboxsun25deg/' );
+        // loader.setPath("./textures/cube/MilkyWay/");
+        // // loader.setPath( './textures/cube/skyboxsun25deg/' );
         // const ext = ".jpg";
         // const prefix = "dark-s_";
 
         // loader.setPath( './textures/cube/pisa/' );
         // const ext = ".png";
         // const prefix = "";
-        // const sides = [ "px", "nx", "py", "ny", "pz", "nz" ];
 
-        // const imageNames = sides.map( side => prefix + side + ext );
-        // var textureCube = loader.load( imageNames );
+        // const sides = ["px", "nx", "py", "ny", "pz", "nz"];
+        // const imageNames = sides.map((side) => prefix + side + ext);
+        // var textureCube = loader.load(imageNames);
         // const scale = Config.globus.material.normalScale;
 
-        // this.material = new MeshStandardMaterial( {
-        // // this.material = new MeshPhysicalMaterial( {
+        // this.material = new MeshStandardMaterial({
+        //     // this.material = new MeshPhysicalMaterial( {
         //     color: Config.globus.material.color,
-        //     metalness: 0.0,
-        //     roughness: 0.3,
-        //     roughnessMap: textures.invertedSpecularmap,
-        //     // roughnessMap: textures.specmap,
-        //     // metalnessMap: textures.invertedSpecularmap,
+        //     metalness: 0.5,
+        //     // roughness: 0.3,
+        //     // roughnessMap: textures.invertedSpecularmap,
+        //     roughnessMap: textures.specmap,
+        //     metalnessMap: textures.invertedSpecularmap,
         //     // clearCoat:  0.5,
         //     // clearCoatRoughness: 1.0,
-        //     reflectivity: 1,
+        //     // reflectivity: 1,
         //     envMapIntensity: 1,
         //     envMap: textureCube,
         //     map: textures[Config.globus.material.map],

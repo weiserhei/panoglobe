@@ -7,6 +7,7 @@ import T3 from "../../textures/4k/2_no_clouds_4k.jpg";
 import T4 from "../../textures/4k/Spec-Mask-inverted_4k.png";
 import T5 from "../../textures/4k/earth_normalmap_flat_4k.jpg";
 import T6 from "../../textures/4k/Bump_4k.jpg";
+// import T7 from "../../textures/4k/Spec-Mask_4k.png";
 
 // This class preloads all textures in the imageFiles array in the Config via ES6 Promises.
 // Once all textures are done loading the model itself will be loaded after the Promise .then() callback.

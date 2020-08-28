@@ -13,19 +13,33 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CatmullRomCurve3, Vector3 } from "three";
 
+// if (process.env.NODE_ENV === "development") {
+function playText(text: string) {
+    const ico = icon(faPlayCircle, {
+        classes: ["mx-2"],
+    }).html;
+    return `${ico} ${text}`;
+}
+function stopText(text: string) {
+    const ico = icon(faStopCircle, {
+        classes: ["mx-2", "text-danger"],
+    }).html;
+    return `${ico} ${text}`;
+}
+// }
+
 export default class RouteAnimation {
-    public tweenSpawn: any = null;
-    public tweenDraw: any = null;
-
+    private tweenSpawn: any = null;
+    private tweenDraw: any = null;
     private animationPace: number = 1;
-    private animationDrawIndex: any;
+    private animationDrawIndex: { index: number } = { index: 0 };
     private lastActive: number | undefined;
-
-    private playText: (text: string) => string;
-    private stopText: (text: string) => string;
     private spawnUI: any;
     private drawUI: any;
-    private simplifiedRoute: THREE.CatmullRomCurve3;
+    private tweenGroup: any = new TWEEN.Group();
+
+    public simplifiedRoute: THREE.CatmullRomCurve3;
+
     constructor(
         private route: Route,
         private mover: Mover,
@@ -34,63 +48,46 @@ export default class RouteAnimation {
         private controls: Controls,
         folder: any
     ) {
-        if (process.env.NODE_ENV === "development") {
-            this.playText = function (text) {
-                const ico = icon(faPlayCircle, {
-                    classes: ["mx-2"],
-                }).html;
-                return `${ico} ${text}`;
-            };
-            this.stopText = function (text) {
-                const ico = icon(faStopCircle, {
-                    classes: ["mx-2", "text-danger"],
-                }).html;
-                return `${ico} ${text}`;
-            };
+        const points = this.route.routeLine.curve.getPoints(20);
+        this.simplifiedRoute = new CatmullRomCurve3(points);
 
+        if (process.env.NODE_ENV === "development") {
             const folderCustom = folder.addFolder("Animation");
             folderCustom.open();
             folderCustom.add(this, "animationPace").min(0).max(10);
 
-            const self = this;
             this.spawnUI = folderCustom
                 .add(this, "spawn")
-                .name(this.playText("Spawn"))
+                .name(playText("Spawn"))
                 .onChange(function () {
-                    this.name(self.stopText("Spawn"));
+                    this.name(stopText("Spawn"));
                 });
             this.drawUI = folderCustom
                 .add(this, "draw")
-                .name(this.playText("Draw"))
+                .name(playText("Draw"))
                 .onChange(function () {
-                    this.name(self.stopText("Draw"));
+                    this.name(stopText("Draw"));
                 });
         }
-        this.animationDrawIndex = { index: 0 };
     }
 
-    private drawUpdate(value: any) {
+    private drawUpdate(value: { index: number }) {
         this.route.setDrawCount(value.index);
         this.animationDrawIndex.index = value.index;
 
-        const forecast = 20;
-
-        // const progressIndex =
-        //     (this.routeData.length / this.route.routeLine.numberVertices) *
-        //     value.index;
-        const progressIndex = this.route.routeLine.getIndexFromDrawcount(
-            value.index
-        );
-
-        const result = this.marker.find((marker: Marker) => {
-            return marker.index === Math.floor(progressIndex + forecast);
-        });
+        const forecast = 15;
 
         const normalizedProgress =
             value.index / this.route.routeLine.numberVertices;
         const p = this.simplifiedRoute.getPoint(normalizedProgress);
         this.controls.threeControls.target = p;
 
+        const progressIndex = this.route.routeLine.getIndexFromDrawcount(
+            value.index
+        );
+        const result = this.marker.find((marker: Marker) => {
+            return marker.index === Math.floor(progressIndex + forecast);
+        });
         if (result === undefined) return;
         // if (Math.floor(value.index) >= 0 && this.lastActive === undefined) {
         if (result.index > this.lastActive) {
@@ -100,19 +97,63 @@ export default class RouteAnimation {
             result.showLabel(true);
             // const next = this.route.getNext(result);
             // if (!next) return;
-            this.controls.moveIntoCenter(
-                result.poi.lat,
-                result.poi.lng,
-                1000,
+            this.controls
+                .moveIntoCenter(
+                    result.poi.lat,
+                    result.poi.lng,
+                    1000,
+                    undefined,
+                    200
+                )
+                .start();
+        }
+    }
+
+    private onStop() {
+        this.marker.forEach((marker: Marker) => {
+            marker.showLabel(true);
+        });
+        // this.routeLine.drawProgress = 1;
+        this.mover.moving(false);
+        if (process.env.NODE_ENV === "development") {
+            this.drawUI.name(playText("Draw"));
+        }
+        this.route.setDrawCount(this.route.routeLine.numberVertices);
+
+        const lastActiveMarker = this.marker.find((marker: Marker) => {
+            return marker.index === this.lastActive;
+        });
+
+        const marker = lastActiveMarker || this.marker[this.marker.length - 1];
+
+        this.controls
+            .moveIntoCenter(
+                marker.poi.lat,
+                marker.poi.lng,
                 undefined,
-                200
-            );
+                undefined,
+                600
+            )
+            .start();
+
+        this.controls
+            .tweenTarget(new Vector3(), 500)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            // @ts-ignore
+            .start();
+    }
+
+    public stopDraw() {
+        if (this.tweenDraw) {
+            this.tweenDraw.stopChainedTweens();
+            this.tweenDraw.stop();
+            this.tweenDraw = null;
         }
     }
 
     public draw() {
         if (this.tweenDraw && this.tweenDraw.isPlaying()) {
-            this.tweenDraw.stop();
+            // this.tweenDraw.stop();
             return;
         }
         // disable active marker if any
@@ -130,62 +171,51 @@ export default class RouteAnimation {
         this.animationDrawIndex.index = 0;
         this.mover.setVisible(false);
         const marker = this.marker[0];
-        const points = this.route.routeLine.curve.getPoints(20);
-        this.simplifiedRoute = new CatmullRomCurve3(points);
 
-        this.tweenDraw = new TWEEN.Tween(this.animationDrawIndex)
-            // @ts-ignore
+        const tweenRouteDraw = new TWEEN.Tween(
+            this.animationDrawIndex,
+            this.tweenGroup
+        )
             .to(
                 { index: this.route.routeLine.numberVertices },
                 this.route.routeLine.numberVertices / (this.animationPace / 45)
             )
-            // .easing( TWEEN.Easing.Circular.InOut )
+            // .easing(TWEEN.Easing.Circular.Out)
             .onStart(() => {
+                // this.tweenDraw = tweenRouteDraw;
                 this.lastActive = 0;
                 this.mover.moving(true);
                 if (process.env.NODE_ENV === "development") {
-                    this.drawUI.name(this.stopText("Draw"));
+                    this.drawUI.name(stopText("Draw"));
                 }
             })
             .onUpdate((value: any) => {
                 this.drawUpdate(value);
             })
             // .repeat(Infinity)
-            .repeatDelay(3000)
-            .onRepeat(() => {
-                this.lastActive = undefined;
-                if (this.route.activeMarker) {
-                    this.route.setActiveMarker(this.route.activeMarker);
-                }
-                this.route.setDrawIndex(0);
-                // hide label
-                this.marker.forEach((marker: Marker) => {
-                    marker.setVisible(false);
-                });
-                // move camera to start
-                this.controls.moveIntoCenter(
-                    marker.poi.lat,
-                    marker.poi.lng,
-                    2000,
-                    undefined,
-                    300,
-                    () => {}
-                );
-                marker.showLabel(true);
-            })
-            .onStop(() => {
-                this.marker.forEach((marker: Marker) => {
-                    marker.showLabel(true);
-                });
-                // this.routeLine.drawProgress = 1;
-                this.mover.moving(false);
-                if (process.env.NODE_ENV === "development") {
-                    this.drawUI.name(this.playText("Draw"));
-                }
-                this.tweenSpawn = null;
-                this.route.setDrawCount(this.route.routeLine.numberVertices);
-                this.controls.resetTarget();
-            })
+            // .repeatDelay(3000)
+            // .onRepeat(() => {
+            //     this.lastActive = undefined;
+            //     if (this.route.activeMarker) {
+            //         this.route.setActiveMarker(this.route.activeMarker);
+            //     }
+            //     this.route.setDrawIndex(0);
+            //     // hide label
+            //     this.marker.forEach((marker: Marker) => {
+            //         marker.setVisible(false);
+            //     });
+            //     // move camera to start
+            //     this.controls.moveIntoCenter(
+            //         marker.poi.lat,
+            //         marker.poi.lng,
+            //         2000,
+            //         undefined,
+            //         300,
+            //         () => {}
+            //     );
+            //     marker.showLabel(true);
+            // })
+            .onStop(this.onStop.bind(this))
             .onComplete(() => {
                 // not called when on repeat
                 this.marker.forEach((marker: Marker) => {
@@ -194,49 +224,55 @@ export default class RouteAnimation {
                 // this.routeLine.drawProgress = 1;
                 this.mover.moving(false);
                 if (process.env.NODE_ENV === "development") {
-                    this.drawUI.name(this.playText("Draw"));
+                    this.drawUI.name(playText("Draw"));
                 }
                 this.tweenSpawn = null;
-                // this.controls.threeControls.target = new Vector3(0, 8, 0);
-                this.controls.resetTarget();
+                this.controls
+                    .tweenTarget(new Vector3(), 500)
+                    .easing(TWEEN.Easing.Quadratic.InOut)
+                    // @ts-ignore
+                    .start();
 
-                this.controls.moveIntoCenter(
-                    this.marker[this.marker.length - 1].poi.lat,
-                    this.marker[this.marker.length - 1].poi.lng,
-                    3000,
-                    undefined,
-                    600
-                );
-            })
-            .delay(500);
-        // @ts-ignore
-        // .start();
+                this.controls
+                    .moveIntoCenter(
+                        this.marker[this.marker.length - 1].poi.lat,
+                        this.marker[this.marker.length - 1].poi.lng,
+                        3000,
+                        undefined,
+                        600
+                    )
+                    .start();
+            });
+        // .delay(500);
 
         // fade in label 1
         marker.showLabel(true);
-        // @ts-ignore
-        this.controls.tweenTarget(new Vector3(), 1000).start();
-        // move camera to start
-        this.controls.moveIntoCenter(
-            marker.poi.lat,
-            marker.poi.lng,
-            2000,
-            undefined,
-            300,
-            () => {
-                this.mover.setVisible(true);
-                // @ts-ignore
-                this.tweenDraw.start();
-            }
-        );
+
+        // tween camera to start
+        // todo: dont tween when already there
+        this.tweenDraw = this.controls
+            .moveIntoCenter(
+                marker.poi.lat,
+                marker.poi.lng,
+                2000,
+                undefined,
+                300,
+                () => {
+                    this.mover.setVisible(true);
+                }
+            )
+            .onStop(this.onStop.bind(this))
+            .chain(tweenRouteDraw)
+            .start();
     }
 
     public spawn() {
         if (this.tweenSpawn && this.tweenSpawn.isPlaying()) {
-            this.tweenSpawn.stop();
+            // this.tweenSpawn.stop();
             return;
         }
         // else if (this.tweenSpawn) {
+        //      // pause/resume is bugged
         //     console.log("???", this.tweenSpawn);
         //     this.tweenSpawn.resume();
         //     return;
@@ -253,9 +289,11 @@ export default class RouteAnimation {
                 .delay(100 * (index + 1))
                 .start();
         });
-        // @ts-ignore
         // new TWEEN.Tween({ drawProgress: 0 })
-        this.tweenSpawn = new TWEEN.Tween(this.animationDrawIndex)
+        this.tweenSpawn = new TWEEN.Tween(
+            this.animationDrawIndex,
+            this.tweenGroup
+        )
             // @ts-ignore
             // .to({ drawProgress: 1 }, 3000)
             .to(
@@ -268,14 +306,12 @@ export default class RouteAnimation {
             .easing(TWEEN.Easing.Circular.Out)
             // .easing(easing || Config.easing)
             .onStart(() => {
-                this.animationDrawIndex.index = 0;
-                this.route.setDrawCount(0);
                 this.mover.moving(true);
                 if (process.env.NODE_ENV === "development") {
-                    this.spawnUI.name(this.stopText("Spawn"));
+                    this.spawnUI.name(stopText("Spawn"));
                 }
             })
-            .onUpdate((value: any) => {
+            .onUpdate((value: { index: number }) => {
                 // this.route.setDrawIndex(value.index);
                 this.route.setDrawCount(value.index);
             })
@@ -283,7 +319,7 @@ export default class RouteAnimation {
             .onStop(() => {
                 this.mover.moving(false);
                 if (process.env.NODE_ENV === "development") {
-                    this.spawnUI.name(this.playText("Spawn"));
+                    this.spawnUI.name(playText("Spawn"));
                 }
                 this.tweenSpawn = null;
                 this.route.setDrawIndex(this.routeData.length);
@@ -291,12 +327,16 @@ export default class RouteAnimation {
             .onComplete(() => {
                 this.mover.moving(false);
                 if (process.env.NODE_ENV === "development") {
-                    this.spawnUI.name(this.playText("Spawn"));
+                    this.spawnUI.name(playText("Spawn"));
                 }
                 this.tweenSpawn = null;
             })
             .delay(200)
             // @ts-ignore
             .start();
+    }
+
+    public update(delta: number) {
+        this.tweenGroup.update();
     }
 }

@@ -126,6 +126,7 @@ export default class HtmlMover {
             // $(this.css2dobject2.element).removeClass("d-none");
             $(this.css2dobject.element).fadeOut().addClass("d-none");
             $(this.css2dobject2.element).fadeIn().removeClass("d-none");
+            this.setFlying(false);
         }
     }
 

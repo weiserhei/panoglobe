@@ -5,23 +5,31 @@ import Config from "../../data/config";
 // import { createNoisyEasing, createStepEasing } from "./../utils/easings";
 // var customTween = createStepEasing(3, TWEEN.Easing.Exponential.InOut);
 
+function getShericalPosition(
+    lat: number,
+    lng: number,
+    RandomHeightOfLine: number
+): THREE.Vector3 {
+    const phi = ((90 - lat) * Math.PI) / 180;
+    const theta = (-lng * Math.PI) / 180;
+
+    return new Vector3(
+        RandomHeightOfLine * Math.sin(phi) * Math.cos(theta),
+        RandomHeightOfLine * Math.cos(phi),
+        RandomHeightOfLine * Math.sin(phi) * Math.sin(theta)
+    );
+}
+
 // Controls based on orbit controls
 export default class Controls {
     public threeControls: OrbitControls;
     public moveIntoCenter: any;
 
-    public resetTarget() {
-        // @ts-ignore
-        new TWEEN.Tween(this.threeControls.target)
-            .to(Config.controls.target, 800)
-            // @ts-ignore
-            .start();
-    }
-
-    public tweenTarget(target: THREE.Vector3, time: number) {
+    public tweenTarget(target: THREE.Vector3, time: number, easing?: any) {
         return (
             // @ts-ignore
             new TWEEN.Tween(this.threeControls.target)
+                .easing(easing || TWEEN.Easing.Quadratic.InOut)
                 // @ts-ignore
                 .to(target, time)
         );
@@ -54,41 +62,38 @@ export default class Controls {
             distance?: number,
             callback?: () => void
         ) {
-            const phi = ((90 - lat) * Math.PI) / 180;
-            const theta = (-lng * Math.PI) / 180;
-
             let cameraDistance = this.camera.position.distanceTo(
                 controls.target
             );
             // Zoom out if distance lower than 300 units
             cameraDistance = cameraDistance < 300 ? 300 : cameraDistance;
-
             // Or greater then your point distance to origin
             const RandomHeightOfLine = distance || cameraDistance;
 
-            const position = new Vector3(
-                RandomHeightOfLine * Math.sin(phi) * Math.cos(theta),
-                RandomHeightOfLine * Math.cos(phi),
-                RandomHeightOfLine * Math.sin(phi) * Math.sin(theta)
-            );
+            const position = getShericalPosition(lat, lng, RandomHeightOfLine);
 
-            new TWEEN.Tween(this.camera.position)
-                // @ts-ignore
-                .to(position, time)
-                // .easing( TWEEN.Easing.Circular.InOut )
-                // .easing( TWEEN.Easing.Quintic.InOut )
-                .easing(easing || Config.easing)
-                .onStart(() => {
-                    this.enabled = false;
-                })
-                .onComplete(() => {
-                    this.enabled = true;
-                    if (callback !== undefined) {
-                        callback();
-                    }
-                })
-                // @ts-ignore
-                .start();
+            return (
+                new TWEEN.Tween(this.camera.position)
+                    // @ts-ignore
+                    .to(position, time)
+                    // .easing( TWEEN.Easing.Circular.InOut )
+                    // .easing( TWEEN.Easing.Quintic.InOut )
+                    .easing(easing || Config.easing)
+                    .onStart(() => {
+                        this.enabled = false;
+                    })
+                    .onStop(() => {
+                        this.enabled = true;
+                    })
+                    .onComplete(() => {
+                        this.enabled = true;
+                        if (callback !== undefined) {
+                            callback();
+                        }
+                    })
+            );
+            // @ts-ignore
+            // .start();
         };
 
         function handleMouseMove() {

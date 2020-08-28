@@ -50,7 +50,7 @@ export default class Mover {
                 });
         }
         // async
-        this.mesh_mover(scene, folder);
+        // this.mesh_mover(scene, folder);
     }
 
     private mesh_mover = function (scene: THREE.Scene, folder: any) {
