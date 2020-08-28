@@ -47,8 +47,8 @@ export default class RouteAnimation {
     constructor(
         private route: Route,
         private mover: Mover,
-        private marker: Array<Marker>,
-        private routeData: Array<Poi>,
+        private marker: Marker[],
+        private routeData: Poi[],
         private controls: Controls,
         folder: any
     ) {
