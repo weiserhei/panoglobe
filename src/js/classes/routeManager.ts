@@ -71,42 +71,28 @@ export default class RouteManager {
 
             if (this.activeRoute === undefined) {
                 this.activeRoute = route;
+                // play animation
+                route.spawn();
+                // route.drawAnimation();
             } else {
                 route.isVisible = false;
             }
-
-            // const lat = 48.78232, lng = 9.17702; // stgt
-            // const lat = 19.432608, lng = -99.133209; // mexico
-            // select last Marker on first route, and first marker on following routes
-            const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
 
             return route;
         });
     }
 
     private spawnRoute(route: Route): void {
-        // play animation
-        route.spawn();
-        // route.drawAnimation();
-
-        // build slider
+        // select last Marker on first route, and first marker on following routes
+        const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
         const poi = route.marker[route.marker.length - 1].poi;
-        const buildSlider = () => {
-            const poi: Array<number> = [];
-            const labels: Array<string> = [];
-            route.routeData.forEach(function (e: Poi, index: number) {
-                if (e.adresse) {
-                    poi.push(index);
-                    labels.push(e.adresse);
-                } else {
-                    labels.push("");
-                }
-            });
-            this.ui.createSlider(route.routeData, route, poi, labels);
-        };
-
         this.controls
-            .moveIntoCenter(poi.lat, poi.lng, 2000, undefined, 650, buildSlider)
+            .moveIntoCenter(poi.lat, poi.lng, 2000, undefined, 650)
+            .onComplete(() => {
+                // build slider
+                // this.ui.createSlider(route.routeData, route);
+                this.controls.enabled = true;
+            })
             .start();
     }
 

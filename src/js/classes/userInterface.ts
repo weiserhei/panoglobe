@@ -149,12 +149,17 @@ export default class UserInterface {
         };
     }
 
-    public createSlider(
-        calculatedRouteData: Poi[],
-        route: Route,
-        poi: number[],
-        adresses: string[]
-    ) {
-        this.slider.createSlider(calculatedRouteData, route, poi, adresses);
+    public createSlider(calculatedRouteData: Poi[], route: Route) {
+        const poi: number[] = [];
+        const labels: string[] = [];
+        route.routeData.forEach(function (e: Poi, index: number) {
+            if (e.adresse) {
+                poi.push(index);
+                labels.push(e.adresse);
+            } else {
+                labels.push("");
+            }
+        });
+        this.slider.createSlider(calculatedRouteData, route, poi, labels);
     }
 }

@@ -76,8 +76,8 @@ export default class Slider {
             route.setDrawIndex(Math.floor(value[0]));
         });
 
-        var pips = slider.querySelectorAll(".noUi-value");
-
+        const pips = slider.querySelectorAll(".noUi-value");
+        const self = this;
         function clickOnPip() {
             const value = Number(this.getAttribute("data-value"));
             slider.noUiSlider.set(value);
@@ -86,7 +86,7 @@ export default class Slider {
             //     route.routeLine.numberVertices;
             route.setDrawIndex(value);
             // route.setDrawCount(value.index);
-            this.controls
+            self.controls
                 .moveIntoCenter(
                     // routeData.gps[Math.floor(value)].lat,
                     // routeData.gps[Math.floor(value)].lng,
@@ -97,9 +97,6 @@ export default class Slider {
                 .start();
         }
 
-        for (var i = 0; i < pips.length; i++) {
-            // pips[i].style.cursor = "pointer";
-            pips[i].addEventListener("click", clickOnPip);
-        }
+        pips.forEach((p) => p.addEventListener("click", clickOnPip));
     }
 }
