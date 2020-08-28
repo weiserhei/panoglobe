@@ -179,7 +179,9 @@ export default class RouteAnimation {
                 });
                 // this.routeLine.drawProgress = 1;
                 this.mover.moving(false);
-                this.drawUI.name(this.playText("Draw"));
+                if (process.env.NODE_ENV === "development") {
+                    this.drawUI.name(this.playText("Draw"));
+                }
                 this.tweenSpawn = null;
                 this.route.setDrawCount(this.route.routeLine.numberVertices);
                 this.controls.resetTarget();
