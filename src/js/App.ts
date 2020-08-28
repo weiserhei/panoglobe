@@ -46,6 +46,7 @@ class App {
     private sfc: SFC;
     constructor(textures: object, heightData: Promise<Array<Array<Number>>>) {
         const container = document.createElement("div");
+        container.className = "position-relative";
         document.body.appendChild(container);
 
         const clock = new Clock();
@@ -60,9 +61,11 @@ class App {
         const skybox = new Skybox(scene);
 
         const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        labelRenderer.domElement.style.position = "absolute";
-        labelRenderer.domElement.style.top = "60px"; //navbar top height
+        labelRenderer.setSize(container.clientWidth, container.clientHeight);
+        // labelRenderer.domElement.style.position = "absolute";
+        // labelRenderer.domElement.style.top = "60px"; //navbar top height
+        labelRenderer.domElement.style.top = "00px"; //navbar top height
+        labelRenderer.domElement.className = "position-absolute";
         container.appendChild(labelRenderer.domElement);
         /*global process*/
         /*eslint no-undef: "error"*/
@@ -70,7 +73,7 @@ class App {
             const gui = new dat.GUI({ autoPlace: false, closed: true });
             var folder = gui.addFolder("GUI");
             folder.open();
-            container.insertBefore(gui.domElement, labelRenderer.domElement);
+            // container.insertBefore(gui.domElement, labelRenderer.domElement);
             // labelRenderer.domElement.appendChild(gui.domElement);
             gui.domElement.classList.add(
                 "ml-auto",
@@ -82,12 +85,23 @@ class App {
         document.addEventListener("DOMContentLoaded", resize, false);
         window.addEventListener("resize", resize);
         function resize() {
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            // labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            // labelRenderer.setSize(
+            //     container.offsetWidth,
+            //     container.offsetHeight
+            // );
+            labelRenderer.setSize(
+                // container.clientWidth,
+                // container.clientHeight
+                window.innerWidth,
+                window.innerHeight
+            );
         }
 
         const controls = new Controls(
             camera.threeCamera,
-            labelRenderer.domElement
+            // labelRenderer.domElement
+            container
         );
 
         const lightManager = new LightManager(

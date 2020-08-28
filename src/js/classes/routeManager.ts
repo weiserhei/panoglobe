@@ -57,8 +57,8 @@ export default class RouteManager {
                 this,
                 folderCustom
             );
-            this.routes.push(route);
 
+            this.routes.push(route);
             this.ui.addRoute(route);
 
             // Onload other route disable last active marker
@@ -66,15 +66,17 @@ export default class RouteManager {
                 this.activeMarker.setActive(false);
             }
 
+            if (this.activeRoute === undefined) {
+                this.activeRoute = route;
+            } else {
+                route.isVisible = false;
+            }
+            // route.drawAnimation();
+
             // const lat = 48.78232, lng = 9.17702; // stgt
             // const lat = 19.432608, lng = -99.133209; // mexico
             // select last Marker on first route, and first marker on following routes
             const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
-
-            if (this.activeRoute === undefined) {
-                this.activeRoute = route;
-            }
-            // route.drawAnimation();
 
             const poi = route.marker[route.marker.length - 1].poi;
             const buildSlider = () => {
@@ -129,6 +131,7 @@ export default class RouteManager {
         return this._activeRoute;
     }
     set activeRoute(route: Route) {
+        console.log("set active");
         this._activeRoute = route;
         this.routes.forEach((r) => {
             r.isVisible = false;

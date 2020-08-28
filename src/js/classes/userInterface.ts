@@ -46,12 +46,6 @@ export default class UserInterface {
     ) => void;
 
     public addRoute(route: Route) {
-        if (this.manager.routes.length > 1) {
-            route.isVisible = false;
-        } else {
-            this.manager.activeRoute = route;
-        }
-
         const select: any = document.querySelector(`#${this.routeSelect.id}`);
         // const select = $(this.routeSelect)[0];
         select.options[select.options.length] = new Option(route.name);
@@ -85,7 +79,7 @@ export default class UserInterface {
 
         const nav = document.createElement("nav");
         // container.appendChild(nav);
-        container.prepend(nav);
+        document.body.prepend(nav);
         nav.style.zIndex = "900";
         nav.className = "navbar navbar-expand-md navbar-light bg-light";
 
