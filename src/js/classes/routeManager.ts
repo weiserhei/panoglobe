@@ -6,6 +6,8 @@ import UserInterface from "./userInterface";
 // import Config from "../../data/config";
 
 import Marker from "./marker";
+import Globus from "./globus";
+import LightManager from "./lightManager";
 
 export default class RouteManager {
     public routes: Route[] = [];
@@ -20,19 +22,35 @@ export default class RouteManager {
         private container: HTMLElement,
         private globusradius: number,
         private controls: Controls,
-        private heightData: Promise<Array<Array<Number>>>
+        private heightData: Promise<Array<Array<number>>>,
+        private globus: Globus,
+        private lightManager: LightManager
     ) {
         this.ui = new UserInterface(container, controls, this);
     }
 
-    public playDraw() {
-        this.activeRoute.drawAnimation();
+    set toggleClouds(value: boolean) {
+        this.globus.clouds.visible = value;
     }
 
-    public stopDraw() {
+    set toggleBorders(value: boolean) {
+        this.globus.borders = value;
+    }
+
+    set toggleNight(value: boolean) {
+        this.globus.setNight(value);
+        this.lightManager.setNight(value);
+    }
+
+    public playDraw(): boolean {
+        return this.activeRoute.drawAnimation();
+    }
+
+    public stopDraw(): boolean {
         if (this.activeRoute !== undefined) {
-            this.activeRoute.animationHandler.stopDraw();
+            return this.activeRoute.stopDrawAnimation();
         }
+        return;
     }
 
     public buildRoute(

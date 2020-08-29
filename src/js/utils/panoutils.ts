@@ -41,18 +41,34 @@ function convertLatLonToVec3(lat: any, lon: any) {
     );
 }
 
+function getHeight(
+    heightData: Array<Array<number>>,
+    lat: string,
+    lng: string
+): number {
+    let latHeight = Math.floor(
+        (Number(lat) * (heightData.length / 180) - heightData.length / 2) * -1
+    );
+    const lngHeight =
+        Math.floor(Number(lng) * (heightData[0].length / 360)) +
+        heightData[0].length / 2;
+
+    if (latHeight > heightData.length - 1) {
+        latHeight = heightData.length;
+    }
+
+    return heightData[latHeight][lngHeight];
+}
+
 /**
  * get Height Data
  * from Image
  */
-
-function array2D(x: number, y: number) {
+function array2D(x: number, y: number): Array<Array<number>> {
     const array = new Array(x);
-
     for (let i = 0; i < array.length; i += 1) {
         array[i] = new Array(y);
     }
-
     return array;
 }
 
@@ -99,65 +115,41 @@ export const createSphereArc = (P: Vector3, Q: Vector3) => {
 
 export const calc3DPositions = (
     data: Coordinate[],
-    heightData: any,
+    heightData: Array<Array<number>>,
     radius: number
 ): Poi[] => {
     // calculate Position + displaced Position in 3D Space
     let distance = 0;
-    // data.distance = 0;
-    for (let i = 0; i < data.length; i += 1) {
-        if (data[i - 1] !== undefined) {
-            // distanz zum vorgänger berechnen
-            distance += calcCrow(data[i], data[i - 1]);
-            // data.distance += calcCrow(data[i], data[i - 1]);
-            // data[i].hopDistance = data.distance;
-            (data[i] as Poi).hopDistance = distance;
-        } else {
-            // erster wegpunkt
-            (data[i] as Poi).hopDistance = 0;
-        }
 
-        // so funktionierts (außer letzter punkt)
-        // CALCULATE HOP- AND OVERALL TRAVEL DISTANCE IN KILOMETERS
-        // if ( data[ i + 1 ] !== undefined ) {
-        // 	data[ i ].hopDistance = data.distance;
-        // 	data.distance += utils.calcCrow( data[ i ], data[ i + 1 ] );
-        // }
+    data.forEach((coordinate, index) => {
+        // distanz zum vorgänger berechnen
+        if (index > 0) distance += calcCrow(coordinate, data[index - 1]);
 
-        // ADD 3D POSITION FIELDS TO EVERY BLOB, SO WE CAN DRAW CONNECTING CURVES IN THE NEXT LOOP
-        (data[i] as Poi).pos = convertLatLonToVec3(
-            data[i].lat,
-            data[i].lng
-        ).multiplyScalar(radius); // 100.5
+        (coordinate as Poi).hopDistance = distance;
+
+        // ADD 3D POSITION TO EVERY COORDINATE
+        (coordinate as Poi).pos = convertLatLonToVec3(
+            coordinate.lat,
+            coordinate.lng
+        ).multiplyScalar(radius);
 
         if (heightData.length > 0) {
-            let latHeight = Math.floor(
-                (Number(data[i].lat) * (heightData.length / 180) -
-                    heightData.length / 2) *
-                    -1
-            );
-            const lngHeight =
-                Math.floor(Number(data[i].lng) * (heightData[0].length / 360)) +
-                heightData[0].length / 2;
-
-            if (latHeight > heightData.length - 1) {
-                latHeight = heightData.length;
-            }
-
             // LOOKUP TOPOLOGIC HEIGHT IN HEIGHTDATA ARRAY
-            const height = heightData[latHeight][lngHeight];
+            const displaceHeight = getHeight(
+                heightData,
+                coordinate.lat,
+                coordinate.lng
+            );
 
-            (data[i] as Poi).displaceHeight = height;
-            (data[i] as Poi).displacedPos = convertLatLonToVec3(
-                data[i].lat,
-                data[i].lng
-            ).multiplyScalar(radius + 0.5 + height);
+            (coordinate as Poi).displaceHeight = displaceHeight;
+            (coordinate as Poi).displacedPos = convertLatLonToVec3(
+                coordinate.lat,
+                coordinate.lng
+            ).multiplyScalar(radius + 0.4 + displaceHeight);
         } else {
-            (data[i] as Poi).displacedPos = (data[i] as Poi).pos;
+            (coordinate as Poi).displacedPos = (coordinate as Poi).pos;
         }
-
-        // console.log( "height von ", data[i].name, ": ", height, "scaled height: ", data[i].displaceHeight );
-    }
+    });
 
     return (data as unknown) as Poi[];
 };

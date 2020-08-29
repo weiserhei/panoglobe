@@ -168,15 +168,17 @@ export default class RouteAnimation {
             .start();
     }
 
-    public stopDraw() {
+    public stopDraw(): boolean {
         if (this.tweenDraw) {
             this.tweenDraw.stopChainedTweens();
             this.tweenDraw.stop();
             this.tweenDraw = null;
+            return true;
         }
+        return;
     }
 
-    public draw() {
+    public draw(): boolean {
         if (this.tweenDraw && this.tweenDraw.isPlaying()) {
             // this.tweenDraw.stop();
             return;
@@ -208,7 +210,7 @@ export default class RouteAnimation {
             )
             // .easing(TWEEN.Easing.Circular.Out)
             .onStart(() => {
-                // this.tweenDraw = tweenRouteDraw;
+                this.tweenDraw = tweenRouteDraw;
                 this.lastActive = 0;
                 // ugh please
                 if (fly(this.marker[1])) {
@@ -295,6 +297,8 @@ export default class RouteAnimation {
             .onStop(this.onStop.bind(this))
             .chain(tweenRouteDraw)
             .start();
+
+        return true;
     }
 
     public spawn() {

@@ -33,7 +33,7 @@ function drawDebug(curve: CatmullRomCurve3, length: number) {
 
 export default class Route {
     private mover: Mover;
-    private _showLabels: boolean;
+    private _showLabels: boolean = true;
     private visible: boolean;
 
     public animationHandler: RouteAnimation;
@@ -61,8 +61,11 @@ export default class Route {
     public spawn(): void {
         this.animationHandler.spawn();
     }
-    public drawAnimation(): void {
-        this.animationHandler.draw();
+    public drawAnimation(): boolean {
+        return this.animationHandler.draw();
+    }
+    public stopDrawAnimation(): boolean {
+        return this.animationHandler.stopDraw();
     }
 
     get drawCount(): number {
@@ -70,6 +73,7 @@ export default class Route {
     }
 
     public reset(): void {
+        // todo
         // reset active Marker
         // label visibility
         // route line visibility

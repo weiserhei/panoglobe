@@ -44,7 +44,7 @@ import T_heightmap from "../textures/heightmap_1440.jpg";
 
 class App {
     private sfc: SFC;
-    constructor(textures: object, heightData: Promise<Array<Array<Number>>>) {
+    constructor(textures: object, heightData: Promise<Array<Array<number>>>) {
         const container = document.createElement("div");
         container.className = "position-relative";
         document.body.appendChild(container);
@@ -117,7 +117,9 @@ class App {
             container,
             Config.globus.radius,
             controls,
-            heightData
+            heightData,
+            globus,
+            lightManager
         );
 
         const routes: Array<Route> = [];

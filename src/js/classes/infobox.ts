@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 import { numberWithCommas } from "../utils/panoutils";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Controls from "./controls";
 
@@ -17,19 +17,22 @@ export default class InfoBox {
         this.screenVector = new Vector3();
         this.box = document.createElement("div");
         parentDomNode.appendChild(this.box);
-        const lng = (Math.round(parseInt(city.lng) * 100) / 100).toFixed(2);
-        const lat = (Math.round(parseInt(city.lat) * 100) / 100).toFixed(2);
+
+        //@ts-ignore
+        const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
+        const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
+
+        const linkIcon = icon(faExternalLinkAlt, {
+            classes: [],
+        }).html;
 
         let text = "<div class='labelHead'>";
-        text += "<b>" + city.adresse + "</b>";
+        text += `<b>${city.adresse}</b>`;
         text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
         text += "</div>";
         text += "<div class='labelContent'>";
-        text += "<p>Lat: " + lat + " | Long: " + lng + "</p>";
-        text +=
-            "<p><a href='" +
-            city.externerlink +
-            "' target='_blank'><i class='fas fa-external-link-alt'></i> Point of Interest</a></p>";
+        text += `<p><span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span></p>`;
+        text += `<p><a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a></p>`;
         text += "</div>";
         text += "<div class='arrow'></div>";
         this.box.innerHTML = text;
@@ -115,6 +118,9 @@ export default class InfoBox {
 
         if (this.isVisible) {
             // overlay is visible
+            // fix label lag
+            camera.updateMatrixWorld();
+
             this.screenVector.copy(positionVector).project(camera);
             const posx = ((1 + this.screenVector.x) * window.innerWidth) / 2;
             const posy = ((1 - this.screenVector.y) * window.innerHeight) / 2;

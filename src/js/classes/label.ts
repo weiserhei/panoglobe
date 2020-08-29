@@ -65,6 +65,7 @@ export default class Label {
 
     public setVisible(value: boolean): void {
         this.visible = value;
+        // console.trace(value);
         if (value === true) {
             this.css2dobject.visible = true;
             this.visible = false;

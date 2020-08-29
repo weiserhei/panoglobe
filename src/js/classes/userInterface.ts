@@ -14,29 +14,46 @@ import Route from "./route";
 
 import RouteManager from "./routeManager";
 import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
+import { EvalSourceMapDevToolPlugin } from "webpack";
 
 // todo
+// hide labels
+// hide borders
+// hide clouds
+// night mode
+
 // hide slider in bottom
 // only show a hint to bring it up
 
 function playText(text: string) {
     const ico = icon(faPlayCircle, {
-        classes: ["mr-1"],
+        classes: ["fa-lg", "mr-1"],
     }).html;
     return `${ico} ${text}`;
 }
 
 function stopText(text: string) {
     const ico = icon(faStopCircle, {
-        classes: [],
+        classes: ["fa-lg"],
     }).html;
     return `${ico} ${text}`;
+}
+
+function checkboxElement(id: string, checked = false): HTMLInputElement {
+    const checkbox = document.createElement("input");
+    checkbox.className = "custom-control-input";
+    checkbox.id = id;
+    checkbox.checked = checked;
+    checkbox.setAttribute("type", "checkbox");
+    return checkbox;
 }
 
 export default class UserInterface {
     private routeSelect: HTMLSelectElement;
     private navbar: HTMLElement;
     private slider: Slider;
+
+    private button: HTMLElement;
 
     constructor(
         container: HTMLElement,
@@ -84,7 +101,6 @@ export default class UserInterface {
             <!--
             <li class="nav-item d-flex align-items-center">
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="customCheck1">
                 <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
             </div>
             </li>
@@ -109,33 +125,142 @@ export default class UserInterface {
         //   </div>
 
         const nb: any = document.querySelector(`#${this.navbar.id}`);
-        const play = playText("Play");
+        const play = playText("Play Animation");
         const b = document.createElement("button");
-        b.className = "btn btn-dark";
+        b.className = "btn btn-primary";
         b.innerHTML = play;
         // b.onclick = route.animationHandler.draw.bind(route.animationHandler);
         b.onclick = () => {
-            // @ts-ignore
-            $(".navbar-collapse").collapse("hide");
-            this.manager.playDraw();
+            setTimeout(() => {
+                // @ts-ignore
+                $(".navbar-collapse").collapse("hide");
+            }, 900);
+            if (this.manager.playDraw()) {
+                $(b2).toggleClass("btn-danger");
+                $(b2).toggleClass("btn-primary");
+                // $(b).toggleClass("btn-dark");
+                // $(b).toggleClass("btn-success");
+            }
         };
 
         const stop = stopText("");
         const b2 = document.createElement("button");
-        b2.className = "btn btn-danger";
+        b2.className = "btn btn-primary";
         b2.innerHTML = stop;
         // b2.onclick = route.animationHandler.draw.bind(route.animationHandler);
         b2.onclick = () => {
-            // @ts-ignore
-            $(".navbar-collapse").collapse("hide");
-            this.manager.stopDraw();
+            setTimeout(() => {
+                // @ts-ignore
+                $(".navbar-collapse").collapse("hide");
+            }, 900);
+            if (this.manager.stopDraw()) {
+                // $(b).toggleClass("btn-dark");
+                // $(b).toggleClass("btn-success");
+                $(b2).toggleClass("btn-danger");
+                $(b2).toggleClass("btn-primary");
+            }
         };
+        this.button = b2;
+
+        var li = document.createElement("li");
+        li.className = "nav-item d-flex align-items-center";
         const group = document.createElement("div");
         group.className = "btn-group";
         group.setAttribute("role", "group");
         group.appendChild(b2);
         group.appendChild(b);
-        nb.appendChild(group);
+        li.appendChild(group);
+        nb.appendChild(li);
+
+        // <li class="nav-item d-flex align-items-center">
+        // <div class="custom-control custom-checkbox">
+        //     <input type="checkbox" class="">
+        //     <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
+        // </div>
+        // </li>
+
+        var li = document.createElement("li");
+        li.className = "nav-item d-flex align-items-center";
+        var div = document.createElement("div");
+        div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
+        var label = document.createElement("label");
+        label.className = "custom-control-label";
+        label.setAttribute("for", "customCheck1");
+        label.innerHTML = "Show Label";
+        li.appendChild(div);
+
+        const checkbox1 = checkboxElement("customCheck1", true);
+        checkbox1.onclick = (e: Event) => {
+            // @ts-ignore
+            const { checked } = e.target;
+            this.manager.activeRoute.showLabels = checked;
+        };
+        div.appendChild(checkbox1);
+        div.appendChild(label);
+        nb.appendChild(li);
+
+        var li = document.createElement("li");
+        li.className = "nav-item d-flex align-items-center";
+        var div = document.createElement("div");
+        div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
+        var label = document.createElement("label");
+        label.className = "custom-control-label";
+        label.setAttribute("for", "customCheck2");
+        label.innerHTML = "Show Borders";
+        li.appendChild(div);
+
+        const checkbox2 = checkboxElement("customCheck2", true);
+        checkbox2.onclick = (e: Event) => {
+            // @ts-ignore
+            const { checked } = e.target;
+            this.manager.toggleBorders = checked;
+        };
+        div.appendChild(checkbox2);
+        div.appendChild(label);
+        nb.appendChild(li);
+
+        var li = document.createElement("li");
+        li.className = "nav-item d-flex align-items-center";
+        var div = document.createElement("div");
+        div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
+        var label = document.createElement("label");
+        label.className = "custom-control-label";
+        label.setAttribute("for", "customCheck4");
+        label.innerHTML = "Clouds";
+        li.appendChild(div);
+
+        const checkbox4 = checkboxElement("customCheck4", true);
+        checkbox4.onclick = (e: Event) => {
+            // @ts-ignore
+            this.manager.toggleClouds = e.target.checked;
+        };
+        div.appendChild(checkbox4);
+        div.appendChild(label);
+        nb.appendChild(li);
+
+        var li = document.createElement("li");
+        li.className = "nav-item d-flex align-items-center";
+        var div = document.createElement("div");
+        div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
+        var label = document.createElement("label");
+        label.className = "custom-control-label";
+        label.setAttribute("for", "customCheck3");
+        label.innerHTML = "Nighttime";
+        li.appendChild(div);
+
+        const checkbox3 = checkboxElement("customCheck3", false);
+        checkbox3.onclick = (e: Event) => {
+            // @ts-ignore
+            const { checked } = e.target;
+            this.manager.toggleNight = checked;
+            $(nav).toggleClass("navbar-light bg-light");
+            $(nav).toggleClass("navbar-dark bg-pro-sidebar text-light");
+            // $(this.navbar).toggleClass("navbar-light bg-light");
+            // $(this.navbar).toggleClass("navbar-dark bg-dark");
+        };
+        div.appendChild(checkbox3);
+        div.appendChild(label);
+        nb.appendChild(li);
     }
 
     public addRoute(route: Route) {
@@ -143,6 +268,9 @@ export default class UserInterface {
         // const select = $(this.routeSelect)[0];
         select.options[select.options.length] = new Option(route.name);
         select.onchange = (x: any) => {
+            $(this.button).addClass("btn-dark").removeClass("btn-danger");
+            // @ts-ignore
+            this.checkbox.checked = true;
             this.manager.activeRoute = this.manager.routes[
                 x.target.selectedIndex
             ];

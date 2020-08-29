@@ -22,6 +22,7 @@ import { drawThreeGeo } from "../utils/threeGeoJSON";
 import AtmosphereMaterial from "../utils/atmosphereMaterial";
 
 import geoJSON from "../../data/countries_states.geojson";
+import T_N from "../../textures/4k/Night-Lights-4k.jpg";
 
 function getClouds(geometry: THREE.IcosahedronBufferGeometry): THREE.Mesh {
     const cloudMaterial = new MeshBasicMaterial({
@@ -135,7 +136,7 @@ export default class Globus {
         };
         drawThreeGeo(
             geoJSON,
-            Config.globus.radius + 0.5,
+            Config.globus.radius + 0.6,
             "sphere",
             materialOptions,
             borderlines
@@ -156,26 +157,19 @@ export default class Globus {
         // });
 
         this.setNight = function (value: boolean) {
-            preloader.setInline(true);
             this.night = value;
 
             if (value) {
-                if (
-                    this.textures[Config.globus.material["nightmap"]] ===
-                    undefined
-                ) {
-                    const textureLoader = preloader.textureLoader;
-                    const url = "./textures/4k/Night-Lights-4k.jpg";
-                    this.textures.night = textureLoader.load(
-                        url,
+                if (this.textures.night === undefined) {
+                    preloader.setInline(true);
+                    this.textures.night = preloader.textureLoader.load(
+                        T_N,
                         (texture: THREE.Texture) => {
                             this.material.map = texture;
                         }
                     );
                 } else {
-                    this.material.map = this.textures[
-                        Config.globus.material["nightmap"]
-                    ];
+                    this.material.map = this.textures.night;
                 }
             } else {
                 this.material.map = this.textures[Config.globus.material.map];
@@ -186,7 +180,6 @@ export default class Globus {
     get borders() {
         return this.borderlines.visible;
     }
-
     set borders(value) {
         this.borderlines.visible = value;
     }
