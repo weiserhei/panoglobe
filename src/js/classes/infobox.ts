@@ -1,24 +1,39 @@
 import { Vector3 } from "three";
+import $ from "jquery";
 import { numberWithCommas } from "../utils/panoutils";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faTimes, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Controls from "./controls";
 
+function makeSafeForCSS(name: string) {
+    return name.replace(/[^a-z0-9]/g, function (s) {
+        var c = s.charCodeAt(0);
+        if (c == 32) return "-";
+        if (c >= 65 && c <= 90) return "_" + s.toLowerCase();
+        return "__" + ("000" + c.toString(16)).slice(-4);
+    });
+}
+
 export default class InfoBox {
-    private visible: boolean;
-    private box: HTMLElement;
-    private screenVector: THREE.Vector3;
+    private visible: boolean = true;
+    private box: HTMLElement = document.createElement("div");
+    private screenVector: THREE.Vector3 = new Vector3();
+    private id: string;
+
     public nextButton: HTMLElement;
     public prevButton: HTMLElement;
     public closeButton: HTMLElement;
-    constructor(parentDomNode: HTMLElement, controls: Controls, city: Poi) {
-        this.visible = false;
-        this.screenVector = new Vector3();
-        this.box = document.createElement("div");
+
+    constructor(
+        parentDomNode: HTMLElement,
+        controls: Controls,
+        private city: Poi
+    ) {
         parentDomNode.appendChild(this.box);
 
-        //@ts-ignore
+        this.id = makeSafeForCSS(city.adresse);
+
         const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
         const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
 
@@ -26,18 +41,51 @@ export default class InfoBox {
             classes: [],
         }).html;
 
-        let text = "<div class='labelHead'>";
-        text += `<b>${city.adresse}</b>`;
-        text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
-        text += "</div>";
-        text += "<div class='labelContent'>";
-        text += `<p><span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span></p>`;
-        text += `<p><a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a></p>`;
-        text += "</div>";
-        text += "<div class='arrow'></div>";
-        this.box.innerHTML = text;
-        this.box.className = "htmlLabel infobox";
-        this.box.style.display = "none";
+        this.box.className = "toast position-absolute fixed-bottom mb-5";
+        this.box.style.bottom = "40px";
+        this.box.style.left = "20px";
+        this.box.id = this.id;
+        this.box.setAttribute("data-autohide", "false");
+
+        this.closeButton = document.createElement("button");
+        this.closeButton.setAttribute("type", "button");
+        this.closeButton.setAttribute("data-dismiss", "toast");
+        this.closeButton.className = "ml-2 mb-1 close";
+        this.closeButton.innerHTML = `<span aria-hidden="true">&times;</span>`;
+
+        // <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+        // <img src="..." class="rounded mr-2" alt="...">
+
+        const toastHeader = document.createElement("div");
+        toastHeader.className = "toast-header";
+        toastHeader.innerHTML = `<strong class="mr-auto">${
+            city.adresse
+        }</strong>
+            <small>${numberWithCommas(
+                Math.floor(city.hopDistance)
+            )} km</small>`;
+        toastHeader.appendChild(this.closeButton);
+        this.box.appendChild(toastHeader);
+        const toastBody = document.createElement("div");
+        toastBody.className = "toast-body";
+        toastBody.innerHTML = `<p>
+        <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>
+        </p>
+        <a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a>`;
+        this.box.appendChild(toastBody);
+
+        // let text = "<div class='labelHead'>";
+        // text += `<b>${city.adresse}</b>`;
+        // text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
+        // text += "</div>";
+        // text += "<div class='labelContent'>";
+        // text += `<p><span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span></p>`;
+        // text += `<p><a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a></p>`;
+        // text += "</div>";
+        // text += "<div class='arrow'></div>";
+        // this.box.innerHTML = text;
+        // this.box.className = "htmlLabel infobox";
+        // this.box.style.display = "none";
 
         this.nextButton = document.createElement("button");
         this.nextButton.className = "btn btn-secondary float-right btn-sm";
@@ -46,46 +94,40 @@ export default class InfoBox {
         this.prevButton = document.createElement("button");
         this.prevButton.className = "btn btn-secondary btn-sm";
         this.prevButton.innerHTML = "Previous";
-        const footer = document.createElement("div");
-        footer.className = "card-footer";
+        // const footer = document.createElement("div");
+        // footer.className = "card-footer";
 
-        footer.appendChild(this.nextButton);
-        footer.appendChild(this.prevButton);
-        this.box.appendChild(footer);
+        // footer.appendChild(this.nextButton);
+        // footer.appendChild(this.prevButton);
+        // this.box.appendChild(footer);
 
-        this.closeButton = document.createElement("button");
-        this.closeButton.className =
-            "btn btn-sm btn-danger shadow-none closeButton position-absolute";
-        this.closeButton.innerHTML = String(
-            icon(faTimes, {
-                styles: { filter: "drop-shadow(0px 0px 1px rgba(0,0,0))" },
-                classes: ["fa-lg"],
-            }).html
-        );
-        this.box.appendChild(this.closeButton);
+        //@ts-ignore
+        // $(this.box).toast();
+        //@ts-ignore
+        // $(this.box).toast("hide");
 
         function handleMouseUp() {
             controls.enabled = true;
         }
 
-        this.closeButton.addEventListener(
-            "mousedown",
-            function () {
-                controls.enabled = false;
-                this.addEventListener("mouseup", handleMouseUp, false);
-                this.addEventListener("mouseout", handleMouseUp, false);
-            },
-            false
-        );
-        this.domElement.addEventListener(
-            "mousedown",
-            function () {
-                controls.enabled = false;
-                this.addEventListener("mouseup", handleMouseUp, false);
-                this.addEventListener("mouseout", handleMouseUp, false);
-            },
-            false
-        );
+        // this.closeButton.addEventListener(
+        //     "mousedown",
+        //     function () {
+        //         controls.enabled = false;
+        //         this.addEventListener("mouseup", handleMouseUp, false);
+        //         this.addEventListener("mouseout", handleMouseUp, false);
+        //     },
+        //     false
+        // );
+        // this.box.addEventListener(
+        //     "mousedown",
+        //     function () {
+        //         controls.enabled = false;
+        //         this.addEventListener("mouseup", handleMouseUp, false);
+        //         this.addEventListener("mouseout", handleMouseUp, false);
+        //     },
+        //     false
+        // );
     }
 
     get isVisible() {
@@ -95,11 +137,17 @@ export default class InfoBox {
     set isVisible(value: boolean) {
         this.visible = value;
         if (value) {
-            this.box.style.display = "block";
-            this.box.classList.add("fadeIn");
+            //@ts-ignore
+            // $(this.box).toast("show");
+            $(`#${this.id}`).toast("show");
+            // this.box.style.display = "block";
+            // this.box.classList.add("fadeIn");
         } else {
-            this.box.style.display = "none";
-            this.box.classList.remove("fadeIn");
+            //@ts-ignore
+            $(`#${this.id}`).toast("hide");
+            // $(this.box).toast("hide");
+            // this.box.style.display = "none";
+            // this.box.classList.remove("fadeIn");
         }
     }
 
@@ -110,11 +158,11 @@ export default class InfoBox {
         active: boolean
     ) {
         // hide label when ocluded
-        if (ocluded && this.isVisible && active) {
-            this.isVisible = false;
-        } else if (!ocluded && !this.isVisible && active) {
-            this.isVisible = true;
-        }
+        // if (ocluded && this.isVisible && active) {
+        //     this.isVisible = false;
+        // } else if (!ocluded && !this.isVisible && active) {
+        //     this.isVisible = true;
+        // }
 
         if (this.isVisible) {
             // overlay is visible
@@ -127,18 +175,19 @@ export default class InfoBox {
             const boundingRect = this.box.getBoundingClientRect();
 
             // https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
-            this.box.style.transform =
-                "translate(" +
-                Math.floor(posx - boundingRect.width - 28) +
-                "px, " +
-                Math.floor(posy - 23) +
-                "px)";
+            // this.box.style.transform =
+            //     "translate(" +
+            //     Math.floor(posx - boundingRect.width - 28) +
+            //     "px, " +
+            //     Math.floor(posy - 23) +
+            //     "px)";
+
             // this.style.left = (posx - boundingRect.width - 28) + 'px';
             // this.style.top = (posy - 23) + 'px';
         }
     }
 
-    get domElement() {
-        return this.box;
-    }
+    // get domElement() {
+    //     return this.box;
+    // }
 }

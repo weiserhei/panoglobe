@@ -166,6 +166,7 @@ export default class RouteManager {
             this.activeMarker.setActive(false);
             marker.setActive(true);
         } else {
+            console.log("else", marker);
             marker.setActive(true);
         }
         this.activeMarker = marker;

@@ -14,14 +14,8 @@ import Route from "./route";
 
 import RouteManager from "./routeManager";
 import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
-import { EvalSourceMapDevToolPlugin } from "webpack";
 
 // todo
-// hide labels
-// hide borders
-// hide clouds
-// night mode
-
 // hide slider in bottom
 // only show a hint to bring it up
 
@@ -54,13 +48,14 @@ export default class UserInterface {
     private slider: Slider;
 
     private button: HTMLElement;
+    private checkbox1: HTMLInputElement;
 
     constructor(
         container: HTMLElement,
         controls: Controls,
         private manager: RouteManager
     ) {
-        this.slider = new Slider(container, controls);
+        // this.slider = new Slider(container, controls);
 
         this.routeSelect = document.createElement("select");
         this.routeSelect.className = "custom-select";
@@ -74,7 +69,8 @@ export default class UserInterface {
         // container.appendChild(nav);
         document.body.prepend(nav);
         nav.style.zIndex = "900";
-        nav.className = "navbar navbar-expand-md navbar-light bg-light";
+        nav.className =
+            "navbar navbar-expand-md navbar-light bg-light shadow-sm";
 
         // <div class="row no-gutters align-items-center justify-content-between d-flex">
         nav.innerHTML = `
@@ -165,7 +161,7 @@ export default class UserInterface {
         var li = document.createElement("li");
         li.className = "nav-item d-flex align-items-center";
         const group = document.createElement("div");
-        group.className = "btn-group";
+        group.className = "btn-group w-100";
         group.setAttribute("role", "group");
         group.appendChild(b2);
         group.appendChild(b);
@@ -189,13 +185,13 @@ export default class UserInterface {
         label.innerHTML = "Show Label";
         li.appendChild(div);
 
-        const checkbox1 = checkboxElement("customCheck1", true);
-        checkbox1.onclick = (e: Event) => {
+        this.checkbox1 = checkboxElement("customCheck1", true);
+        this.checkbox1.onclick = (e: Event) => {
             // @ts-ignore
             const { checked } = e.target;
             this.manager.activeRoute.showLabels = checked;
         };
-        div.appendChild(checkbox1);
+        div.appendChild(this.checkbox1);
         div.appendChild(label);
         nb.appendChild(li);
 
@@ -270,7 +266,7 @@ export default class UserInterface {
         select.onchange = (x: any) => {
             $(this.button).addClass("btn-dark").removeClass("btn-danger");
             // @ts-ignore
-            this.checkbox.checked = true;
+            this.checkbox1.checked = true;
             this.manager.activeRoute = this.manager.routes[
                 x.target.selectedIndex
             ];

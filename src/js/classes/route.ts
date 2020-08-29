@@ -194,6 +194,7 @@ export default class Route {
             //     marker.setActive(false);
             //     return;
             // }
+            console.trace("active", marker);
 
             if (this.manager !== undefined) {
                 this.manager.setActiveMarker(this, marker);
