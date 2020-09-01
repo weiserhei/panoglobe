@@ -105,7 +105,7 @@ export default class RouteManager {
 
     private spawnRoute(route: Route): void {
         // select last Marker on first route, and first marker on following routes
-        const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
+        // const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
         const poi = route.marker[route.marker.length - 1].poi;
         this.controls
             .moveIntoCenter(poi.lat, poi.lng, 2000, undefined, 650)
@@ -156,8 +156,10 @@ export default class RouteManager {
     }
 
     public deselectMarker(): void {
-        this.activeMarker.setActive(false);
-        this.activeMarker = null;
+        if (this.activeMarker) {
+            this.activeMarker.setActive(false);
+            this.activeMarker = null;
+        }
         this.activeRoute.activeMarker = null;
         // @ts-ignore
         this.controls.tweenTarget(new Vector3(0, 0, 0)).start();
@@ -165,19 +167,6 @@ export default class RouteManager {
 
     public setActiveMarker(route: Route, marker: Marker) {
         if (route !== this.activeRoute) return;
-
-        const moveDownTween = this.controls.moveIntoCenterDown(
-            marker.poi.lat,
-            marker.poi.lng,
-            new Vector2(0, -1),
-            1000
-        );
-
-        const moveTween = this.controls.moveIntoCenter(
-            marker.poi.lat,
-            marker.poi.lng,
-            1000
-        );
 
         if (route.activeMarker === marker) {
             // current marker is active => toggle
@@ -198,22 +187,25 @@ export default class RouteManager {
             // some other marker is active, turn off then turn new one on
             this.activeMarker.setActive(false);
             marker.setActive(true);
-
-            if (window.innerHeight > window.innerWidth) {
-                moveDownTween.start();
-            } else {
-                moveTween.start();
-            }
         } else {
             marker.setActive(true);
-
-            if (window.innerHeight > window.innerWidth) {
-                moveDownTween.start();
-            } else {
-                moveTween.start();
-            }
         }
         this.activeMarker = marker;
+
+        // move the view Up if Portrait Mode
+        if (window.innerHeight > window.innerWidth) {
+            this.controls
+                .moveIntoCenterDown(
+                    marker.poi.lat,
+                    marker.poi.lng,
+                    new Vector2(0, -1)
+                )
+                .start();
+        } else {
+            this.controls
+                .moveIntoCenter(marker.poi.lat, marker.poi.lng)
+                .start();
+        }
     }
 
     public update(delta: number, camera: THREE.Camera) {

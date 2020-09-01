@@ -26,7 +26,7 @@ export default class Controls {
     public moveIntoCenter: any;
     public moveIntoCenterDown: any;
 
-    public tweenTarget(target: THREE.Vector3, time = 1000, easing?: any) {
+    public tweenTarget(target: THREE.Vector3, time = 700, easing?: any) {
         return (
             // @ts-ignore
             new TWEEN.Tween(this.threeControls.target)
@@ -59,7 +59,7 @@ export default class Controls {
             lat: number,
             lng: number,
             dir: THREE.Vector2,
-            time: number = 2000,
+            time: number = 1000,
             easing?: any,
             distance?: number,
             callback?: () => void
