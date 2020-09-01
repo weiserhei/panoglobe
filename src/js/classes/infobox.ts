@@ -5,6 +5,7 @@ import { icon } from "@fortawesome/fontawesome-svg-core";
 import { faTimes, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Controls from "./controls";
+import { randomColorRoute } from "../utils/colors";
 
 function makeSafeForCSS(name: string) {
     return name.replace(/[^a-z0-9]/g, function (s) {
@@ -32,7 +33,7 @@ export default class InfoBox {
     ) {
         parentDomNode.appendChild(this.box);
 
-        this.id = makeSafeForCSS(city.adresse);
+        this.id = makeSafeForCSS(city.adresse + Math.random());
 
         const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
         const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;

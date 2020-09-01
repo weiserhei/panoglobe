@@ -209,6 +209,7 @@ export default class Route {
         };
 
         this.cycleNextActive = function (marker: Marker): boolean {
+            console.log("cycleNext", marker);
             if (this.activeMarker !== marker) {
                 // only sanity check
                 return false;
@@ -216,6 +217,7 @@ export default class Route {
             const currentIndex = this.marker.indexOf(marker);
             const nextIndex = (currentIndex + 1) % this.marker.length;
             const nextMarker = this.marker[nextIndex];
+            console.log("next", nextIndex, this.marker.length);
             // this.activeMarker = this.marker[nextIndex];
             // this.marker[currentIndex].setActive(false);
             // this.marker[nextIndex].setActive(true);
