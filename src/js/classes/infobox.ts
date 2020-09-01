@@ -38,12 +38,13 @@ export default class InfoBox {
         const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
 
         const linkIcon = icon(faExternalLinkAlt, {
-            classes: [],
+            classes: ["mr-2"],
         }).html;
 
-        this.box.className = "toast position-absolute fixed-bottom mb-5";
-        this.box.style.bottom = "40px";
-        this.box.style.left = "20px";
+        this.box.className =
+            "toast position-absolute fixed-bottom mx-auto mr-md-5 fade hide";
+        this.box.style.bottom = "80px";
+        // this.box.style.left = "20px";
         this.box.id = this.id;
         this.box.setAttribute("data-autohide", "false");
 
@@ -67,11 +68,11 @@ export default class InfoBox {
         toastHeader.appendChild(this.closeButton);
         this.box.appendChild(toastHeader);
         const toastBody = document.createElement("div");
-        toastBody.className = "toast-body";
-        toastBody.innerHTML = `<p>
-        <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>
-        </p>
-        <a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a>`;
+        toastBody.className = "toast-body bg-white position-relative";
+        toastBody.innerHTML = `
+        <a class="" href='${city.externerlink}' target='_blank'>${linkIcon}${city.externerlink}</a>
+        `;
+        // <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>
         this.box.appendChild(toastBody);
 
         // let text = "<div class='labelHead'>";
@@ -136,10 +137,11 @@ export default class InfoBox {
 
     set isVisible(value: boolean) {
         this.visible = value;
+        // console.trace("isVis", value, this.id);
         if (value) {
             //@ts-ignore
-            // $(this.box).toast("show");
             $(`#${this.id}`).toast("show");
+            // $(this.box).toast("show");
             // this.box.style.display = "block";
             // this.box.classList.add("fadeIn");
         } else {

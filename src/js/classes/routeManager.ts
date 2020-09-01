@@ -128,6 +128,7 @@ export default class RouteManager {
             }
         });
         route.isVisible = true;
+        route.setActiveMarker(route.marker[route.marker.length - 1]);
 
         this.spawnRoute(route);
     }
@@ -149,7 +150,15 @@ export default class RouteManager {
         // });
     }
 
+    public deselectMarker(): void {
+        this.activeMarker.setActive(false);
+        this.activeMarker = null;
+        this.activeRoute.activeMarker = null;
+    }
+
     public setActiveMarker(route: Route, marker: Marker) {
+        if (route !== this.activeRoute) return;
+
         if (route.activeMarker === marker) {
             // current marker is active => toggle
             marker.setActive(false);
@@ -168,7 +177,6 @@ export default class RouteManager {
             this.activeMarker.setActive(false);
             marker.setActive(true);
         } else {
-            console.log("else", marker);
             marker.setActive(true);
         }
         this.activeMarker = marker;

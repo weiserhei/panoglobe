@@ -94,9 +94,9 @@ export default class Marker {
             this.infoBox = new InfoBox(parentDomNode, controls, poi);
 
             // close label on X click
-            this.infoBox.closeButton.addEventListener("click", () => {
+            this.infoBox.closeButton.addEventListener("click", function () {
                 // route toggle Active if Active
-                route.setActiveMarker(this);
+                route.deselectMarker();
             });
 
             if (nextMarker === undefined) {

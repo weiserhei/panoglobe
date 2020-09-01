@@ -54,7 +54,6 @@ class App {
         const camera = new Camera(renderer.threeRenderer);
 
         const scene = new Scene();
-        scene.background = new Color(0x000000);
         scene.fog = new FogExp2(Config.fog.color, Config.fog.near);
 
         const globus = new Globus(scene, preloader);
@@ -62,9 +61,7 @@ class App {
 
         const labelRenderer = new CSS2DRenderer();
         labelRenderer.setSize(container.clientWidth, container.clientHeight);
-        // labelRenderer.domElement.style.position = "absolute";
-        // labelRenderer.domElement.style.top = "60px"; //navbar top height
-        labelRenderer.domElement.style.top = "00px"; //navbar top height
+        labelRenderer.domElement.style.top = "0"; //navbar top height
         labelRenderer.domElement.className = "position-absolute";
         container.appendChild(labelRenderer.domElement);
         /*global process*/
@@ -231,7 +228,6 @@ class App {
         }
 
         globus.setTextures(textures);
-        // skybox.setTexture(texture.textures.uvtest);
         skybox.setTexture(textures["stars"]);
 
         const self = this;

@@ -194,7 +194,6 @@ export default class Route {
             //     marker.setActive(false);
             //     return;
             // }
-            console.trace("active", marker);
 
             if (this.manager !== undefined) {
                 this.manager.setActiveMarker(this, marker);
@@ -238,6 +237,12 @@ export default class Route {
         };
     }
 
+    public deselectMarker(): void {
+        if (this.manager !== undefined) {
+            this.manager.deselectMarker();
+        }
+    }
+
     getPrev(marker: Marker) {
         const index = this.marker.indexOf(marker);
         if (index >= 0 && index < this.marker.length)
@@ -268,7 +273,7 @@ export default class Route {
     set isVisible(value) {
         this.visible = value;
         if (this.activeMarker) {
-            this.manager.setActiveMarker(this, this.activeMarker);
+            // this.manager.setActiveMarker(this, this.activeMarker);
         }
         this.marker.forEach((marker) => {
             marker.setVisible(value);
