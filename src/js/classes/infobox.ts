@@ -26,11 +26,7 @@ export default class InfoBox {
     public prevButton: HTMLElement;
     public closeButton: HTMLElement;
 
-    constructor(
-        parentDomNode: HTMLElement,
-        controls: Controls,
-        private city: Poi
-    ) {
+    constructor(parentDomNode: HTMLElement, controls: Controls, city: Poi) {
         parentDomNode.appendChild(this.box);
 
         this.id = makeSafeForCSS(city.adresse + Math.random());
@@ -68,11 +64,17 @@ export default class InfoBox {
             )} km</small>`;
         toastHeader.appendChild(this.closeButton);
         this.box.appendChild(toastHeader);
+        const image = city.Bilder
+            ? `<img class="img-fluid" data-src="https://relaunch.panoreisen.de/files/${city.Bilder}">`
+            : "";
         const toastBody = document.createElement("div");
         toastBody.className = "toast-body bg-white position-relative";
         toastBody.innerHTML = `
         <p>
-        <a class="" href='${city.externerlink}' target='_blank'>${linkIcon}${city.externerlink}</a>
+        <a class="" href='${city.externerlink}' target='_blank'>
+        ${image}
+        ${linkIcon}${city.externerlink}
+        </a>
         </p>
         `;
         // <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>

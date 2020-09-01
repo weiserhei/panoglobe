@@ -15,6 +15,7 @@ import RouteLine from "./routeLine";
 import Marker from "./marker";
 import Mover from "./mover";
 import RouteAnimation from "./routeAnimation";
+import LazyLoading from "./lazyLoading";
 
 import Config from "../../data/config";
 
@@ -146,6 +147,9 @@ export default class Route {
             // CREATE HUDLABELS FOR MARKER
             m.addInfoBox(container);
         });
+
+        // scan for images after the infoboxes has been created
+        new LazyLoading();
 
         this.routeLine = new RouteLine(routeData, steps, phase);
         scene.add(this.routeLine.line);

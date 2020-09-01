@@ -34,7 +34,7 @@ export default class Label {
         //         // color: "#ffffff",
         //         filter: "drop-shadow(0px 0px 1px rgba(0,0,0))",
         //     },
-        //     classes: ["d-block mx-auto fa-lg"],
+        //     classes: ["d-block mx-auto fa-lg mt-n1"],
         // });
 
         // domElement.appendChild(pinIcon.node[0]);

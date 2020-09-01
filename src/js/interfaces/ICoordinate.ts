@@ -3,4 +3,5 @@ interface Coordinate {
     externerlink: string;
     lng: string;
     lat: string;
+    Bilder?: string[];
 }
