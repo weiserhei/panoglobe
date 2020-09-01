@@ -24,8 +24,9 @@ function getShericalPosition(
 export default class Controls {
     public threeControls: OrbitControls;
     public moveIntoCenter: any;
+    public moveIntoCenterDown: any;
 
-    public tweenTarget(target: THREE.Vector3, time: number, easing?: any) {
+    public tweenTarget(target: THREE.Vector3, time = 1000, easing?: any) {
         return (
             // @ts-ignore
             new TWEEN.Tween(this.threeControls.target)
@@ -53,6 +54,52 @@ export default class Controls {
         controls.enableZoom = cc.enableZoom;
         controls.dampingFactor = cc.dampingFactor;
         controls.enablePan = cc.enablePan;
+
+        this.moveIntoCenterDown = function tween(
+            lat: number,
+            lng: number,
+            dir: THREE.Vector2,
+            time: number = 2000,
+            easing?: any,
+            distance?: number,
+            callback?: () => void
+        ) {
+            let cameraDistance = this.camera.position.distanceTo(
+                controls.target
+            );
+            // Zoom out if distance lower than 300 units
+            cameraDistance = cameraDistance < 300 ? 300 : cameraDistance;
+            // Or greater then your point distance to origin
+            const RandomHeightOfLine = distance || cameraDistance;
+
+            let position = getShericalPosition(lat, lng, RandomHeightOfLine);
+            // position.y -= 50;
+            return (
+                new TWEEN.Tween(this.camera.position)
+                    // @ts-ignore
+                    .to(position, time)
+                    // .easing( TWEEN.Easing.Circular.InOut )
+                    // .easing( TWEEN.Easing.Quintic.InOut )
+                    .easing(easing || Config.easing)
+                    .onStart(() => {
+                        this.enabled = false;
+                        this.tweenTarget(
+                            new Vector3(dir.x * 100, dir.y * 100, 0)
+                        ).start();
+                    })
+                    .onStop(() => {
+                        this.enabled = true;
+                    })
+                    .onComplete(() => {
+                        this.enabled = true;
+                        if (callback !== undefined) {
+                            callback();
+                        }
+                    })
+            );
+            // @ts-ignore
+            // .start();
+        };
 
         this.moveIntoCenter = function tween(
             lat: number,

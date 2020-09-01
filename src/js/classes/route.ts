@@ -9,18 +9,30 @@ import {
     MeshLambertMaterial,
     Mesh,
     Curve,
+    Vector2,
 } from "three";
 import { makeColorGradient } from "./../utils/colors";
 import RouteLine from "./routeLine";
 import Marker from "./marker";
 import Mover from "./mover";
 import RouteAnimation from "./routeAnimation";
-import LazyLoading from "./lazyLoading";
+import LazyLoading from "../utils/lazyLoading";
 
 import Config from "../../data/config";
 
 import Controls from "./controls";
 import RouteManager from "./routeManager";
+
+//check for orientation
+function getOrientation(x: any) {
+    if (x === undefined) {
+        return "desktop";
+    } else {
+        var y;
+        x < 0 ? (y = "landscape") : (y = "portrait");
+        return y;
+    }
+}
 
 function drawDebug(curve: CatmullRomCurve3, length: number) {
     const tubeGeometry = new TubeBufferGeometry(curve, length, 1, 3, false);
@@ -213,7 +225,6 @@ export default class Route {
         };
 
         this.cycleNextActive = function (marker: Marker): boolean {
-            console.log("cycleNext", marker);
             if (this.activeMarker !== marker) {
                 // only sanity check
                 return false;
@@ -221,14 +232,21 @@ export default class Route {
             const currentIndex = this.marker.indexOf(marker);
             const nextIndex = (currentIndex + 1) % this.marker.length;
             const nextMarker = this.marker[nextIndex];
-            console.log("next", nextIndex, this.marker.length);
             // this.activeMarker = this.marker[nextIndex];
             // this.marker[currentIndex].setActive(false);
             // this.marker[nextIndex].setActive(true);
             this.manager.setActiveMarker(this, nextMarker);
-            this.controls
-                .moveIntoCenter(nextMarker.poi.lat, nextMarker.poi.lng, 1000)
-                .start();
+
+            if (window.innerHeight > window.innerWidth) {
+                this.controls
+                    .moveIntoCenterDown(
+                        nextMarker.poi.lat,
+                        nextMarker.poi.lng,
+                        new Vector2(0, -1),
+                        1000
+                    )
+                    .start();
+            }
 
             return true;
         };
@@ -245,9 +263,18 @@ export default class Route {
             // this.marker[currentIndex].setActive(false);
             // this.marker[prevIndex].setActive(true);
             this.manager.setActiveMarker(this, prevMarker);
-            this.controls
-                .moveIntoCenter(prevMarker.poi.lat, prevMarker.poi.lng, 1000)
-                .start();
+
+            if (window.innerHeight > window.innerWidth) {
+                this.controls
+                    .moveIntoCenterDown(
+                        prevMarker.poi.lat,
+                        prevMarker.poi.lng,
+                        new Vector2(0, -1),
+                        1000
+                    )
+                    .start();
+            }
+
             return true;
         };
     }
