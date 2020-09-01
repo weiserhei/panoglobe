@@ -208,7 +208,7 @@ export default class Route {
             marker.setActive(true);
         };
 
-        this.cycleNextActive = function (marker: Marker) {
+        this.cycleNextActive = function (marker: Marker): boolean {
             if (this.activeMarker !== marker) {
                 // only sanity check
                 return false;
@@ -220,9 +220,14 @@ export default class Route {
             // this.marker[currentIndex].setActive(false);
             // this.marker[nextIndex].setActive(true);
             this.manager.setActiveMarker(this, nextMarker);
+            this.controls
+                .moveIntoCenter(nextMarker.poi.lat, nextMarker.poi.lng, 1000)
+                .start();
+
+            return true;
         };
 
-        this.cyclePrevActive = function (marker: Marker) {
+        this.cyclePrevActive = function (marker: Marker): boolean {
             if (this.activeMarker !== marker) {
                 // only sanity check
                 return false;
@@ -234,6 +239,10 @@ export default class Route {
             // this.marker[currentIndex].setActive(false);
             // this.marker[prevIndex].setActive(true);
             this.manager.setActiveMarker(this, prevMarker);
+            this.controls
+                .moveIntoCenter(prevMarker.poi.lat, prevMarker.poi.lng, 1000)
+                .start();
+            return true;
         };
     }
 

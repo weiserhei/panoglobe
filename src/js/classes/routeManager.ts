@@ -128,7 +128,7 @@ export default class RouteManager {
             }
         });
         route.isVisible = true;
-        route.setActiveMarker(route.marker[route.marker.length - 1]);
+        // route.setActiveMarker(route.marker[route.marker.length - 1]);
 
         this.spawnRoute(route);
     }

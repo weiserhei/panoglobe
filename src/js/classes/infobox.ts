@@ -42,7 +42,7 @@ export default class InfoBox {
         }).html;
 
         this.box.className =
-            "toast position-absolute fixed-bottom mx-auto mr-md-5 fade hide";
+            "toast position-absolute fixed-bottom mx-auto mr-md-5 fade hide bg-white";
         this.box.style.bottom = "80px";
         // this.box.style.left = "20px";
         this.box.id = this.id;
@@ -70,36 +70,25 @@ export default class InfoBox {
         const toastBody = document.createElement("div");
         toastBody.className = "toast-body bg-white position-relative";
         toastBody.innerHTML = `
+        <p>
         <a class="" href='${city.externerlink}' target='_blank'>${linkIcon}${city.externerlink}</a>
+        </p>
         `;
         // <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>
         this.box.appendChild(toastBody);
 
-        // let text = "<div class='labelHead'>";
-        // text += `<b>${city.adresse}</b>`;
-        // text += " (" + numberWithCommas(Math.floor(city.hopDistance)) + " km)";
-        // text += "</div>";
-        // text += "<div class='labelContent'>";
-        // text += `<p><span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span></p>`;
-        // text += `<p><a href='${city.externerlink}' target='_blank'>${linkIcon}</i> Point of Interest</a></p>`;
-        // text += "</div>";
-        // text += "<div class='arrow'></div>";
-        // this.box.innerHTML = text;
-        // this.box.className = "htmlLabel infobox";
-        // this.box.style.display = "none";
-
         this.nextButton = document.createElement("button");
-        this.nextButton.className = "btn btn-secondary float-right btn-sm";
+        this.nextButton.className = "btn btn-primary float-right btn-sm";
         this.nextButton.innerHTML = "Next";
 
         this.prevButton = document.createElement("button");
-        this.prevButton.className = "btn btn-secondary btn-sm";
+        this.prevButton.className = "btn btn-primary btn-sm";
         this.prevButton.innerHTML = "Previous";
         // const footer = document.createElement("div");
         // footer.className = "card-footer";
 
-        // footer.appendChild(this.nextButton);
-        // footer.appendChild(this.prevButton);
+        toastBody.appendChild(this.nextButton);
+        toastBody.appendChild(this.prevButton);
         // this.box.appendChild(footer);
 
         //@ts-ignore
