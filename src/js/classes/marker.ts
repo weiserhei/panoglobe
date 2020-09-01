@@ -97,8 +97,6 @@ export default class Marker {
             this.infoBox.closeButton.addEventListener("click", function () {
                 // route toggle Active if Active
                 route.deselectMarker();
-                // @ts-ignore
-                controls.tweenTarget(new Vector3(0, 0, 0)).start();
             });
 
             if (nextMarker === undefined) {

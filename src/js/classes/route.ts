@@ -237,17 +237,6 @@ export default class Route {
             // this.marker[nextIndex].setActive(true);
             this.manager.setActiveMarker(this, nextMarker);
 
-            if (window.innerHeight > window.innerWidth) {
-                this.controls
-                    .moveIntoCenterDown(
-                        nextMarker.poi.lat,
-                        nextMarker.poi.lng,
-                        new Vector2(0, -1),
-                        1000
-                    )
-                    .start();
-            }
-
             return true;
         };
 
@@ -263,17 +252,6 @@ export default class Route {
             // this.marker[currentIndex].setActive(false);
             // this.marker[prevIndex].setActive(true);
             this.manager.setActiveMarker(this, prevMarker);
-
-            if (window.innerHeight > window.innerWidth) {
-                this.controls
-                    .moveIntoCenterDown(
-                        prevMarker.poi.lat,
-                        prevMarker.poi.lng,
-                        new Vector2(0, -1),
-                        1000
-                    )
-                    .start();
-            }
 
             return true;
         };

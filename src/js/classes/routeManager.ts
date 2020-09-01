@@ -3,6 +3,7 @@ import Route from "./route";
 import Controls from "./controls";
 import { calc3DPositions } from "../utils/panoutils";
 import UserInterface from "./userInterface";
+import { Vector2, Vector3 } from "three";
 // import Config from "../../data/config";
 
 import Marker from "./marker";
@@ -108,6 +109,10 @@ export default class RouteManager {
         const poi = route.marker[route.marker.length - 1].poi;
         this.controls
             .moveIntoCenter(poi.lat, poi.lng, 2000, undefined, 650)
+            .onStart(() => {
+                //@ts-ignore
+                this.controls.tweenTarget(new Vector3(0, 0, 0)).start();
+            })
             .onComplete(() => {
                 // build slider
                 // this.ui.createSlider(route.routeData, route);
@@ -154,16 +159,33 @@ export default class RouteManager {
         this.activeMarker.setActive(false);
         this.activeMarker = null;
         this.activeRoute.activeMarker = null;
+        // @ts-ignore
+        this.controls.tweenTarget(new Vector3(0, 0, 0)).start();
     }
 
     public setActiveMarker(route: Route, marker: Marker) {
         if (route !== this.activeRoute) return;
+
+        const moveDownTween = this.controls.moveIntoCenterDown(
+            marker.poi.lat,
+            marker.poi.lng,
+            new Vector2(0, -1),
+            1000
+        );
+
+        const moveTween = this.controls.moveIntoCenter(
+            marker.poi.lat,
+            marker.poi.lng,
+            1000
+        );
 
         if (route.activeMarker === marker) {
             // current marker is active => toggle
             marker.setActive(false);
             route.activeMarker = null;
             this.activeMarker = null;
+            //@ts-ignore
+            this.controls.tweenTarget(new Vector3(0, 0, 0)).start();
             return;
         } else if (this.activeMarker != undefined) {
             // the manager disables ALL active Markers
@@ -176,8 +198,20 @@ export default class RouteManager {
             // some other marker is active, turn off then turn new one on
             this.activeMarker.setActive(false);
             marker.setActive(true);
+
+            if (window.innerHeight > window.innerWidth) {
+                moveDownTween.start();
+            } else {
+                moveTween.start();
+            }
         } else {
             marker.setActive(true);
+
+            if (window.innerHeight > window.innerWidth) {
+                moveDownTween.start();
+            } else {
+                moveTween.start();
+            }
         }
         this.activeMarker = marker;
     }

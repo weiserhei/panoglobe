@@ -70,7 +70,7 @@ export default class UserInterface {
         document.body.prepend(nav);
         nav.style.zIndex = "900";
         nav.className =
-            "navbar navbar-expand-md navbar-light bg-light shadow-sm";
+            "navbar navbar-expand-xl navbar-light bg-light shadow-sm";
 
         // <div class="row no-gutters align-items-center justify-content-between d-flex">
         nav.innerHTML = `
