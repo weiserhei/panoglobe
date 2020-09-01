@@ -42,7 +42,7 @@ export default class RouteAnimation {
     private drawUI: any;
     private tweenGroup: any = new TWEEN.Group();
 
-    public simplifiedRoute: THREE.CatmullRomCurve3;
+    public simplifiedRoute: THREE.CatmullRomCurve3 | undefined;
 
     constructor(
         private route: Route,
@@ -52,8 +52,10 @@ export default class RouteAnimation {
         private controls: Controls,
         folder: any
     ) {
-        const points = this.route.routeLine.curve.getPoints(20);
-        this.simplifiedRoute = new CatmullRomCurve3(points);
+        if (this.route.routeLine.curve) {
+            const points = this.route.routeLine.curve.getPoints(20);
+            this.simplifiedRoute = new CatmullRomCurve3(points);
+        }
 
         if (process.env.NODE_ENV === "development") {
             const folderCustom = folder.addFolder("Animation");
@@ -83,8 +85,10 @@ export default class RouteAnimation {
 
         const normalizedProgress =
             value.index / this.route.routeLine.numberVertices;
-        const p = this.simplifiedRoute.getPoint(normalizedProgress);
-        this.controls.threeControls.target = p;
+        if (this.simplifiedRoute) {
+            const p = this.simplifiedRoute.getPoint(normalizedProgress);
+            this.controls.threeControls.target = p;
+        }
 
         const progressIndex = this.route.routeLine.getIndexFromDrawcount(
             value.index
@@ -115,7 +119,7 @@ export default class RouteAnimation {
         // -- flying transition
 
         if (result === undefined) return;
-        if (result.index > this.lastActive) {
+        if (this.lastActive && result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
             tween.start();
@@ -175,13 +179,13 @@ export default class RouteAnimation {
             this.tweenDraw = null;
             return true;
         }
-        return;
+        return false;
     }
 
     public draw(): boolean {
         if (this.tweenDraw && this.tweenDraw.isPlaying()) {
             // this.tweenDraw.stop();
-            return;
+            return false;
         }
 
         this.tweenGroup.removeAll();

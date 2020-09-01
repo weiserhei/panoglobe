@@ -15,7 +15,7 @@ export default class RouteManager {
 
     // private heightData: Promise<Array<Array<Number>>>;
     private ui: UserInterface;
-    private _activeRoute: Route;
+    private _activeRoute: Route | undefined = undefined;
 
     constructor(
         private scene: THREE.Scene,
@@ -30,7 +30,9 @@ export default class RouteManager {
     }
 
     set toggleClouds(value: boolean) {
-        this.globus.clouds.visible = value;
+        if (this.globus.clouds) {
+            this.globus.clouds.visible = value;
+        }
     }
 
     set toggleBorders(value: boolean) {
@@ -50,7 +52,7 @@ export default class RouteManager {
         if (this.activeRoute !== undefined) {
             return this.activeRoute.stopDrawAnimation();
         }
-        return;
+        return false;
     }
 
     public buildRoute(
@@ -130,7 +132,7 @@ export default class RouteManager {
         this.spawnRoute(route);
     }
 
-    static load(url: string | undefined) {
+    static load(url: string) {
         // load datalist
         return $.getJSON(url, {
             format: "json",

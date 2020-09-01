@@ -80,6 +80,7 @@ export const getHeightData = (img: CanvasImageSource, scale: number) => {
     canvas.height = Number(img.height);
 
     const context = canvas.getContext("2d");
+    if (context === null) return;
     context.drawImage(img, 0, 0);
 
     // var data = new Float32Array( size );

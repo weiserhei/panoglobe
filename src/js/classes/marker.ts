@@ -15,7 +15,7 @@ export default class Marker {
 
     private position: THREE.Vector3;
     private label: Label;
-    private infoBox: InfoBox;
+    private infoBox: InfoBox | undefined = undefined;
     private active: boolean = false;
     private ocluded: boolean = false;
 
@@ -152,7 +152,7 @@ export default class Marker {
         if (this.label !== null) {
             this.label.update(this.ocluded, dot);
         }
-        if (this.infoBox !== null) {
+        if (this.infoBox !== undefined) {
             this.infoBox.update(
                 camera,
                 this.poi.displacedPos,

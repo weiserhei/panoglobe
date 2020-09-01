@@ -25,8 +25,8 @@ export default class HtmlMover {
     private marker: Icon;
     private plane: Icon;
     private vehicle: Icon;
-    private _visible: boolean;
-    private _isFlying: boolean;
+    private _visible: boolean = false;
+    private _isFlying: boolean = false;
     constructor(scene: THREE.Scene) {
         this.marker = icon(faMapMarkerAlt, {
             styles: {

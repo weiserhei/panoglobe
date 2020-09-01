@@ -11,13 +11,13 @@ import Config from "../../data/config";
 // Sets up and places all lights in scene
 export default class LightManager {
     public night: boolean;
-    public hemiLight: THREE.HemisphereLight;
-    public directionalLight: THREE.DirectionalLight;
+    public hemiLight: THREE.HemisphereLight = new HemisphereLight();
+    public directionalLight: THREE.DirectionalLight = new DirectionalLight();
     public directionalLightHelper: THREE.CameraHelper;
     public spotLight: THREE.SpotLight;
     public spotLightHelper: THREE.SpotLightHelper;
-    public ambientLight: THREE.AmbientLight;
-    public pointLight: THREE.PointLight;
+    // public ambientLight: THREE.AmbientLight;
+    // public pointLight: THREE.PointLight;
     constructor(private scene: THREE.Scene, private camera: THREE.Camera) {
         this.night = false;
 
@@ -44,7 +44,6 @@ export default class LightManager {
         //   Config.hemiLight.groundColor,
         //   Config.hemiLight.intensity
         // );
-        this.hemiLight = new HemisphereLight();
         this.hemiLight.intensity = Config.hemiLight.intensity;
         this.hemiLight.color.setHSL(
             Config.hemiLight.hColor,
@@ -64,7 +63,6 @@ export default class LightManager {
         this.hemiLight.visible = Config.hemiLight.enabled;
 
         // Directional light
-        this.directionalLight = new DirectionalLight();
         this.directionalLight.intensity = Config.directionalLight.intensity;
         this.directionalLight.color.setHSL(
             Config.directionalLight.colorH,
@@ -183,9 +181,9 @@ export default class LightManager {
 
     place(lightName: string) {
         switch (lightName) {
-            case "ambient":
-                this.scene.add(this.ambientLight);
-                break;
+            // case "ambient":
+            //     this.scene.add(this.ambientLight);
+            //     break;
 
             case "spot":
                 this.scene.add(this.spotLight);
@@ -199,9 +197,9 @@ export default class LightManager {
                 // this.camera.add(this.directionalLightHelper);
                 break;
 
-            case "point":
-                this.scene.add(this.pointLight);
-                break;
+            // case "point":
+            //     this.scene.add(this.pointLight);
+            //     break;
 
             case "hemi":
                 this.scene.add(this.hemiLight);

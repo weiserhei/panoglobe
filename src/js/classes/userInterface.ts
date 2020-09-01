@@ -55,7 +55,7 @@ export default class UserInterface {
         controls: Controls,
         private manager: RouteManager
     ) {
-        // this.slider = new Slider(container, controls);
+        this.slider = new Slider(container, controls);
 
         this.routeSelect = document.createElement("select");
         this.routeSelect.className = "custom-select";

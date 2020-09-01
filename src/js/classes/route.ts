@@ -34,11 +34,11 @@ function drawDebug(curve: CatmullRomCurve3, length: number) {
 export default class Route {
     private mover: Mover;
     private _showLabels: boolean = true;
-    private visible: boolean;
+    private visible: boolean = true;
 
     public animationHandler: RouteAnimation;
-    public poiRoute: CatmullRomCurve3;
-    public activeMarker: Marker | null;
+    public poiRoute: CatmullRomCurve3 | undefined = undefined;
+    public activeMarker: Marker | null = null;
     public marker: Array<Marker> = [];
     public routeLine: RouteLine;
     public setActiveMarker: (marker: Marker) => void;
@@ -166,7 +166,7 @@ export default class Route {
         // this.routeLine.setDrawProgress(1);
         // this.routeLine.drawPoi(this.marker[1].index);
         const positions = this.routeLine.vertices;
-        const colors = this.routeLine.colorArray;
+        const colors = this.routeLine.colorArray || new Float32Array[0]();
         this.mover = new Mover(scene, positions, colors, folder);
         this.mover.moving(false);
         // this.setDrawIndex(routeData.length);

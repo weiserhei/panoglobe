@@ -210,17 +210,20 @@ export default class RouteLine {
         this.colors = new Float32Array(numberVertices * 3);
 
         vertices.forEach((vertice, i) => {
-            this.positions[i * 3] = vertice.x;
-            this.positions[i * 3 + 1] = vertice.y;
-            this.positions[i * 3 + 2] = vertice.z;
+            if (this.positions) {
+                this.positions[i * 3] = vertice.x;
+                this.positions[i * 3 + 1] = vertice.y;
+                this.positions[i * 3 + 2] = vertice.z;
+            }
 
             color.set(
                 makeColorGradient(i, frequency, undefined, undefined, phase)
             );
-
-            this.colors[i * 3] = color.r;
-            this.colors[i * 3 + 1] = color.g;
-            this.colors[i * 3 + 2] = color.b;
+            if (this.colors) {
+                this.colors[i * 3] = color.r;
+                this.colors[i * 3 + 1] = color.g;
+                this.colors[i * 3 + 2] = color.b;
+            }
         });
     }
 
@@ -244,8 +247,10 @@ export default class RouteLine {
 
         this.build(this.vertices, steps, phase);
         const geometry = new LineGeometry();
-        geometry.setPositions(this.positions);
-        geometry.setColors(this.colors);
+        if (this.positions && this.colors) {
+            geometry.setPositions(this.positions);
+            geometry.setColors(this.colors);
+        }
 
         const lineMaterial = new LineMaterial({
             color: 0xffffff,
@@ -287,11 +292,15 @@ export default class RouteLine {
 
         // geometry
         const geometry = new BufferGeometry();
-        geometry.addAttribute(
-            "position",
-            new BufferAttribute(this.positions, 3)
-        );
-        geometry.addAttribute("color", new BufferAttribute(this.colors, 3));
+        if (this.positions) {
+            geometry.addAttribute(
+                "position",
+                new BufferAttribute(this.positions, 3)
+            );
+        }
+        if (this.colors) {
+            geometry.addAttribute("color", new BufferAttribute(this.colors, 3));
+        }
 
         // material
         const lineMaterial = new LineBasicMaterial({

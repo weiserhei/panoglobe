@@ -14,6 +14,7 @@ import {
     Group,
     DoubleSide,
     FrontSide,
+    Texture,
 } from "three";
 
 import Preloader from "../classes/preloader";
@@ -80,10 +81,10 @@ export default class Globus {
     // public material: THREE.MeshPhongMaterial;
     public material: any;
     public mesh: THREE.Mesh;
-    public clouds: THREE.Mesh;
+    public clouds: THREE.Mesh | undefined = undefined;
     public borderlines: THREE.Group;
     public setNight: (value: boolean) => void;
-    public textures: object;
+    public textures: {} = { night: Texture };
     constructor(scene: THREE.Scene, preloader: Preloader) {
         const geometry = new IcosahedronBufferGeometry(
             Config.globus.radius,
@@ -203,7 +204,7 @@ export default class Globus {
         //     displacementBias: Config.globus.material.displacementBias,
         // } );
 
-        if (Config.globus.clouds.enabled === true) {
+        if (Config.globus.clouds.enabled === true && this.clouds) {
             (this.clouds.material as MeshBasicMaterial).map =
                 textures["clouds"];
             (this.clouds.material as MeshBasicMaterial).needsUpdate = true;

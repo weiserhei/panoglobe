@@ -13,7 +13,7 @@ export default class Impacts {
         // console.log(route);
         // route.marker
         const maxImpactAmount = route.marker.length;
-        let materialShader: THREE.Shader = undefined;
+        let materialShader: THREE.Shader | undefined = undefined;
         let impactSize = 0.05;
         // init uniforms impacts array
         const impacts: Array<object> = [];
