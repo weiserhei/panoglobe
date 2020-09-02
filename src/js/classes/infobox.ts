@@ -29,7 +29,7 @@ export default class InfoBox {
     constructor(parentDomNode: HTMLElement, controls: Controls, city: Poi) {
         parentDomNode.appendChild(this.box);
 
-        this.id = makeSafeForCSS(city.adresse + Math.random());
+        this.id = makeSafeForCSS(city.label + Math.random());
 
         const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
         const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
@@ -56,24 +56,22 @@ export default class InfoBox {
 
         const toastHeader = document.createElement("div");
         toastHeader.className = "toast-header";
-        toastHeader.innerHTML = `<strong class="mr-auto">${
-            city.adresse
-        }</strong>
+        toastHeader.innerHTML = `<strong class="mr-auto">${city.label}</strong>
             <small>${numberWithCommas(
                 Math.floor(city.hopDistance)
             )} km</small>`;
         toastHeader.appendChild(this.closeButton);
         this.box.appendChild(toastHeader);
-        const image = city.Bilder
-            ? `<img class="img-fluid" data-src="https://relaunch.panoreisen.de/files/${city.Bilder}">`
+        const image = city.images
+            ? `<img class="img-fluid" data-src="${city.images}">`
             : "";
         const toastBody = document.createElement("div");
         toastBody.className = "toast-body bg-white position-relative";
         toastBody.innerHTML = `
         <p>
-        <a class="" href='${city.externerlink}' target='_blank'>
+        <a class="" href='${city.linkexternal}' target='_blank'>
         ${image}
-        ${linkIcon}${city.externerlink}
+        ${linkIcon}${city.linkexternal}
         </a>
         </p>
         `;

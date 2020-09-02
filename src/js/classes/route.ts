@@ -128,12 +128,12 @@ export default class Route {
 
         this.routeData.forEach((currentCoordinate, index) => {
             // DONT DRAW MARKER WHEN THEY HAVE NO NAME
-            if (!currentCoordinate.adresse) {
+            if (!currentCoordinate.label) {
                 return;
             }
 
             const name =
-                currentCoordinate.countryname || currentCoordinate.adresse;
+                currentCoordinate.countryname || currentCoordinate.label;
             const text = `<small class='font-weight-bold'>${
                 this.marker.length + 1
             }</small> ${name}`;

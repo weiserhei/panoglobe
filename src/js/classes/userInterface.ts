@@ -277,9 +277,9 @@ export default class UserInterface {
         const poi: number[] = [];
         const labels: string[] = [];
         route.routeData.forEach(function (e: Poi, index: number) {
-            if (e.adresse) {
+            if (e.label) {
                 poi.push(index);
-                labels.push(e.adresse);
+                labels.push(e.label);
             } else {
                 labels.push("");
             }

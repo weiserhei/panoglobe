@@ -1,7 +1,14 @@
 interface Coordinate {
-    adresse?: string;
-    externerlink: string;
-    lng: string;
+    id: number;
+    priority: number;
+    locationname?: string;
     lat: string;
-    Bilder?: string[];
+    lng: string;
+    label?: string;
+    google_geocode: string;
+    linkexternal?: string;
+    linkinternal?: string;
+    images?: string[];
+    hopDistance?: number;
+    // pos?: Vector3;
 }

@@ -29,7 +29,7 @@ function stopText(text: string) {
 // }
 
 function fly(marker: Marker): boolean {
-    return marker.poi.adresse === "Kanada";
+    return marker.poi.label === "Kanada";
 }
 
 export default class RouteAnimation {
