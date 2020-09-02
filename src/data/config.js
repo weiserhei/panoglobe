@@ -18,8 +18,8 @@ export default {
         lineSegments: 20,
         segmentMultiplicator: 1,
         urls: [
-            "http://dev.panoreisen.de/index.php?rex-api-call=globus",
-            "http://dev.panoreisen.de/index.php?rex-api-call=globus&id=1",
+            "https://dev.panoreisen.de/index.php?rex-api-call=globus",
+            "https://dev.panoreisen.de/index.php?rex-api-call=globus&id=1",
         ],
     },
     texture: {
