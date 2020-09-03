@@ -1,5 +1,12 @@
-## > moved to https://github.com/weiserhei/panoglobe-webpack
-using webpack and refactoring to es6 code now.
+# panoglobe-webpack
+Route Visualizer using `three.js`.
 
-# panoglobe
-route visualizer: http://globus.panoreisen.de
+## Demo
+https://weiserhei.github.io/panoglobe/
+
+## npm
+Bundled with webpack.
+
+`npm i`
+
+`npm run dev`

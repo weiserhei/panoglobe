@@ -4,6 +4,7 @@
 *.psd
 globe/textures/planets/8k/*
 globe/textures/planets/NASA 10k/*
+node_modules
 
 # Compiled source #
 ###################

@@ -1,0 +1,54 @@
+{
+  "name": "panoglobe",
+  "version": "2.0.0",
+  "description": "route visualizer",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress --color --config webpack.prod.js",
+    "dev": "webpack-dev-server --open --public --config webpack.dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weiserhei/panoglobe-webpack.git"
+  },
+  "author": "weiserhei",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weiserhei/panoglobe-webpack/issues"
+  },
+  "homepage": "https://github.com/weiserhei/panoglobe-webpack#readme",
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-regular-svg-icons": "^5.9.0",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "autoprefixer": "^9.6.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.3",
+    "css-loader": "^2.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "file-loader": "^4.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "node-sass": "^4.12.0",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.33.0",
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.1",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.9.0",
+    "@tweenjs/tween.js": "^17.4.0",
+    "bootstrap": "^4.3.1",
+    "es6-promise": "^4.2.8",
+    "jquery": "^3.4.1",
+    "malihu-custom-scrollbar-plugin": "^3.1.5",
+    "popper.js": "^1.15.0",
+    "startbootstrap-sb-admin-2": "^4.0.6",
+    "three": "^0.105.2"
+  }
+}
