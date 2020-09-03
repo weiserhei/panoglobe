@@ -119,11 +119,7 @@ export default class RouteAnimation {
                 .start();
         }
         // -- flying transition
-
         if (result === undefined) return;
-        console.log(this.lastActive, value.index, progressIndex, result);
-
-        // if (this.lastActive && result.index > this.lastActive) {
         if (result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
