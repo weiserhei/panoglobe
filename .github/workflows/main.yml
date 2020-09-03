@@ -6,9 +6,9 @@ name: build & deploy
 # events but only for the master branch
 on:
   push:
-    branches: [ rework ]
+    branches: [ dev ]
   pull_request:
-    branches: [ rework ]
+    branches: [ dev ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -31,9 +31,9 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@3.5.9
       with:
         ACCESS_TOKEN: ${{ secrets.GHTOKEN }}  
-        BASE_BRANCH: rework
+        BASE_BRANCH: dev
         BRANCH: gh-pages
         FOLDER: dist
         CLEAN: true
         SILENT: true
-        SSH: false # SSH must be set to true so the deploy action knows which protocol to deploy with.
+        SSH: false
