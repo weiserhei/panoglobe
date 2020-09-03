@@ -83,7 +83,7 @@ export default class RouteAnimation {
         this.route.setDrawCount(value.index);
         this.animationDrawIndex.index = value.index;
 
-        const forecast = 15;
+        const forecast = 5;
 
         const normalizedProgress =
             value.index / this.route.routeLine.numberVertices;
@@ -121,7 +121,10 @@ export default class RouteAnimation {
         // -- flying transition
 
         if (result === undefined) return;
-        if (this.lastActive && result.index > this.lastActive) {
+        console.log(this.lastActive, value.index, progressIndex, result);
+
+        // if (this.lastActive && result.index > this.lastActive) {
+        if (result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
             tween.start();

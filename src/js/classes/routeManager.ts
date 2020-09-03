@@ -127,6 +127,7 @@ export default class RouteManager {
     }
     set activeRoute(route: Route) {
         this.stopDraw();
+        this.deselectMarker();
         this._activeRoute = route;
         this.routes.forEach((r) => {
             if (r !== route) {
@@ -135,7 +136,6 @@ export default class RouteManager {
         });
         route.isVisible = true;
         // route.setActiveMarker(route.marker[route.marker.length - 1]);
-
         this.spawnRoute(route);
     }
 
@@ -161,7 +161,9 @@ export default class RouteManager {
             this.activeMarker.setActive(false);
             this.activeMarker = null;
         }
-        this.activeRoute.activeMarker = null;
+        if (this.activeRoute) {
+            this.activeRoute.activeMarker = null;
+        }
         // @ts-ignore
         this.controls.tweenTarget(new Vector3(0, 0, 0)).start();
     }
@@ -204,7 +206,7 @@ export default class RouteManager {
                 .start();
         } else {
             this.controls
-                .moveIntoCenter(marker.poi.lat, marker.poi.lng)
+                .moveIntoCenter(marker.poi.lat, marker.poi.lng, 1000)
                 .start();
         }
     }
