@@ -21,14 +21,14 @@ import Logo from "../../img/butze_auf_amerikakugel_740x740.png";
 
 function playText(text: string) {
     const ico = icon(faPlayCircle, {
-        classes: ["fa-lg", "mr-1"],
+        classes: ["mr-1"],
     }).html;
     return `${ico} ${text}`;
 }
 
 function stopText(text: string) {
     const ico = icon(faStopCircle, {
-        classes: ["fa-lg"],
+        classes: [],
     }).html;
     return `${ico} ${text}`;
 }
@@ -46,9 +46,9 @@ export default class UserInterface {
     private routeSelect: HTMLSelectElement;
     private navbar: HTMLElement;
     private slider: Slider;
-
-    private button: HTMLElement;
     private checkbox1: HTMLInputElement;
+
+    public button: HTMLElement;
 
     constructor(
         container: HTMLElement,
@@ -121,7 +121,7 @@ export default class UserInterface {
         //   </div>
 
         const nb: any = document.querySelector(`#${this.navbar.id}`);
-        const play = playText("Play Animation");
+        const play = playText("Draw route");
         const b = document.createElement("button");
         b.className = "btn btn-primary";
         b.innerHTML = play;
@@ -155,6 +155,10 @@ export default class UserInterface {
                 $(b2).toggleClass("btn-danger");
                 $(b2).toggleClass("btn-primary");
             }
+        };
+        //@ts-ignore
+        b2.stop = () => {
+            $(b2).removeClass("btn-danger").addClass("btn-primary");
         };
         this.button = b2;
 
@@ -264,7 +268,7 @@ export default class UserInterface {
         // const select = $(this.routeSelect)[0];
         select.options[select.options.length] = new Option(route.name);
         select.onchange = (x: any) => {
-            $(this.button).addClass("btn-dark").removeClass("btn-danger");
+            $(this.button).addClass("btn-primary").removeClass("btn-danger");
             // @ts-ignore
             this.checkbox1.checked = true;
             this.manager.activeRoute = this.manager.routes[

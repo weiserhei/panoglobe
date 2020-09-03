@@ -12,6 +12,7 @@ import {
     faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { CatmullRomCurve3, Vector3 } from "three";
+import UserInterface from "./userInterface";
 
 // if (process.env.NODE_ENV === "development") {
 function playText(text: string) {
@@ -50,6 +51,7 @@ export default class RouteAnimation {
         private marker: Marker[],
         private routeData: Poi[],
         private controls: Controls,
+        private ui: UserInterface,
         folder: any
     ) {
         if (this.route.routeLine.curve) {
@@ -253,6 +255,8 @@ export default class RouteAnimation {
             // })
             .onStop(this.onStop.bind(this))
             .onComplete(() => {
+                //@ts-ignore
+                this.ui.button.stop();
                 // not called when on repeat
                 this.marker.forEach((marker: Marker) => {
                     marker.showLabel(true);

@@ -22,7 +22,7 @@ export default class Label {
         this.domElement = domElement;
         // domElement.className = "htmlLabel btn btn-sm btn-dark";
         domElement.className =
-            "htmlLabel btn btn-link shadow-none text-white font-weight-bold panotest";
+            "htmlLabel btn btn-sm p-0 btn-link shadow-none text-white font-weight-bold";
         domElement.style.textShadow = "0 0 6px #000";
         // this._box.style.textDecoration = "none";
         // offset label from center to compensate height

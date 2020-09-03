@@ -22,6 +22,7 @@ import Config from "../../data/config";
 
 import Controls from "./controls";
 import RouteManager from "./routeManager";
+import UserInterface from "./userInterface";
 
 //check for orientation
 function getOrientation(x: any) {
@@ -110,6 +111,7 @@ export default class Route {
         phase: number,
         private controls: Controls,
         private manager: RouteManager,
+        ui: UserInterface,
         folder: any
     ) {
         if (process.env.NODE_ENV === "development") {
@@ -193,6 +195,7 @@ export default class Route {
             this.marker,
             this.routeData,
             controls,
+            ui,
             folder
         );
 

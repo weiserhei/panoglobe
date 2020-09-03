@@ -6,6 +6,7 @@ interface Poi extends Coordinate {
     hopDistance: number;
     segments: number;
     label: string;
+    description: string;
 }
 
 // routeData:

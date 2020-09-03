@@ -2,7 +2,14 @@ import { Vector3 } from "three";
 import $ from "jquery";
 import { numberWithCommas } from "../utils/panoutils";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { faTimes, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+    faTimes,
+    faArrowRight,
+    faArrowLeft,
+    faAngleLeft,
+    faAngleRight,
+    faExternalLinkAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Controls from "./controls";
 import { randomColorRoute } from "../utils/colors";
@@ -31,17 +38,17 @@ export default class InfoBox {
 
         this.id = makeSafeForCSS(city.label + Math.random());
 
-        const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
-        const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
+        // const lat = Math.round((Number(city.lat) + Number.EPSILON) * 100) / 100;
+        // const lng = Math.round((Number(city.lng) + Number.EPSILON) * 100) / 100;
 
         const linkIcon = icon(faExternalLinkAlt, {
             classes: ["mr-2"],
         }).html;
 
         this.box.className =
-            "toast position-absolute fixed-bottom mx-auto mr-md-5 fade hide bg-white";
-        this.box.style.bottom = "80px";
-        // this.box.style.left = "20px";
+            "toast position-absolute fixed-bottom mb-md-5 mb-4 mx-auto mr-md-5 fade hide";
+        // this.box.style.bottom = "80px";
+        this.box.style.bottom = "50px";
         this.box.id = this.id;
         this.box.setAttribute("data-autohide", "false");
 
@@ -66,8 +73,12 @@ export default class InfoBox {
             ? `<img class="img-fluid" data-src="${city.images}">`
             : "";
         const toastBody = document.createElement("div");
-        toastBody.className = "toast-body bg-white position-relative";
+        toastBody.className = "toast-body position-relative";
+        const description = city.description
+            ? `<p>${city.description}</p>`
+            : "";
         toastBody.innerHTML = `
+        ${description}
         <p>
         <a class="" href='${city.linkexternal}' target='_blank'>
         ${image}
@@ -78,19 +89,28 @@ export default class InfoBox {
         // <span class="badge badge-info">Lat. ${lat}</span> <span class="badge badge-info">Long. ${lng}</span>
         this.box.appendChild(toastBody);
 
+        const leftIcon = icon(faAngleLeft, {
+            classes: ["mr-2"],
+        });
+        const rightIcon = icon(faAngleRight, {
+            classes: ["ml-2"],
+        });
+
         this.nextButton = document.createElement("button");
-        this.nextButton.className = "btn btn-primary float-right btn-sm";
+        this.nextButton.className = "btn btn-primary btn-sm ml-auto";
         this.nextButton.innerHTML = "Next";
+        this.nextButton.append(rightIcon.node[0]);
 
         this.prevButton = document.createElement("button");
         this.prevButton.className = "btn btn-primary btn-sm";
         this.prevButton.innerHTML = "Previous";
-        // const footer = document.createElement("div");
-        // footer.className = "card-footer";
+        this.prevButton.prepend(leftIcon.node[0]);
+        const footer = document.createElement("div");
+        footer.className = "card-footer d-flex";
 
-        toastBody.appendChild(this.nextButton);
-        toastBody.appendChild(this.prevButton);
-        // this.box.appendChild(footer);
+        footer.appendChild(this.prevButton);
+        footer.appendChild(this.nextButton);
+        this.box.appendChild(footer);
 
         //@ts-ignore
         // $(this.box).toast();

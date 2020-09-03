@@ -79,6 +79,7 @@ export default class RouteManager {
                 phase,
                 this.controls,
                 this,
+                this.ui,
                 folderCustom
             );
 
