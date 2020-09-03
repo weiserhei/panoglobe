@@ -61,8 +61,7 @@ export default class Controls {
             dir: THREE.Vector2,
             time: number = 1000,
             easing?: any,
-            distance?: number,
-            callback?: () => void
+            distance?: number
         ) {
             let cameraDistance = this.camera.position.distanceTo(
                 controls.target
@@ -92,9 +91,9 @@ export default class Controls {
                     })
                     .onComplete(() => {
                         this.enabled = true;
-                        if (callback !== undefined) {
-                            callback();
-                        }
+                        // if (callback !== undefined) {
+                        //     callback();
+                        // }
                     })
             );
             // @ts-ignore

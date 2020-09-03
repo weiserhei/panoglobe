@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color, PointLight } from "three";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import {
     faMapMarker,
@@ -11,6 +11,8 @@ import {
     faCar,
 } from "@fortawesome/free-solid-svg-icons";
 
+import Config from "../../data/config";
+
 import HtmlMover from "./htmlMover";
 // import MeshMover from "./meshMover";
 
@@ -18,6 +20,7 @@ export default class Mover {
     private moverPlane: HtmlMover;
     private moverMarker: HtmlMover;
     private moverVehicle: HtmlMover;
+    private pointLight: THREE.PointLight;
     // private meshMover: MeshMover;
 
     constructor(
@@ -26,6 +29,20 @@ export default class Mover {
         private colors: Float32Array,
         folder: any
     ) {
+        // this.pointLight = new PointLight(
+        //     Config.pointLight.color,
+        //     Config.pointLight.intensity,
+        //     Config.pointLight.distance
+        // );
+        // this.pointLight.position.set(
+        //     Config.pointLight.x,
+        //     Config.pointLight.y,
+        //     Config.pointLight.z
+        // );
+        // scene.add(this.pointLight);
+        // this.pointLight.visible = Config.pointLight.enabled;
+        // this.pointLight.castShadow = true;
+
         const marker = icon(faMapMarkerAlt, {
             styles: {
                 color: "#fff",
@@ -134,6 +151,8 @@ export default class Mover {
 
         this.moverPlane.update(ocluded, dot, point, currentColor);
         this.moverVehicle.update(ocluded, dot, point, currentColor);
+        // this.pointLight.color.copy(currentColor);
+        // this.pointLight.position.copy(point.clone().multiplyScalar(1.2));
         this.moverMarker.update(ocluded, dot, point, currentColor);
     }
 }

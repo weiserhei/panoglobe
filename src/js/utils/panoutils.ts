@@ -61,8 +61,8 @@ function getHeight(
 }
 
 /**
- * get Height Data
- * from Image
+ * Sample Image data
+ * into a two-dimensional array
  */
 function array2D(x: number, y: number): Array<Array<number>> {
     const array = new Array(x);
@@ -108,9 +108,13 @@ export const getHeightData = (img: CanvasImageSource, scale: number) => {
     return data;
 };
 
-export const createSphereArc = (P: Vector3, Q: Vector3) => {
+export const createSphereArc = (
+    P: Vector3,
+    Q: Vector3,
+    multiplier?: number
+) => {
     var sphereArc = new Curve();
-    sphereArc.getPoint = greatCircleFunction(P, Q);
+    sphereArc.getPoint = greatCircleFunction(P, Q, multiplier);
     return sphereArc;
 };
 

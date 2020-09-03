@@ -109,12 +109,16 @@ export default class RouteLine {
                 const numLineSegments = Math.ceil(
                     length / Config.routes.lineSegments
                 );
+                // scale segment count based on distance
                 element.segments =
                     1 + numLineSegments + routeData[index - 1].segments;
 
+                // big length we can assume we are flying
+                const angleMultiplier = length > 3000 ? 0.2 : 0;
                 const curve = createSphereArc(
                     routeData[index - 1].displacedPos,
-                    element.displacedPos
+                    element.displacedPos,
+                    angleMultiplier
                 );
                 // curve.getPoints returns Type Vector instead of Vector3
                 // @ts-ignore

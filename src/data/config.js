@@ -156,8 +156,8 @@ export default {
     },
     pointLight: {
         enabled: true,
-        color: 0xffffff,
-        intensity: 0.54,
+        color: 0xFFFFFF,
+        intensity: 1,
         distance: 115,
         x: 0,
         y: 0,

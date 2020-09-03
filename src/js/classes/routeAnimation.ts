@@ -1,4 +1,5 @@
 import TWEEN from "@tweenjs/tween.js";
+import { Vector2 } from "three";
 import Mover from "./mover";
 import Marker from "./marker";
 import Route from "./route";
@@ -79,67 +80,6 @@ export default class RouteAnimation {
         }
     }
 
-    private drawUpdate(value: { index: number }) {
-        this.route.setDrawCount(value.index);
-        this.animationDrawIndex.index = value.index;
-
-        const forecast = 5;
-
-        const normalizedProgress =
-            value.index / this.route.routeLine.numberVertices;
-        if (this.simplifiedRoute) {
-            const p = this.simplifiedRoute.getPoint(normalizedProgress);
-            this.controls.threeControls.target = p;
-        }
-
-        const progressIndex = this.route.routeLine.getIndexFromDrawcount(
-            value.index
-        );
-        const result = this.marker.find((marker: Marker) => {
-            return marker.index === Math.floor(progressIndex + forecast);
-        });
-
-        // -- flying transition
-        if (
-            progressIndex === 1 &&
-            this.lastActive === 0 &&
-            fly(this.marker[1])
-        ) {
-            this.lastActive = this.marker[1].index;
-            this.mover.flying(false);
-            this.mover.moving(true);
-            const tween = this.marker[1].spawn();
-            this.marker[1].showLabel(true);
-            tween.start();
-            this.controls
-                .moveIntoCenter(
-                    this.marker[1].poi.lat,
-                    this.marker[1].poi.lng,
-                    1000
-                )
-                .start();
-        }
-        // -- flying transition
-        if (result === undefined) return;
-        if (result.index > this.lastActive) {
-            this.lastActive = result.index;
-            const tween = result.spawn();
-            tween.start();
-            result.showLabel(true);
-            // const next = this.route.getNext(result);
-            // if (!next) return;
-            this.controls
-                .moveIntoCenter(
-                    result.poi.lat,
-                    result.poi.lng,
-                    1000,
-                    undefined,
-                    200
-                )
-                .start();
-        }
-    }
-
     private onStop() {
         this.marker.forEach((marker: Marker) => {
             marker.showLabel(true);
@@ -185,6 +125,67 @@ export default class RouteAnimation {
         return false;
     }
 
+    private drawUpdate(value: { index: number }) {
+        this.route.setDrawCount(value.index);
+        this.animationDrawIndex.index = value.index;
+
+        const forecast = 5;
+
+        const normalizedProgress =
+            value.index / this.route.routeLine.numberVertices;
+        if (this.simplifiedRoute) {
+            const p = this.simplifiedRoute.getPoint(normalizedProgress);
+            this.controls.threeControls.target = p;
+        }
+
+        const progressIndex = this.route.routeLine.getIndexFromDrawcount(
+            value.index
+        );
+        const result = this.marker.find((marker: Marker) => {
+            return marker.index === Math.floor(progressIndex + forecast);
+        });
+
+        // -- flying transition
+        if (
+            progressIndex === 1 &&
+            this.lastActive === 0 &&
+            fly(this.marker[1])
+        ) {
+            this.lastActive = this.marker[1].index;
+            this.mover.flying(false);
+            this.mover.moving(true);
+            const tween = this.marker[1].spawn();
+            this.marker[1].showLabel(true);
+            tween.start();
+
+            this.controls
+                .moveIntoCenter(
+                    this.marker[1].poi.lat,
+                    this.marker[1].poi.lng,
+                    1000
+                )
+                .start();
+        }
+        // -- flying transition
+        if (result === undefined) return;
+        if (result.index > this.lastActive) {
+            this.lastActive = result.index;
+            const tween = result.spawn();
+            tween.start();
+            result.showLabel(true);
+            // const next = this.route.getNext(result);
+            // if (!next) return;
+            this.controls
+                .moveIntoCenter(
+                    result.poi.lat,
+                    result.poi.lng,
+                    1000,
+                    undefined,
+                    200
+                )
+                .start();
+        }
+    }
     public draw(): boolean {
         if (this.tweenDraw && this.tweenDraw.isPlaying()) {
             // this.tweenDraw.stop();
@@ -222,6 +223,18 @@ export default class RouteAnimation {
                 // ugh please
                 if (fly(this.marker[1])) {
                     this.mover.flying(true);
+
+                    // move ahead to see curve
+                    // this.controls
+                    //     .moveIntoCenterDown(
+                    //         10,
+                    //         this.marker[1].poi.lng,
+                    //         new Vector2(0, 1),
+                    //         8000,
+                    //         TWEEN.Easing.Quintic.In,
+                    //         undefined,
+                    //     )
+                    //     .start();
                 } else {
                     this.mover.moving(true);
                 }
@@ -286,7 +299,7 @@ export default class RouteAnimation {
                     )
                     .start();
             });
-        // .delay(500);
+        // .delay(2500);
 
         // fade in label 1
         const marker = this.marker[0];
