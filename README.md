@@ -1,4 +1,4 @@
-# panoglobe-webpack
+# panoglobe
 Route Visualizer using `three.js`.
 
 ## Demo
