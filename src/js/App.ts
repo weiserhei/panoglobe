@@ -82,17 +82,13 @@ class App {
         document.addEventListener("DOMContentLoaded", resize, false);
         window.addEventListener("resize", resize);
         function resize() {
-            // labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
             // labelRenderer.setSize(
             //     container.offsetWidth,
             //     container.offsetHeight
             // );
-            labelRenderer.setSize(
-                // container.clientWidth,
-                // container.clientHeight
-                window.innerWidth,
-                window.innerHeight
-            );
+            // container.clientWidth,
+            // container.clientHeight
         }
 
         const controls = new Controls(
@@ -123,7 +119,11 @@ class App {
 
         Config.routes.urls.forEach((url) => {
             RouteManager.load(url).then((x: RouteData) => {
-                const route = routeManager.buildRoute(x, -0.2, folder);
+                const route = routeManager.buildRoute(
+                    x,
+                    Config.routes.colorphase,
+                    folder
+                );
                 route.then((route) => {
                     routes.push(route);
                     // const poi: Array<any> = [];

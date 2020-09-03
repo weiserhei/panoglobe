@@ -213,7 +213,7 @@ export default class RouteAnimation {
         )
             .to(
                 { index: this.route.routeLine.numberVertices },
-                this.route.routeLine.numberVertices / (this.animationPace / 45)
+                this.route.routeLine.numberVertices / (this.animationPace / 25)
             )
             // .easing(TWEEN.Easing.Circular.Out)
             .onStart(() => {

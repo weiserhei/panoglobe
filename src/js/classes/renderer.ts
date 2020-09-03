@@ -1,4 +1,4 @@
-import { WebGLRenderer, PCFSoftShadowMap } from "three";
+import { WebGLRenderer, sRGBEncoding, PCFSoftShadowMap } from "three";
 import Config from "../../data/config";
 
 // Main webGL renderer class
@@ -17,6 +17,8 @@ export default class Renderer {
         // Shadow map options
         this.threeRenderer.shadowMap.enabled = false;
         // this.threeRenderer.shadowMap.type = PCFSoftShadowMap;
+
+        // this.threeRenderer.outputEncoding = sRGBEncoding;
 
         // Get anisotropy for textures
         Config.maxAnisotropy = this.threeRenderer.capabilities.getMaxAnisotropy();

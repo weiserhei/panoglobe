@@ -14,8 +14,10 @@ export default {
     easing: TWEEN.Easing.Quadratic.InOut,
     duration: 500,
     routes: {
+        // colorphase: -0.2,
+        colorphase: 5.6,
         linewidth: 3, // error on 2.0 width wtf lol
-        lineSegments: 20,
+        lineSegments: 10,
         segmentMultiplicator: 1,
         urls: [
             "https://dev.panoreisen.de/index.php?rex-api-call=globus",
