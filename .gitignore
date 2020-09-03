@@ -1,5 +1,7 @@
 # Custom #
 ##########
+node_modules
+dist
 *.sublime-workspace
 *.psd
 globe/textures/planets/8k/*
@@ -104,4 +106,3 @@ typings/
 
 # dotenv environment variables file
 .env
-

@@ -1,0 +1,17 @@
+// @import "custom.scss";
+
+$theme-colors: (
+    // "primary": #0074d9,
+    "primary": #203040,
+    "danger": #ff4136,
+    "dark": #333,
+    "darker": rgba(46, 51, 56, 0.8),
+    "opaque": rgba(46, 51, 56, 0.3),
+    "pro-sidebar": #1e2229,
+    "verydark": #111
+);
+
+$enable-rounded: false;
+
+@import "~bootstrap/scss/bootstrap";
+// @import "~startbootstrap-sb-admin-2/scss/sb-admin-2";
