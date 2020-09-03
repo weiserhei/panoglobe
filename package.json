@@ -45,7 +45,7 @@
     "@tweenjs/tween.js": "^17.4.0",
     "bootstrap": "^4.3.1",
     "es6-promise": "^4.2.8",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "malihu-custom-scrollbar-plugin": "^3.1.5",
     "popper.js": "^1.15.0",
     "startbootstrap-sb-admin-2": "^4.0.6",
