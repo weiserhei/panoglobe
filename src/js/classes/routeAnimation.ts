@@ -107,6 +107,7 @@ export default class RouteAnimation {
         ) {
             this.lastActive = this.marker[1].index;
             this.mover.flying(false);
+            this.mover.moving(true);
             const tween = this.marker[1].spawn();
             this.marker[1].showLabel(true);
             tween.start();
@@ -144,11 +145,12 @@ export default class RouteAnimation {
             marker.showLabel(true);
         });
         this.mover.moving(false);
+        this.mover.flying(false);
+        this.mover.static(true);
         if (process.env.NODE_ENV === "development") {
             this.drawUI.name(playText("Draw"));
         }
         this.route.setDrawProgress(1);
-        this.mover.flying(false);
 
         const lastActiveMarker = this.marker.find((marker: Marker) => {
             return marker.index === this.lastActive;
@@ -220,8 +222,9 @@ export default class RouteAnimation {
                 // ugh please
                 if (fly(this.marker[1])) {
                     this.mover.flying(true);
+                } else {
+                    this.mover.moving(true);
                 }
-                this.mover.moving(true);
                 if (process.env.NODE_ENV === "development") {
                     this.drawUI.name(stopText("Draw"));
                 }
@@ -262,6 +265,7 @@ export default class RouteAnimation {
                 });
                 // this.routeLine.drawProgress = 1;
                 this.mover.moving(false);
+                this.mover.static(true);
                 if (process.env.NODE_ENV === "development") {
                     this.drawUI.name(playText("Draw"));
                 }
@@ -296,10 +300,7 @@ export default class RouteAnimation {
                 marker.poi.lng,
                 2000,
                 undefined,
-                300,
-                () => {
-                    this.mover.setVisible(true);
-                }
+                300
             )
             .onStop(this.onStop.bind(this))
             .chain(tweenRouteDraw)
@@ -319,6 +320,7 @@ export default class RouteAnimation {
         //     this.tweenSpawn.resume();
         //     return;
         // }
+        this.mover.setVisible(false);
         this.animationDrawIndex.index = 0;
         this.route.setDrawIndex(0);
         this.marker.forEach((m: Marker, index: number) => {
@@ -360,6 +362,7 @@ export default class RouteAnimation {
             // .repeat(Infinity)
             .onStop(() => {
                 this.mover.moving(false);
+                this.mover.static(true);
                 if (process.env.NODE_ENV === "development") {
                     this.spawnUI.name(playText("Spawn"));
                 }
@@ -369,6 +372,7 @@ export default class RouteAnimation {
             })
             .onComplete(() => {
                 this.mover.moving(false);
+                this.mover.static(true);
                 if (process.env.NODE_ENV === "development") {
                     this.spawnUI.name(playText("Spawn"));
                 }

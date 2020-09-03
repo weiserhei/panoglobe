@@ -105,6 +105,8 @@ export default class RouteManager {
     }
 
     private spawnRoute(route: Route): void {
+        route.isVisible = true;
+        // route.setActiveMarker(route.marker[route.marker.length - 1]);
         // select last Marker on first route, and first marker on following routes
         // const index = this.routes.length > 1 ? 0 : route.marker.length - 1;
         const poi = route.marker[route.marker.length - 1].poi;
@@ -134,8 +136,7 @@ export default class RouteManager {
                 r.isVisible = false;
             }
         });
-        route.isVisible = true;
-        // route.setActiveMarker(route.marker[route.marker.length - 1]);
+
         this.spawnRoute(route);
     }
 

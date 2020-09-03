@@ -186,7 +186,6 @@ export default class Route {
         const positions = this.routeLine.vertices;
         const colors = this.routeLine.colorArray || new Float32Array[0]();
         this.mover = new Mover(scene, positions, colors, folder);
-        this.mover.moving(false);
         // this.setDrawIndex(routeData.length);
 
         this.animationHandler = new RouteAnimation(

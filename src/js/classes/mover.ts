@@ -1,111 +1,116 @@
+import { Color } from "three";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 import {
-    BoxBufferGeometry,
-    MeshNormalMaterial,
-    Mesh,
-    Vector3,
-    Matrix4,
-    RingBufferGeometry,
-    DoubleSide,
-    MeshBasicMaterial,
-    Color,
-    MeshPhongMaterial,
-} from "three";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
-import HtmlMover from "./htmlMover";
+    faMapMarker,
+    faMapMarkerAlt,
+    faCircle,
+    faCircleNotch,
+    faHighlighter,
+    faPlane,
+    faShuttleVan,
+    faCar,
+} from "@fortawesome/free-solid-svg-icons";
 
-import Config from "../../data/config";
+import HtmlMover from "./htmlMover";
+// import MeshMover from "./meshMover";
 
 export default class Mover {
-    private tempVector: THREE.Vector3 = new Vector3();
-    private mesh: THREE.Group | undefined;
-    private outlineMesh: THREE.Mesh | undefined;
-    private htmlMover: HtmlMover;
+    private moverPlane: HtmlMover;
+    private moverMarker: HtmlMover;
+    private moverVehicle: HtmlMover;
+    // private meshMover: MeshMover;
+
     constructor(
         scene: THREE.Scene,
         private positions: THREE.Vector3[],
         private colors: Float32Array,
         folder: any
     ) {
-        this.htmlMover = new HtmlMover(scene);
-        this.htmlMover.setFlying(false);
-        this.htmlMover.visible = false;
+        const marker = icon(faMapMarkerAlt, {
+            styles: {
+                color: "#fff",
+                // opacity: "0.5",
+                // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
+                filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
+            },
+            classes: ["fa-lg", "mt-n3"],
+            // classes: ["fa-2x", "mt-n3", "ml-2", "pl-2"],
+        });
+        this.moverMarker = new HtmlMover(scene, marker);
         if (process.env.NODE_ENV === "development") {
             folder
                 .add({ visible: true }, "visible")
                 .name("2D Guide")
                 .onChange((value: boolean) => {
-                    this.htmlMover.visible = value;
+                    this.moverMarker.visible = value;
                 });
         }
+
+        // const pen = icon(faHighlighter, {
+        //     styles: {
+        //         color: "#fff",
+        //         // opacity: "0.5",
+        //         // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
+        //         filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
+        //     },
+        //     classes: ["fa-2x", "mt-n3", "ml-2", "pl-2"],
+        //     // classes: ["fa-lg"],
+        // });
+
+        const vehicle = icon(faCar, {
+            transform: {
+                // rotate: -30,
+                flipX: true,
+            },
+            styles: {
+                // color: "#fff",
+                // opacity: "0.5",
+                // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
+                filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
+            },
+            classes: ["fa-lg", "mt-n1"],
+            // classes: ["fa-lg"],
+        });
+        this.moverVehicle = new HtmlMover(scene, vehicle);
+
+        const plane = icon(faPlane, {
+            transform: {
+                rotate: -30,
+                flipX: true,
+            },
+            styles: {
+                color: "#fff",
+                // opacity: "0.5",
+                // filter: "drop-shadow(0px 3px 3px rgba(255,255,255,1))",
+                filter: "drop-shadow(0px 3px 1px rgba(0,0,0,0.5))",
+            },
+            classes: ["fa-lg", "mt-n1"],
+            // classes: ["fa-lg", "mt-n1"],
+            // classes: ["fa-2x", "mt-n3", "ml-2", "pl-2"],
+        });
+        this.moverPlane = new HtmlMover(scene, plane);
+
         // async
-        // this.mesh_mover(scene, folder);
+        // this.meshMover = new MeshMover(scene, this.positions, folder);
     }
-
-    private mesh_mover = function (scene: THREE.Scene, folder: any) {
-        new MTLLoader()
-            .setPath("./models/van/")
-            .load("Van.mtl", (materials) => {
-                materials.preload();
-                // console.log(materials.materials["car_glass.png"]);
-                materials.materials["car_glass.png"].transparent = true;
-                materials.materials["car_glass.png"].opacity = 0.8;
-
-                new OBJLoader()
-                    .setMaterials(materials)
-                    .setPath("models/van/")
-                    .load(
-                        "Van.obj",
-                        (object) => {
-                            object.position.y = -95;
-                            // object.scale.set(0.02, 0.02, 0.02);
-                            object.children.forEach((child) => {
-                                (child as THREE.Mesh).geometry.applyMatrix4(
-                                    new Matrix4().makeScale(0.01, 0.01, 0.01)
-                                );
-                                (child as THREE.Mesh).geometry.applyMatrix4(
-                                    new Matrix4().makeRotationX(Math.PI)
-                                );
-                            });
-
-                            const geometry = new RingBufferGeometry(1.7, 2, 18);
-                            // geometry.applyMatrix4(
-                            //     new Matrix4().makeRotationX(Math.PI / 2)
-                            // );
-                            const x = new Mesh(
-                                geometry,
-                                // new MeshPhongMaterial({ color: 0xff5555 })
-                                new MeshPhongMaterial({
-                                    color: 0x000000,
-                                    side: DoubleSide,
-                                })
-                                // new MeshNormalMaterial({ side: DoubleSide })
-                            );
-                            object.add(x);
-                            this.outlineMesh = x;
-                            this.mesh = object;
-                            scene.add(this.mesh);
-                            this.mesh.visible = false;
-                            if (process.env.NODE_ENV === "development") {
-                                folder
-                                    .add(this.mesh, "visible")
-                                    .name("3D Guide");
-                            }
-                        }
-                        // onProgress, onError
-                    );
-            });
-    };
 
     public moving(value: boolean) {
-        this.htmlMover.moving(value);
+        this.moverVehicle.visible = value;
+        this.moverVehicle.toggle();
     }
     public flying(value: boolean) {
-        this.htmlMover.setFlying(value);
+        this.moverPlane.visible = value;
+        this.moverPlane.toggle();
+    }
+    public static(value: boolean) {
+        this.moverMarker.visible = value;
+        this.moverMarker.toggle();
     }
 
     public setVisible(value: boolean) {
-        this.htmlMover.visible = value;
+        this.moverMarker.visible = value;
+        this.moverPlane.visible = false;
+        this.moverVehicle.visible = false;
     }
 
     public update(index: number, camera: THREE.Camera) {
@@ -119,32 +124,16 @@ export default class Mover {
         // const progressIndex =
         //     (this.routeData.length / this.positions.length) * index;
 
-        var point = this.positions[safeIndex];
+        const point = this.positions[safeIndex];
         const currentColor = new Color().fromArray(this.colors, safeIndex * 3);
-
-        if (this.mesh && this.outlineMesh) {
-            const forwardPoint = (safeIndex + 5) % this.positions.length;
-            var point2 = this.positions[forwardPoint];
-            // var point2 = routeData[index % routeData.length].displacedPos;
-            // let angleEnd = point.angleTo(point2);
-            var upNormal = this.tempVector
-                .subVectors(new Vector3(0, 0, 0), point.clone())
-                .normalize();
-            if (!this.mesh) return;
-            this.mesh.up = upNormal;
-            this.mesh.position.copy(point);
-            this.mesh.lookAt(point2);
-            this.outlineMesh.lookAt(new Vector3(0, 0, 0));
-            (this.outlineMesh.material as MeshPhongMaterial).color.copy(
-                currentColor
-            );
-        }
-
+        // this.meshMover.update(safeIndex, point, currentColor);
         // this.mesh.getWorldPosition(meshVector);
         const eye = camera.position.clone().sub(point);
         const dot = eye.normalize().dot(point.clone().normalize());
         const ocluded = dot < 0.0; // IS TRUE WHEN BLOB IS BEHIND THE SPHERE = dot value below 0.0
 
-        this.htmlMover.update(ocluded, dot, point, currentColor);
+        this.moverPlane.update(ocluded, dot, point, currentColor);
+        this.moverVehicle.update(ocluded, dot, point, currentColor);
+        this.moverMarker.update(ocluded, dot, point, currentColor);
     }
 }
