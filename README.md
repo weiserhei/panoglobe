@@ -1,2 +1,0 @@
-# panoglobe
-Route visualizer
