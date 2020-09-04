@@ -2,15 +2,7 @@ import TWEEN from "@tweenjs/tween.js";
 
 // This object contains the state of the app
 export default {
-    isDev: false,
-    isShowingStats: false,
-    isLoaded: false,
-    isTweening: false,
-    isRotating: true,
-    isMouseMoving: false,
-    isMouseOver: false,
     maxAnisotropy: 8,
-    dpr: 1,
     easing: TWEEN.Easing.Quadratic.InOut,
     duration: 500,
     routes: {
@@ -63,13 +55,12 @@ export default {
             specular: 0xbbbbbb,
             map: "earthColor",
             normalMap: "normalmap",
-            specularMap: "invertedSpecularmap",
             normalScale: -0.4,
+            specularMap: "invertedSpecularmap",
             displacementMap: "displacemap",
             // displacementMap: "earthColor",
-            displacementScale: 3,
-            // displacementScale: 20,
-            // displacementBias: 0.428408,
+            displacementScale: 3.0,
+            // displacementScale: 30,
             displacementBias: 0,
         },
         outerGlow: {
