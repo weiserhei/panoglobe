@@ -20,7 +20,7 @@ module.exports = {
                 "og:title": { property: "og:title", content: "panoglobe" },
                 "og:description": {
                     property: "og:description",
-                    content: "3D Globe GPS Visualizer",
+                    content: "3D Globe Route Visualizer",
                 },
                 "og:image": {
                     property: "og:image",
