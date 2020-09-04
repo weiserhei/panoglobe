@@ -122,6 +122,7 @@ class App {
                 const route = routeManager.buildRoute(
                     x,
                     Config.routes.colorphase,
+                    Config.routes.steps,
                     folder
                 );
                 route.then((route) => {
@@ -163,48 +164,6 @@ class App {
         // });
 
         if (process.env.NODE_ENV === "development") {
-            var obj = {
-                add: function () {
-                    RouteManager.load(Config.routes.urls[0]).then(
-                        (x: RouteData) => {
-                            const route = routeManager.buildRoute(x, 5, folder);
-                            route.then((route: Route) => {
-                                // route.showLabels = false;
-                                folder.remove(button);
-                                routes.push(route);
-
-                                const x = {};
-                                x[routes[0].name] = routes[0].name;
-                                x[route.name] = route.name;
-
-                                folder
-                                    .add(x, route.name, x)
-                                    .name("Route select")
-                                    .onChange((x) => {
-                                        const selection = routes.find(
-                                            (r) => r.name === x
-                                        );
-                                        routeManager.activeRoute = selection;
-                                    });
-                            });
-                        }
-                    );
-                },
-                // RouteManager.load(
-                //     Config.routes.urls[0],
-                //     (routeData: Array<Object>) => {
-                //         // const phase = getRandomArbitrary( 0, Math.PI * 2 );
-                //         const phase = 5;
-                //         const route2 = routeManager.buildRoute(
-                //             routeData,
-                //             phase,
-                //             folder
-                //         );
-                //         // route.showLabels = false;
-                //     }
-                // );
-            };
-            const button = folder.add(obj, "add").name("Add Route Asien");
             const temp = camera.threeCamera;
 
             folder

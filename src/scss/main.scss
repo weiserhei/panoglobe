@@ -1,4 +1,6 @@
 // @import "custom.scss";
+@import "gradients";
+$enable-rounded: false;
 
 $theme-colors: (
     // "primary": #0074d9,
@@ -11,7 +13,8 @@ $theme-colors: (
     "verydark": #111
 );
 
-$enable-rounded: false;
-
 @import "~bootstrap/scss/bootstrap";
-// @import "~startbootstrap-sb-admin-2/scss/sb-admin-2";
+
+.navbar-light {
+    background: $cloudy-knoxville-gradient;
+}

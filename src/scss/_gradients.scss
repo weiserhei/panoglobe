@@ -1,0 +1,34 @@
+// MDB
+// Basic gradients
+$purple-gradient: linear-gradient(40deg, #ff6ec4, #7873f5);
+$blue-gradient: linear-gradient(40deg, #45cafc, #303f9f);
+$aqua-gradient: linear-gradient(40deg, #2096ff, #05ffa3);
+$peach-gradient: linear-gradient(40deg, #ffd86f, #fc6262);
+
+// Additional gradients
+$warm-flame-gradient: linear-gradient(
+    45deg,
+    #ff9a9e 0,
+    #fad0c4 99%,
+    #fad0c4 100%
+);
+$sunny-morning-gradient: linear-gradient(120deg, #f6d365 0, #fda085 100%);
+$cloudy-knoxville-gradient: linear-gradient(120deg, #fdfbfb 0, #ebedee 100%);
+$juicy-peach-gradient: linear-gradient(to right, #ffecd2 0, #fcb69f 100%);
+$heavy-rain-gradient: linear-gradient(to top, #cfd9df 0, #e2ebf0 100%);
+$morpheus-den-gradient: linear-gradient(to top, #30cfd0 0, #330867 100%);
+$winter-neva-gradient: linear-gradient(120deg, #a1c4fd 0, #c2e9fb 100%);
+$dusty-grass-gradient: linear-gradient(120deg, #d4fc79 0, #96e6a1 100%);
+$night-fade-gradient: linear-gradient(to top, #a18cd1 0, #fbc2eb 100%);
+
+$grey-to-grey: linear-gradient(120deg, #313131 0, #999999 100%);
+
+// RANDOM
+$celestial: linear-gradient(to right, #c33764, #1d2671);
+// $pano-gradient: linear-gradient(to bottom, #f3c15b, #fcf1ad);
+$pano-gradient: linear-gradient(120deg, #f3c15b 0, #fcf1ad 100%);
+$dark-gradient: linear-gradient(40deg, #203040, #162c42);
+
+//lorch
+// $zdf-gradient: linear-gradient(180deg, rgba(68,44,9,1) 0%, rgba(227,223,193,1) 100%);
+$zdf-gradient: linear-gradient(180deg, #005984 0%, rgba(227, 223, 193, 1) 100%);

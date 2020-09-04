@@ -59,6 +59,7 @@ export default class RouteManager {
     public buildRoute(
         routeData: RouteData,
         phase: number,
+        steps: number,
         folder: any
     ): Promise<Route> {
         return this.heightData.then((data) => {
@@ -77,6 +78,7 @@ export default class RouteManager {
                 this.container,
                 calculatedRouteData,
                 phase,
+                steps,
                 this.controls,
                 this,
                 this.ui,

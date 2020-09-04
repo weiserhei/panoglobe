@@ -15,7 +15,9 @@ export default {
     duration: 500,
     routes: {
         // colorphase: -0.2,
-        colorphase: 5.6,
+        colorphase: 5.2,
+        // how fast change the color (0 = fast)
+        steps: 1,
         linewidth: 3, // error on 2.0 width wtf lol
         lineSegments: 10,
         segmentMultiplicator: 1,

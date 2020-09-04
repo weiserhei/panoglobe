@@ -109,6 +109,7 @@ export default class Route {
         container: HTMLElement,
         public routeData: Array<Poi>,
         phase: number,
+        steps: number,
         private controls: Controls,
         private manager: RouteManager,
         ui: UserInterface,
@@ -123,7 +124,7 @@ export default class Route {
                 });
         }
 
-        const steps = 1.8; // how fast change the color (0 = fast)
+        // how fast change the color (0 = fast)
         const frequency = 1 / (steps * this.routeData.length);
 
         // const poi = this.routeData.filter((c) => c.adresse);

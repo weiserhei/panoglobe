@@ -12,14 +12,16 @@ export default class HtmlMover {
         // // domElement.style.textShadow = "0 0 6px #000";
         // domElement.appendChild(faIcon.node[0]);
 
-        // domElement.addEventListener("click", function () {
-        //     alert();
+        const test = faIcon.node[0];
+        // test.addEventListener("click", function () {
+        //     window.open("https://panoreisen.de/184-0-Aktuell.html", "_blank");
         // });
 
         //@ts-ignore
         // this.css2dobject = new CSS2DObject(domElement);
-        this.css2dobject = new CSS2DObject(faIcon.node[0]);
+        this.css2dobject = new CSS2DObject(test);
         scene.add(this.css2dobject);
+        // $(this.css2dobject.element).css("cursor", "pointer");
         // $(this.css2dobject.element).addClass("d-none");
     }
 

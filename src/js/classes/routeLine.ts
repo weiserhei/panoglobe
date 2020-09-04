@@ -79,7 +79,7 @@ export default class RouteLine {
         });
     }
 
-    constructor(private routeData: Array<Poi>, steps: number, phase: number) {
+    constructor(private routeData: Poi[], steps: number, phase: number) {
         this.vertices = this.getVertices(routeData);
 
         if (Config.routes.linewidth > 1) {

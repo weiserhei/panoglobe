@@ -245,7 +245,7 @@ export default class UserInterface {
         var label = document.createElement("label");
         label.className = "custom-control-label";
         label.setAttribute("for", "customCheck3");
-        label.innerHTML = "Nighttime";
+        label.innerHTML = "Nightmode";
         li.appendChild(div);
 
         const checkbox3 = checkboxElement("customCheck3", false);
