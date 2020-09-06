@@ -44,9 +44,6 @@ module.exports = {
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
         extensions: [".ts", ".tsx", ".js"],
-        alias: {
-            Classes: path.resolve(__dirname, "src/js/classes/"),
-        },
     },
     module: {
         rules: [
@@ -55,6 +52,10 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: "ts-loader",
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.vue$/,
+                loader: "vue-loader",
             },
             {
                 test: /\.geojson$/,

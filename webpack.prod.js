@@ -18,4 +18,9 @@ module.exports = merge(common, {
         maxEntrypointSize: 5120000,
         maxAssetSize: 5120000,
     },
+    resolve: {
+        alias: {
+            vue: "vue/dist/vue.min",
+        },
+    },
 });
