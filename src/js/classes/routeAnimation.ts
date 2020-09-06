@@ -270,8 +270,7 @@ export default class RouteAnimation {
             // })
             .onStop(this.onStop.bind(this))
             .onComplete(() => {
-                //@ts-ignore
-                this.ui.button.stop();
+                this.ui.stopPlaying();
                 // not called when on repeat
                 this.marker.forEach((marker: Marker) => {
                     marker.showLabel(true);

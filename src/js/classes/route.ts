@@ -295,6 +295,7 @@ export default class Route {
 
     set isVisible(value) {
         this.visible = value;
+        this.showLabels = value;
         if (this.activeMarker) {
             // this.manager.setActiveMarker(this, this.activeMarker);
         }

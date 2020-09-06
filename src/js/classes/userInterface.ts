@@ -48,6 +48,7 @@ export default class UserInterface {
     private navbar: HTMLElement;
     private slider: Slider;
     private checkbox1: HTMLInputElement;
+    private app: Vue;
 
     public button: HTMLElement;
 
@@ -70,8 +71,7 @@ export default class UserInterface {
         // container.appendChild(nav);
         document.body.prepend(nav);
         nav.style.zIndex = "900";
-        nav.className =
-            "navbar navbar-expand-xl navbar-light bg-light shadow-sm";
+        nav.className = "navbar navbar-expand-xl shadow-sm";
         nav.innerHTML = "{{ message }}";
 
         // <div class="row no-gutters align-items-center justify-content-between d-flex">
@@ -127,19 +127,6 @@ export default class UserInterface {
         const b = document.createElement("button");
         b.className = "btn btn-primary";
         b.innerHTML = play;
-        // b.onclick = route.animationHandler.draw.bind(route.animationHandler);
-        // b.onclick = () => {
-        //     setTimeout(() => {
-        //         // @ts-ignore
-        //         $(".navbar-collapse").collapse("hide");
-        //     }, 900);
-        //     if (this.manager.playDraw()) {
-        //         $(b2).toggleClass("btn-danger");
-        //         $(b2).toggleClass("btn-primary");
-        //         // $(b).toggleClass("btn-dark");
-        //         // $(b).toggleClass("btn-success");
-        //     }
-        // };
 
         const stop = stopText("");
         const b2 = document.createElement("button");
@@ -235,8 +222,13 @@ export default class UserInterface {
         b.setAttribute("v-on:click", "play");
         b2.setAttribute("v-on:click", "stop");
         b2.setAttribute("v-bind:class", "{ 'btn-danger': isPlaying }");
+        nav.setAttribute(
+            "v-bind:class",
+            "{ 'navbar-dark bg-pro-sidebar text-light': nightMode, 'navbar-light bg-light': !nightMode }"
+        );
+
         const self = this;
-        const app = new Vue({
+        this.app = new Vue({
             el: nav,
             data: {
                 labelVisible: true,
@@ -244,6 +236,25 @@ export default class UserInterface {
                 cloudsVisible: true,
                 nightMode: false,
                 isPlaying: false,
+            },
+            watch: {
+                // labelVisible: function (val) {
+                //     console.log(
+                //         "watch",
+                //         val,
+                //         self.manager.activeRoute.showLabels
+                //     );
+                //     return self.manager.activeRoute.showLabels;
+                // },
+            },
+            computed: {
+                // toggleLabelsVisible2: function () {
+                //     console.log("hi");
+                //     if (self.manager.activeRoute) {
+                //         self.manager.activeRoute.showLabels = this.labelVisible;
+                //     }
+                //     // return this.labelVisible;
+                // },
             },
             methods: {
                 play: function () {
@@ -275,38 +286,31 @@ export default class UserInterface {
                 },
                 toggleNightMode: function () {
                     self.manager.toggleNight = this.nightMode;
-                    $(nav).toggleClass("navbar-light bg-light");
-                    $(nav).toggleClass("navbar-dark bg-pro-sidebar text-light");
                 },
             },
-
-            // computed: {
-            //     toggleLabelsVisible2: function () {
-            //         console.log("hi");
-            //         if (self.manager.activeRoute) {
-            //             self.manager.activeRoute.showLabels = this.labelVisible;
-            //         }
-            //         // return this.labelVisible;
-            //     },
-            // },
         });
 
         //@ts-ignore
-        (<any>window).app = app;
+        (<any>window).app = this.app;
+    }
+
+    public stopPlaying() {
+        this.app.$data.isPlaying = false;
     }
 
     public addRoute(route: Route) {
         const select: any = document.querySelector(`#${this.routeSelect.id}`);
         // const select = $(this.routeSelect)[0];
-        // select.options[select.options.length] = new Option(route.name);
-        // select.onchange = (x: any) => {
-        //     $(this.button).addClass("btn-primary").removeClass("btn-danger");
-        //     // @ts-ignore
-        //     this.checkbox1.checked = true;
-        //     this.manager.activeRoute = this.manager.routes[
-        //         x.target.selectedIndex
-        //     ];
-        // };
+        select.options[select.options.length] = new Option(route.name);
+        select.onchange = (x: any) => {
+            this.manager.activeRoute = this.manager.routes[
+                x.target.selectedIndex
+            ];
+            // this.app.$data.labelVisible = route.showLabels;
+            // kind-of-meh
+            this.app.$data.labelVisible = true;
+            this.app.$data.isPlaying = false;
+        };
     }
 
     public createSlider(calculatedRouteData: Poi[], route: Route) {
