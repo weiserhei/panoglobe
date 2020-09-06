@@ -7,6 +7,7 @@ import {
     faStop,
     faPlay,
 } from "@fortawesome/free-solid-svg-icons";
+import Vue from "vue";
 
 import Slider from "./slider";
 import Controls from "./controls";
@@ -71,6 +72,7 @@ export default class UserInterface {
         nav.style.zIndex = "900";
         nav.className =
             "navbar navbar-expand-xl navbar-light bg-light shadow-sm";
+        nav.innerHTML = "{{ message }}";
 
         // <div class="row no-gutters align-items-center justify-content-between d-flex">
         nav.innerHTML = `
@@ -126,36 +128,23 @@ export default class UserInterface {
         b.className = "btn btn-primary";
         b.innerHTML = play;
         // b.onclick = route.animationHandler.draw.bind(route.animationHandler);
-        b.onclick = () => {
-            setTimeout(() => {
-                // @ts-ignore
-                $(".navbar-collapse").collapse("hide");
-            }, 900);
-            if (this.manager.playDraw()) {
-                $(b2).toggleClass("btn-danger");
-                $(b2).toggleClass("btn-primary");
-                // $(b).toggleClass("btn-dark");
-                // $(b).toggleClass("btn-success");
-            }
-        };
+        // b.onclick = () => {
+        //     setTimeout(() => {
+        //         // @ts-ignore
+        //         $(".navbar-collapse").collapse("hide");
+        //     }, 900);
+        //     if (this.manager.playDraw()) {
+        //         $(b2).toggleClass("btn-danger");
+        //         $(b2).toggleClass("btn-primary");
+        //         // $(b).toggleClass("btn-dark");
+        //         // $(b).toggleClass("btn-success");
+        //     }
+        // };
 
         const stop = stopText("");
         const b2 = document.createElement("button");
         b2.className = "btn btn-primary";
         b2.innerHTML = stop;
-        // b2.onclick = route.animationHandler.draw.bind(route.animationHandler);
-        b2.onclick = () => {
-            setTimeout(() => {
-                // @ts-ignore
-                $(".navbar-collapse").collapse("hide");
-            }, 900);
-            if (this.manager.stopDraw()) {
-                // $(b).toggleClass("btn-dark");
-                // $(b).toggleClass("btn-success");
-                $(b2).toggleClass("btn-danger");
-                $(b2).toggleClass("btn-primary");
-            }
-        };
         //@ts-ignore
         b2.stop = () => {
             $(b2).removeClass("btn-danger").addClass("btn-primary");
@@ -172,13 +161,6 @@ export default class UserInterface {
         li.appendChild(group);
         nb.appendChild(li);
 
-        // <li class="nav-item d-flex align-items-center">
-        // <div class="custom-control custom-checkbox">
-        //     <input type="checkbox" class="">
-        //     <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
-        // </div>
-        // </li>
-
         var li = document.createElement("li");
         li.className = "nav-item d-flex align-items-center";
         var div = document.createElement("div");
@@ -186,15 +168,10 @@ export default class UserInterface {
         var label = document.createElement("label");
         label.className = "custom-control-label";
         label.setAttribute("for", "customCheck1");
-        label.innerHTML = "Show Label";
+        label.innerHTML = "Show Labels";
         li.appendChild(div);
 
         this.checkbox1 = checkboxElement("customCheck1", true);
-        this.checkbox1.onclick = (e: Event) => {
-            // @ts-ignore
-            const { checked } = e.target;
-            this.manager.activeRoute.showLabels = checked;
-        };
         div.appendChild(this.checkbox1);
         div.appendChild(label);
         nb.appendChild(li);
@@ -210,11 +187,6 @@ export default class UserInterface {
         li.appendChild(div);
 
         const checkbox2 = checkboxElement("customCheck2", true);
-        checkbox2.onclick = (e: Event) => {
-            // @ts-ignore
-            const { checked } = e.target;
-            this.manager.toggleBorders = checked;
-        };
         div.appendChild(checkbox2);
         div.appendChild(label);
         nb.appendChild(li);
@@ -225,16 +197,12 @@ export default class UserInterface {
         div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
         var label = document.createElement("label");
         label.className = "custom-control-label";
-        label.setAttribute("for", "customCheck4");
+        label.setAttribute("for", "customCheck3");
         label.innerHTML = "Clouds";
         li.appendChild(div);
 
-        const checkbox4 = checkboxElement("customCheck4", true);
-        checkbox4.onclick = (e: Event) => {
-            // @ts-ignore
-            this.manager.toggleClouds = e.target.checked;
-        };
-        div.appendChild(checkbox4);
+        const checkbox3 = checkboxElement("customCheck3", true);
+        div.appendChild(checkbox3);
         div.appendChild(label);
         nb.appendChild(li);
 
@@ -244,37 +212,101 @@ export default class UserInterface {
         div.className = "custom-control custom-checkbox ml-md-4 mt-md-0 mt-2";
         var label = document.createElement("label");
         label.className = "custom-control-label";
-        label.setAttribute("for", "customCheck3");
+        label.setAttribute("for", "customCheck4");
         label.innerHTML = "Nightmode";
         li.appendChild(div);
 
-        const checkbox3 = checkboxElement("customCheck3", false);
-        checkbox3.onclick = (e: Event) => {
-            // @ts-ignore
-            const { checked } = e.target;
-            this.manager.toggleNight = checked;
-            $(nav).toggleClass("navbar-light bg-light");
-            $(nav).toggleClass("navbar-dark bg-pro-sidebar text-light");
-            // $(this.navbar).toggleClass("navbar-light bg-light");
-            // $(this.navbar).toggleClass("navbar-dark bg-dark");
-        };
-        div.appendChild(checkbox3);
+        const checkbox4 = checkboxElement("customCheck4", false);
+        div.appendChild(checkbox4);
         div.appendChild(label);
         nb.appendChild(li);
+
+        this.checkbox1.setAttribute("v-model", "labelVisible");
+        // this.checkbox1.setAttribute("v-on:click", "toggleLabelsVisible");
+        this.checkbox1.setAttribute("v-on:change", "toggleLabelsVisible");
+        checkbox2.setAttribute("v-model", "bordersVisible");
+        checkbox2.setAttribute("v-on:change", "toggleBordersVisible");
+        checkbox3.setAttribute("v-model", "cloudsVisible");
+        checkbox3.setAttribute("v-on:change", "toggleCloudsVisible");
+        checkbox4.setAttribute("v-model", "nightMode");
+        checkbox4.setAttribute("v-on:change", "toggleNightMode");
+
+        // b.setAttribute("v-model", "isPlaying");
+        b.setAttribute("v-on:click", "play");
+        b2.setAttribute("v-on:click", "stop");
+        b2.setAttribute("v-bind:class", "{ 'btn-danger': isPlaying }");
+        const self = this;
+        const app = new Vue({
+            el: nav,
+            data: {
+                labelVisible: true,
+                bordersVisible: true,
+                cloudsVisible: true,
+                nightMode: false,
+                isPlaying: false,
+            },
+            methods: {
+                play: function () {
+                    setTimeout(function () {
+                        // @ts-ignore
+                        $(".navbar-collapse").collapse("hide");
+                    }, 900);
+                    if (self.manager.playDraw()) {
+                        this.isPlaying = true;
+                    }
+                },
+                stop: function () {
+                    setTimeout(() => {
+                        // @ts-ignore
+                        $(".navbar-collapse").collapse("hide");
+                    }, 900);
+                    if (self.manager.stopDraw()) {
+                        this.isPlaying = false;
+                    }
+                },
+                toggleLabelsVisible: function (event: Event) {
+                    self.manager.activeRoute.showLabels = this.labelVisible;
+                },
+                toggleBordersVisible: function () {
+                    self.manager.toggleBorders = this.bordersVisible;
+                },
+                toggleCloudsVisible: function () {
+                    self.manager.toggleClouds = this.cloudsVisible;
+                },
+                toggleNightMode: function () {
+                    self.manager.toggleNight = this.nightMode;
+                    $(nav).toggleClass("navbar-light bg-light");
+                    $(nav).toggleClass("navbar-dark bg-pro-sidebar text-light");
+                },
+            },
+
+            // computed: {
+            //     toggleLabelsVisible2: function () {
+            //         console.log("hi");
+            //         if (self.manager.activeRoute) {
+            //             self.manager.activeRoute.showLabels = this.labelVisible;
+            //         }
+            //         // return this.labelVisible;
+            //     },
+            // },
+        });
+
+        //@ts-ignore
+        (<any>window).app = app;
     }
 
     public addRoute(route: Route) {
         const select: any = document.querySelector(`#${this.routeSelect.id}`);
         // const select = $(this.routeSelect)[0];
-        select.options[select.options.length] = new Option(route.name);
-        select.onchange = (x: any) => {
-            $(this.button).addClass("btn-primary").removeClass("btn-danger");
-            // @ts-ignore
-            this.checkbox1.checked = true;
-            this.manager.activeRoute = this.manager.routes[
-                x.target.selectedIndex
-            ];
-        };
+        // select.options[select.options.length] = new Option(route.name);
+        // select.onchange = (x: any) => {
+        //     $(this.button).addClass("btn-primary").removeClass("btn-danger");
+        //     // @ts-ignore
+        //     this.checkbox1.checked = true;
+        //     this.manager.activeRoute = this.manager.routes[
+        //         x.target.selectedIndex
+        //     ];
+        // };
     }
 
     public createSlider(calculatedRouteData: Poi[], route: Route) {
