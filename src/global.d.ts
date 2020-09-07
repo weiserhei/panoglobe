@@ -8,6 +8,11 @@ declare module "*.png" {
     export default value;
 }
 
+declare module "*.vue" {
+    import Vue from "vue";
+    export default Vue;
+}
+
 // declare module "*.geojson" {
 //     const value: any;
 //     export default value;

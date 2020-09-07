@@ -2,10 +2,12 @@ const path = require("path");
 // const webpack = require("webpack"); //to access built-in plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 
 module.exports = {
     entry: "./src/js/App",
     plugins: [
+        new VueLoaderPlugin(),
         new CleanWebpackPlugin(),
         // new webpack.ProvidePlugin({
         //     $: 'jquery',
@@ -52,6 +54,7 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: "ts-loader",
                 exclude: /node_modules/,
+                // options: { appendTsSuffixTo: [/\.vue$/] },
             },
             {
                 test: /\.vue$/,
@@ -102,11 +105,15 @@ module.exports = {
             },
 
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpe?g|gif)$/,
                 use: [
                     {
                         loader: "file-loader",
-                        options: { outputPath: "images" }, // where to place images
+                        options: {
+                            options: {
+                                outputPath: "images",
+                            },
+                        }, // where to place images
                     },
                 ],
             },
