@@ -79,7 +79,7 @@ export default class InfoBox {
             : "";
         toastBody.innerHTML = `
         ${description}
-        <p>
+        <p class="mb-1">
         <a class="" href='${city.linkexternal}' target='_blank'>
         ${image}
         ${linkIcon}${city.linkexternal}
