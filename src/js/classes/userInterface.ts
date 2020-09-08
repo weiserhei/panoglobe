@@ -124,7 +124,7 @@ export default class UserInterface {
             </div>
         </div>`;
 
-        const self = this;
+        const mgr = this.manager;
         this.app = new Vue({
             el: nav,
             // template: "<App/>",
@@ -139,16 +139,16 @@ export default class UserInterface {
             },
             watch: {
                 nightmode: function (v) {
-                    self.manager.toggleNight = this.nightmode;
+                    mgr.toggleNight = this.nightmode;
                 },
                 labelVisible: function () {
-                    self.manager.activeRoute.showLabels = this.labelVisible;
+                    mgr.activeRoute.showLabels = this.labelVisible;
                 },
                 bordersVisible: function () {
-                    self.manager.toggleBorders = this.bordersVisible;
+                    mgr.toggleBorders = this.bordersVisible;
                 },
                 cloudsVisible: function () {
-                    self.manager.toggleClouds = this.cloudsVisible;
+                    mgr.toggleClouds = this.cloudsVisible;
                 },
             },
             methods: {
@@ -157,7 +157,7 @@ export default class UserInterface {
                         // @ts-ignore
                         $(".navbar-collapse").collapse("hide");
                     }, 900);
-                    if (self.manager.playDraw()) {
+                    if (mgr.playDraw()) {
                         this.isPlaying = true;
                     }
                 },
@@ -166,7 +166,7 @@ export default class UserInterface {
                         // @ts-ignore
                         $(".navbar-collapse").collapse("hide");
                     }, 900);
-                    if (self.manager.stopDraw()) {
+                    if (mgr.stopDraw()) {
                         this.isPlaying = false;
                     }
                 },
