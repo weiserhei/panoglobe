@@ -42,7 +42,6 @@ export default class HtmlMover {
     ): void {
         this.css2dobject.position.copy(position);
         this.css2dobject.element.style.color = color.getStyle();
-        // console.log(this.css2dobject.element.style);
         this.css2dobject.element.style.transform = "rotate(90deg)";
 
         if (this._visible) {
