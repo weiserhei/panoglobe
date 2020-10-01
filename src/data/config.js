@@ -10,7 +10,8 @@ export default {
         colorphase: 5.2,
         // how fast change the color (0 = fast)
         steps: 1,
-        linewidth: 3, // error on 2.0 width wtf lol
+        linewidth: 3,
+        linewidthCollision: 16, // for raycasting
         lineSegments: 10,
         segmentMultiplicator: 1,
         urls: [

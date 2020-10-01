@@ -23,6 +23,7 @@ import Config from "../../data/config";
 import Controls from "./controls";
 import RouteManager from "./routeManager";
 import UserInterface from "./userInterface";
+import RouteImage from "./routeImage";
 
 //check for orientation
 function getOrientation(x: any) {
@@ -49,12 +50,14 @@ export default class Route {
     private mover: Mover;
     private _showLabels: boolean = true;
     private visible: boolean = true;
+    private routeImage: RouteImage;
 
     public animationHandler: RouteAnimation;
     public poiRoute: CatmullRomCurve3 | undefined = undefined;
     public activeMarker: Marker | null = null;
     public marker: Array<Marker> = [];
     public routeLine: RouteLine;
+    public collisionLine: RouteLine;
     public setActiveMarker: (marker: Marker) => void;
     public cycleNextActive: (marker: Marker) => void;
     public cyclePrevActive: (marker: Marker) => void;
@@ -166,8 +169,22 @@ export default class Route {
         // scan for images after the infoboxes has been created
         new LazyLoading();
 
-        this.routeLine = new RouteLine(routeData, steps, phase);
+        this.routeLine = new RouteLine(
+            routeData,
+            steps,
+            phase,
+            Config.routes.linewidth
+        );
+        // this.collisionLine = new RouteLine(
+        //     routeData,
+        //     steps,
+        //     phase,
+        //     Config.routes.linewidthCollision
+        // );
+        // this.collisionLine.line.material.visible = false;
+        // this.routeLine.line.layers.enable(1);
         scene.add(this.routeLine.line);
+        // scene.add(this.collisionLine.line);
 
         // const poi: Array<any> = [];
         // this.routeData.forEach(function (e: Poi, index: number) {
@@ -189,6 +206,8 @@ export default class Route {
         this.mover = new Mover(scene, positions, colors, folder);
         // this.setDrawIndex(routeData.length);
 
+        this.routeImage = new RouteImage(scene, this);
+
         this.animationHandler = new RouteAnimation(
             this,
             this.mover,
@@ -196,6 +215,7 @@ export default class Route {
             this.routeData,
             controls,
             ui,
+            this.routeImage,
             folder
         );
 
@@ -295,6 +315,7 @@ export default class Route {
 
     set isVisible(value) {
         this.visible = value;
+        this.showLabels = value;
         if (this.activeMarker) {
             // this.manager.setActiveMarker(this, this.activeMarker);
         }

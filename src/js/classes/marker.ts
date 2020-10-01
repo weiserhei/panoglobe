@@ -152,14 +152,14 @@ export default class Marker {
         if (this.label !== null) {
             this.label.update(this.ocluded, dot);
         }
-        if (this.infoBox !== undefined) {
-            this.infoBox.update(
-                camera,
-                this.poi.displacedPos,
-                this.ocluded,
-                this.active
-            );
-        }
+        // if (this.infoBox !== undefined) {
+        //     this.infoBox.update(
+        //         camera,
+        //         this.poi.displacedPos,
+        //         this.ocluded,
+        //         this.active
+        //     );
+        // }
     }
 
     // askGoogle(lat, lon) {

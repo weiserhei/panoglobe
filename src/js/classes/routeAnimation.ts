@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CatmullRomCurve3, Vector3 } from "three";
 import UserInterface from "./userInterface";
+import RouteImage from "./routeImage";
 
 // if (process.env.NODE_ENV === "development") {
 function playText(text: string) {
@@ -53,6 +54,7 @@ export default class RouteAnimation {
         private routeData: Poi[],
         private controls: Controls,
         private ui: UserInterface,
+        private routeImage: RouteImage,
         folder: any
     ) {
         if (this.route.routeLine.curve) {
@@ -84,6 +86,8 @@ export default class RouteAnimation {
         this.marker.forEach((marker: Marker) => {
             marker.showLabel(true);
         });
+
+        this.routeImage.visible(false);
         this.mover.moving(false);
         this.mover.flying(false);
         this.mover.static(true);
@@ -136,11 +140,22 @@ export default class RouteAnimation {
         if (this.simplifiedRoute) {
             const p = this.simplifiedRoute.getPoint(normalizedProgress);
             this.controls.threeControls.target = p;
+            this.routeImage.update(p);
         }
 
         const progressIndex = this.route.routeLine.getIndexFromDrawcount(
             value.index
         );
+        // console.log(this.routeData);
+        // console.log(progressIndex);
+        if (
+            progressIndex >= 0 &&
+            this.routeData[progressIndex].images2 &&
+            this.routeData[progressIndex].images2.length > 0
+        ) {
+            this.routeImage.setImages(this.routeData[progressIndex].images2);
+        }
+
         const result = this.marker.find((marker: Marker) => {
             return marker.index === Math.floor(progressIndex + forecast);
         });
@@ -156,8 +171,8 @@ export default class RouteAnimation {
             this.mover.moving(true);
             const tween = this.marker[1].spawn();
             this.marker[1].showLabel(true);
+            this.routeImage.setMarker(this.marker[1]);
             tween.start();
-
             this.controls
                 .moveIntoCenter(
                     this.marker[1].poi.lat,
@@ -173,6 +188,7 @@ export default class RouteAnimation {
             const tween = result.spawn();
             tween.start();
             result.showLabel(true);
+            this.routeImage.setMarker(result);
             // const next = this.route.getNext(result);
             // if (!next) return;
             this.controls
@@ -220,6 +236,7 @@ export default class RouteAnimation {
             .onStart(() => {
                 this.tweenDraw = tweenRouteDraw;
                 this.lastActive = 0;
+                this.routeImage.visible(true);
                 // ugh please
                 if (fly(this.marker[1])) {
                     this.mover.flying(true);
@@ -270,8 +287,7 @@ export default class RouteAnimation {
             // })
             .onStop(this.onStop.bind(this))
             .onComplete(() => {
-                //@ts-ignore
-                this.ui.button.stop();
+                this.ui.stopPlaying();
                 // not called when on repeat
                 this.marker.forEach((marker: Marker) => {
                     marker.showLabel(true);
@@ -298,12 +314,14 @@ export default class RouteAnimation {
                         600
                     )
                     .start();
+                this.routeImage.visible(false);
             });
         // .delay(2500);
 
         // fade in label 1
         const marker = this.marker[0];
         marker.showLabel(true);
+        this.routeImage.setMarker(marker);
 
         // tween camera to start
         // todo: dont tween when already there
