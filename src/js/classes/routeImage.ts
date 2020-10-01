@@ -18,12 +18,12 @@ export default class RouteImage {
         //     "btn p-0 btn-link shadow-none text-white font-weight-bold";
         domElement.style.textShadow = "0 0 6px #000";
         // this._box.style.textDecoration = "none";
-        domElement.style.left = "8em";
+        domElement.style.left = "9em";
         this.htmlImage = document.createElement("img");
         this.htmlImage.src =
             "https://dev.panoreisen.de/index.php?rex_media_type=square_s&rex_media_file=roland_sw.jpg";
         this.htmlImage.className =
-            "rounded-circle w-50 img-fluid position-relative";
+            "rounded-circle w-75 img-fluid position-relative";
         this.htmlImage.style.border = "5px solid #fff";
         domElement.appendChild(this.htmlImage);
         // domElement.innerHTML =

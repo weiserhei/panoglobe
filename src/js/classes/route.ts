@@ -175,16 +175,16 @@ export default class Route {
             phase,
             Config.routes.linewidth
         );
-        this.collisionLine = new RouteLine(
-            routeData,
-            steps,
-            phase,
-            Config.routes.linewidthCollision
-        );
-        this.collisionLine.line.material.visible = false;
+        // this.collisionLine = new RouteLine(
+        //     routeData,
+        //     steps,
+        //     phase,
+        //     Config.routes.linewidthCollision
+        // );
+        // this.collisionLine.line.material.visible = false;
         // this.routeLine.line.layers.enable(1);
         scene.add(this.routeLine.line);
-        scene.add(this.collisionLine.line);
+        // scene.add(this.collisionLine.line);
 
         // const poi: Array<any> = [];
         // this.routeData.forEach(function (e: Poi, index: number) {
