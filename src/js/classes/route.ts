@@ -23,6 +23,7 @@ import Config from "../../data/config";
 import Controls from "./controls";
 import RouteManager from "./routeManager";
 import UserInterface from "./userInterface";
+import RouteImage from "./routeImage";
 
 //check for orientation
 function getOrientation(x: any) {
@@ -49,6 +50,7 @@ export default class Route {
     private mover: Mover;
     private _showLabels: boolean = true;
     private visible: boolean = true;
+    private routeImage: RouteImage;
 
     public animationHandler: RouteAnimation;
     public poiRoute: CatmullRomCurve3 | undefined = undefined;
@@ -204,6 +206,8 @@ export default class Route {
         this.mover = new Mover(scene, positions, colors, folder);
         // this.setDrawIndex(routeData.length);
 
+        this.routeImage = new RouteImage(scene, this);
+
         this.animationHandler = new RouteAnimation(
             this,
             this.mover,
@@ -211,6 +215,7 @@ export default class Route {
             this.routeData,
             controls,
             ui,
+            this.routeImage,
             folder
         );
 

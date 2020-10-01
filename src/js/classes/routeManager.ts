@@ -22,6 +22,13 @@ export default class RouteManager {
     private mouse: Vector2 = new Vector2();
     private routeImage: RouteImage;
 
+    // private touchmove = function (event: any) {
+    //     console.log(event);
+    //     this.mouse.x = 0.5 * (event.touches[0].pageX + event.touches[1].pageX);
+    //     this.mouse.y = 0.5 * (event.touches[0].pageY + event.touches[1].pageY);
+    //     this.raycast();
+    // };
+
     private onMouseMove = function (event: any) {
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
@@ -55,7 +62,7 @@ export default class RouteManager {
             return true;
         } else {
             document.body.style.cursor = "default";
-            this.routeImage.visible(false);
+            // this.routeImage.visible(false);
         }
 
         // for (var i = 0; i < intersects.length; i++) {
@@ -65,7 +72,7 @@ export default class RouteManager {
 
     private test() {
         if (this.raycast()) alert();
-        console.log(this._activeRoute.marker);
+        // console.log(this._activeRoute.marker);
     }
 
     constructor(
@@ -80,13 +87,15 @@ export default class RouteManager {
         this.ui = new UserInterface(container, controls, this);
 
         // this.raycaster.layers.set(1);
-        window.addEventListener(
-            "mousemove",
-            this.onMouseMove.bind(this),
-            false
-        );
-        window.addEventListener("click", this.test.bind(this), false);
-        this.routeImage = new RouteImage(scene);
+        // window.addEventListener(
+        //     "mousemove",
+        //     this.onMouseMove.bind(this),
+        //     false
+        // );
+        // window.addEventListener("touchmove", this.touchmove.bind(this), false);
+
+        // window.addEventListener("click", this.test.bind(this), false);
+        // this.routeImage = new RouteImage(scene);
     }
 
     set toggleClouds(value: boolean) {
@@ -197,7 +206,7 @@ export default class RouteManager {
                 r.isVisible = false;
             }
         });
-        this.routeImage.addRoute(route);
+        // this.routeImage.addRoute(route);
         this.spawnRoute(route);
     }
 
