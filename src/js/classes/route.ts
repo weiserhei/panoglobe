@@ -55,6 +55,7 @@ export default class Route {
     public activeMarker: Marker | null = null;
     public marker: Array<Marker> = [];
     public routeLine: RouteLine;
+    public collisionLine: RouteLine;
     public setActiveMarker: (marker: Marker) => void;
     public cycleNextActive: (marker: Marker) => void;
     public cyclePrevActive: (marker: Marker) => void;
@@ -166,8 +167,22 @@ export default class Route {
         // scan for images after the infoboxes has been created
         new LazyLoading();
 
-        this.routeLine = new RouteLine(routeData, steps, phase);
+        this.routeLine = new RouteLine(
+            routeData,
+            steps,
+            phase,
+            Config.routes.linewidth
+        );
+        this.collisionLine = new RouteLine(
+            routeData,
+            steps,
+            phase,
+            Config.routes.linewidthCollision
+        );
+        this.collisionLine.line.material.visible = false;
+        // this.routeLine.line.layers.enable(1);
         scene.add(this.routeLine.line);
+        scene.add(this.collisionLine.line);
 
         // const poi: Array<any> = [];
         // this.routeData.forEach(function (e: Poi, index: number) {

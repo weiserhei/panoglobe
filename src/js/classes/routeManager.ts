@@ -3,12 +3,13 @@ import Route from "./route";
 import Controls from "./controls";
 import { calc3DPositions } from "../utils/panoutils";
 import UserInterface from "./userInterface";
-import { Vector2, Vector3 } from "three";
+import { Vector2, Vector3, Raycaster } from "three";
 // import Config from "../../data/config";
 
 import Marker from "./marker";
 import Globus from "./globus";
 import LightManager from "./lightManager";
+import RouteImage from "./routeImage";
 
 export default class RouteManager {
     public routes: Route[] = [];
@@ -17,6 +18,55 @@ export default class RouteManager {
     // private heightData: Promise<Array<Array<Number>>>;
     private ui: UserInterface;
     private _activeRoute: Route | undefined = undefined;
+    private raycaster = new Raycaster();
+    private mouse: Vector2 = new Vector2();
+    private routeImage: RouteImage;
+
+    private onMouseMove = function (event: any) {
+        // calculate mouse position in normalized device coordinates
+        // (-1 to +1) for both components
+        // subtract container offset taken by topnav
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y =
+            -((event.clientY - this.container.offsetTop) / window.innerHeight) *
+                2 +
+            1;
+        this.raycast();
+    };
+
+    private raycast = function () {
+        if (this._activeRoute === undefined) return;
+        // update the picking ray with the camera and mouse position
+        this.raycaster.setFromCamera(
+            this.mouse,
+            this.controls.threeControls.object
+        );
+
+        // calculate objects intersecting the picking ray
+        // var intersects = this.raycaster.intersectObjects(this.scene.children);
+        var intersects = this.raycaster.intersectObject(
+            this._activeRoute.collisionLine.line
+        );
+        // console.log(intersects[0]);
+
+        if (intersects.length > 0) {
+            document.body.style.cursor = "pointer";
+            this.routeImage.intersect(intersects[0]);
+            return true;
+        } else {
+            document.body.style.cursor = "default";
+            this.routeImage.visible(false);
+        }
+
+        // for (var i = 0; i < intersects.length; i++) {
+        //     intersects[i].object.material.color.set(0xff0000);
+        // }
+    };
+
+    private test() {
+        if (this.raycast()) alert();
+        console.log(this._activeRoute.marker);
+    }
 
     constructor(
         private scene: THREE.Scene,
@@ -28,6 +78,15 @@ export default class RouteManager {
         private lightManager: LightManager
     ) {
         this.ui = new UserInterface(container, controls, this);
+
+        // this.raycaster.layers.set(1);
+        window.addEventListener(
+            "mousemove",
+            this.onMouseMove.bind(this),
+            false
+        );
+        window.addEventListener("click", this.test.bind(this), false);
+        this.routeImage = new RouteImage(scene);
     }
 
     set toggleClouds(value: boolean) {
@@ -138,7 +197,7 @@ export default class RouteManager {
                 r.isVisible = false;
             }
         });
-
+        this.routeImage.addRoute(route);
         this.spawnRoute(route);
     }
 

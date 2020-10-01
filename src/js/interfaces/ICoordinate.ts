@@ -9,6 +9,7 @@ interface Coordinate {
     linkexternal?: string;
     linkinternal?: string;
     images?: string[];
+    images2?: string;
     hopDistance?: number;
     // pos?: Vector3;
 }
