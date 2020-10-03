@@ -89,12 +89,8 @@ module.exports = {
                     {
                         loader: "postcss-loader", // Run postcss actions
                         options: {
-                            plugins: function () {
-                                // postcss plugins, can be exported to postcss.config.js
-                                return [
-                                    // require('precss'),
-                                    require("autoprefixer"),
-                                ];
+                            postcssOptions: {
+                                plugins: ["autoprefixer"],
                             },
                         },
                     },
