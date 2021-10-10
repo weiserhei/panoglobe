@@ -19,7 +19,7 @@ export default class RouteImage {
         domElement.style.textShadow = "0 0 6px #000";
         // this._box.style.textDecoration = "none";
         domElement.style.left = "9em";
-        domElement.style.top = "7em";
+        domElement.style.top = "5em";
         this.htmlImage = document.createElement("img");
         // this.htmlImage.src =
         //     "https://dev.panoreisen.de/index.php?rex_media_type=square_s&rex_media_file=roland_sw.jpg";
