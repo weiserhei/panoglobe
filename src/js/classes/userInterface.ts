@@ -111,9 +111,7 @@ export default class UserInterface {
                                 )}</button>
                             <button 
                                 class="btn btn-primary" 
-                                v-on:click="play">${playText(
-                                    "Draw route"
-                                )}</button>
+                                v-on:click="play">${playText("Play")}</button>
                         </div>
                     </li>
                     <ListCheckbox v-model="labelVisible" label="Labels"/>
