@@ -20,8 +20,8 @@ export default class RouteImage {
         // this._box.style.textDecoration = "none";
         domElement.style.left = "9em";
         this.htmlImage = document.createElement("img");
-        this.htmlImage.src =
-            "https://dev.panoreisen.de/index.php?rex_media_type=square_s&rex_media_file=roland_sw.jpg";
+        // this.htmlImage.src =
+        //     "https://dev.panoreisen.de/index.php?rex_media_type=square_s&rex_media_file=roland_sw.jpg";
         this.htmlImage.className =
             "rounded-circle w-75 img-fluid position-relative";
         this.htmlImage.style.border = "5px solid #fff";
@@ -41,10 +41,12 @@ export default class RouteImage {
         // this.route = route;
     }
 
-    public setMarker(marker: Marker) {
-        this.htmlImage.src = marker.poi.images2[0].replace(/&amp;/g, "&");
-        this.css2dobject.position.copy(marker.poi.displacedPos);
-    }
+    // Marker hat keine Bilder mehr
+    // public setMarker(marker: Marker) {
+    //     console.trace("set Marker");
+    //     this.htmlImage.src = marker.poi.images2[0].replace(/&amp;/g, "&");
+    //     this.css2dobject.position.copy(marker.poi.displacedPos);
+    // }
 
     public setImage(image: string) {
         this.htmlImage.src = image.replace(/&amp;/g, "&");

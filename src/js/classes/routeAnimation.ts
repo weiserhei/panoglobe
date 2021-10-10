@@ -171,7 +171,7 @@ export default class RouteAnimation {
             this.mover.moving(true);
             const tween = this.marker[1].spawn();
             this.marker[1].showLabel(true);
-            this.routeImage.setMarker(this.marker[1]);
+            // this.routeImage.setMarker(this.marker[1]);
             tween.start();
             this.controls
                 .moveIntoCenter(
@@ -181,14 +181,13 @@ export default class RouteAnimation {
                 )
                 .start();
         }
-        // -- flying transition
+        // -- move camera position (follow route center)
         if (result === undefined) return;
         if (result.index > this.lastActive) {
             this.lastActive = result.index;
             const tween = result.spawn();
             tween.start();
             result.showLabel(true);
-            this.routeImage.setMarker(result);
             // const next = this.route.getNext(result);
             // if (!next) return;
             this.controls
@@ -321,7 +320,8 @@ export default class RouteAnimation {
         // fade in label 1
         const marker = this.marker[0];
         marker.showLabel(true);
-        this.routeImage.setMarker(marker);
+        // this.routeImage.setMarker(marker);
+        this.routeImage.setImages(this.routeData[0].images2);
 
         // tween camera to start
         // todo: dont tween when already there
