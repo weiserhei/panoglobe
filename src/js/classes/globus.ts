@@ -17,6 +17,9 @@ import {
     Texture,
 } from "three";
 
+// GeoJSON from:
+// https://stackoverflow.com/questions/40520463/how-can-i-draw-geojson-in-three-js-as-a-mesh-and-not-a-line-and-fill-with-color
+
 import Preloader from "../classes/preloader";
 import Config from "../../data/config";
 import { drawThreeGeo } from "../utils/threeGeoJSON";
